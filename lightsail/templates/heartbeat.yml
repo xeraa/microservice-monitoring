@@ -1,0 +1,14 @@
+heartbeat.monitors:
+
+
+- type: http
+  urls: ["http://frontend.{{ domain }}:80/good"]
+  schedule: '@every 10s'
+  timeout: 10s
+  check.response.status: 200
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"

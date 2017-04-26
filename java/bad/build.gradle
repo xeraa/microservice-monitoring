@@ -1,0 +1,12 @@
+group 'net.xeraa'
+version '1.0'
+
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'net.xeraa.Bad'
+        )
+    }
+}

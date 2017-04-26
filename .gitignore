@@ -1,0 +1,9 @@
+.gradle/
+.idea/
+build/
+
+*.backup
+*.log
+*.retry
+*.tfstate
+

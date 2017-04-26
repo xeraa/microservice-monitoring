@@ -1,0 +1,20 @@
+httpbeat.hosts:
+
+- url: http://frontend.{{ domain }}/health
+  method: get
+  schedule: "@every 10s"
+  output_format: json
+  #basic_auth:
+    #username: admin
+    #password: admin
+
+- url: http://frontend.{{ domain }}/metrics
+  method: get
+  schedule: "@every 10s"
+  output_format: json
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"

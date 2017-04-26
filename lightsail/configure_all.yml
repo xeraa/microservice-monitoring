@@ -1,0 +1,24 @@
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  gather_facts: no
+
+
+  pre_tasks:
+    - name: Install Python2 to make Ansible work
+      raw: sudo apt-get update && sudo apt-get -y install python-minimal
+
+
+  tasks:
+
+    - name: Update and upgrade apt packages
+      apt: upgrade=dist
+
+    - name: Install NTP to avoid time drift
+      apt: name={{ item }} state=latest
+      with_items:
+        - ntp
+        - ntpdate
+
+    - name: Install the JRE
+      apt: name=openjdk-8-jre-headless state=latest install_recommends=no

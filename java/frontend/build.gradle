@@ -1,0 +1,26 @@
+apply plugin: 'org.springframework.boot'
+
+
+jar {
+	baseName = 'frontend'
+	version = '1.0'
+}
+
+
+dependencies {
+	compile(
+			'org.springframework.boot:spring-boot-starter-web',
+			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
+            'org.springframework.boot:spring-boot-starter-actuator',
+            'org.springframework.cloud:spring-cloud-starter-sleuth',
+            'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+	)
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}

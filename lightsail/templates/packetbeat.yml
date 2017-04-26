@@ -1,0 +1,13 @@
+packetbeat.interfaces.device: any
+
+
+packetbeat.protocols.http:
+  ports: [80]
+  send_request: true
+  send_response: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"

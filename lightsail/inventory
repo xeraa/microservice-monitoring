@@ -1,0 +1,16 @@
+[all]
+backend.xeraa.wtf
+frontend.xeraa.wtf
+monitor.xeraa.wtf
+
+
+[backend]
+backend.xeraa.wtf
+
+
+[frontend]
+frontend.xeraa.wtf
+
+
+[monitor]
+monitor.xeraa.wtf

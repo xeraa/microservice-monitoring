@@ -1,0 +1,24 @@
+apply plugin: 'org.springframework.boot'
+
+
+jar {
+	baseName = 'zipkin'
+	version = '1.0'
+}
+
+
+dependencies {
+	compile(
+			'org.springframework.boot:spring-boot-starter',
+			'io.zipkin.java:zipkin-server'
+	)
+	runtime('io.zipkin.java:zipkin-autoconfigure-ui')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}

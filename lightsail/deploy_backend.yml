@@ -1,0 +1,18 @@
+- hosts: backend
+  remote_user: ubuntu
+  become: true
+  gather_facts: no
+
+
+  tasks:
+
+    - name: Copy our backend.jar
+      copy: src=../java/backend/build/libs/backend-1.0.jar dest=/opt/backend.jar mode=0755
+
+    - name: Make sure that the logging directory exists
+      file:
+        path: /var/log/apps/
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755

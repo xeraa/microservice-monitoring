@@ -1,0 +1,18 @@
+- hosts: frontend
+  remote_user: ubuntu
+  become: true
+  gather_facts: no
+
+
+  tasks:
+
+    - name: Copy our zipkin.jar
+      copy: src=../java/zipkin/build/libs/zipkin-1.0.jar dest=/opt/zipkin.jar mode=0755
+
+    - name: Make sure that the logging directory exists
+      file:
+        path: /var/log/apps/
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755

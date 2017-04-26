@@ -1,0 +1,10 @@
+- hosts: frontend
+  remote_user: ubuntu
+  become: true
+  gather_facts: no
+
+
+  tasks:
+
+    - name: Deploy our bad.jar
+      copy: src=../java/bad/build/libs/Bad-1.0.jar dest=/opt/bad.jar mode=0755
