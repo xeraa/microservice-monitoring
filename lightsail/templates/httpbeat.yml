@@ -12,6 +12,7 @@ httpbeat.hosts:
   method: get
   schedule: "@every 10s"
   output_format: json
+  json_dot_mode: replace
 
 
 output.elasticsearch:
