@@ -58,7 +58,7 @@
       apt: name=nginx state=latest
 
     - name: Change the nginx configuration
-      template: src=templates/nginx.conf dest=/etc/nginx/conf.d/default
+      template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
 
     - name: Restart nginx and make sure it autostarts
       service: name=nginx state=restarted enabled=yes
