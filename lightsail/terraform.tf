@@ -49,8 +49,11 @@ resource "aws_route53_record" "apex" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
   name    = "${var.domain}"
   type    = "A"
-  ttl     = "60"
-  records = ["${aws_lightsail_instance.frontend.public_ip_address}"]
+  alias {
+    name                   = "frontend.${var.domain}"
+    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    evaluate_target_health = true
+  }
 }
 
 
