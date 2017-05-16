@@ -11,6 +11,11 @@ filebeat.modules:
 - module: nginx
 
 
+processors:
+- add_cloud_metadata:
+    timeout: 3s
+
+
 output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"

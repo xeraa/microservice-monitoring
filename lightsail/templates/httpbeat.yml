@@ -1,5 +1,4 @@
 httpbeat.hosts:
-
 - url: http://{{ domain }}/health
   method: get
   schedule: "@every 10s"
@@ -7,12 +6,16 @@ httpbeat.hosts:
   #basic_auth:
     #username: admin
     #password: admin
-
 - url: http://{{ domain }}/metrics
   method: get
   schedule: "@every 10s"
   output_format: json
   json_dot_mode: replace
+
+
+processors:
+- add_cloud_metadata:
+    timeout: 3s
 
 
 output.elasticsearch:

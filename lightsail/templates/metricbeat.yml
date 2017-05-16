@@ -1,6 +1,4 @@
 metricbeat.modules:
-
-
 - module: system
   metricsets:
     - cpu
@@ -17,6 +15,11 @@ metricbeat.modules:
   period: 10s
   processes: ['.*']
   cgroups: true
+
+
+processors:
+- add_cloud_metadata:
+    timeout: 3s
 
 
 output.elasticsearch:

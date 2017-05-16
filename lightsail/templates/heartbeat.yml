@@ -8,6 +8,11 @@ heartbeat.monitors:
   check.response.status: 200
 
 
+processors:
+- add_cloud_metadata:
+    timeout: 3s
+
+
 output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"
