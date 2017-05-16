@@ -17,8 +17,7 @@ packetbeat.protocols.http:
 
 
 processors:
-- add_cloud_metadata:
-    timeout: 3s
+- add_cloud_metadata: ~
 
 
 output.elasticsearch:
