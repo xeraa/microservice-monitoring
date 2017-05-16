@@ -3,14 +3,14 @@ httpbeat.hosts:
   method: get
   schedule: "@every 10s"
   output_format: json
-  #basic_auth:
-    #username: admin
-    #password: admin
 - url: http://{{ domain }}/metrics
   method: get
   schedule: "@every 10s"
   output_format: json
   json_dot_mode: replace
+  basic_auth:
+    username: admin
+    password: secret
 
 
 processors:

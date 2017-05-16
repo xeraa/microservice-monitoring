@@ -11,9 +11,10 @@ dependencies {
 	compile(
 			'org.springframework.boot:spring-boot-starter-web',
 			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
-            'org.springframework.boot:spring-boot-starter-actuator',
-            'org.springframework.cloud:spring-cloud-starter-sleuth',
-            'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+			'org.springframework.boot:spring-boot-starter-security',
+			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.springframework.cloud:spring-cloud-starter-sleuth',
+			'org.springframework.cloud:spring-cloud-sleuth-zipkin'
 	)
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

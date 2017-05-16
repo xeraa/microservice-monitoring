@@ -9,7 +9,7 @@
 3. **Filebeat**: Let attendees hit */bad* and show the errors in Kibana.
 4. **Filebeat modules**: Show the *nginx* and *system* dashboards.
 5. **Heartbeat**: Ping */good* and show the visualization in Kibana, then kill the process and see the change.
-6. **Httpbeat**: Show */health* and */metrics* with cURL and then in Kibana's Discover tab.
+6. **Httpbeat**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`), then in Kibana's Discover tab.
 7. **Sleuth & Zipkin**: Show the traces so far, let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call(s).
 
 
@@ -61,7 +61,6 @@ Docker
 ## Todo
 
 * Make the call URL configurable in the Java app
-* Reenable security and use it with HTTPbeat?
 * runit?
 * Use of apache-ab
 * Use backend for the /call and enable distributed tracing; put zipkin.jar on the monitor instance
