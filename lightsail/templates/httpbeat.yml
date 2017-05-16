@@ -1,6 +1,6 @@
 httpbeat.hosts:
 
-- url: http://frontend.{{ domain }}/health
+- url: http://{{ domain }}/health
   method: get
   schedule: "@every 10s"
   output_format: json
@@ -8,7 +8,7 @@ httpbeat.hosts:
     #username: admin
     #password: admin
 
-- url: http://frontend.{{ domain }}/metrics
+- url: http://{{ domain }}/metrics
   method: get
   schedule: "@every 10s"
   output_format: json

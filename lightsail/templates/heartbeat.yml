@@ -2,7 +2,7 @@ heartbeat.monitors:
 
 
 - type: http
-  urls: ["http://frontend.{{ domain }}:80/good"]
+  urls: ["http://{{ domain }}/good"]
   schedule: '@every 10s'
   timeout: 10s
   check.response.status: 200
