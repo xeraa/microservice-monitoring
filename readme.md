@@ -7,7 +7,7 @@
 1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar*, and see the spike.
 2. **Packetbeat**: Show the HTTP dashboard, let attendees hit */good*, */bad*, and */foobar* a few times, and see the corresponding graphs.
 3. **Filebeat**: Let attendees hit */bad* and show the errors in Kibana.
-4. **Filebeat modules**: Show the *nginx* and *system* dashboards.
+4. **Filebeat modules**: Show the *nginx*, *system*, and *SSH* dashboards.
 5. **Heartbeat**: Ping */good* and show the visualization in Kibana, then kill the process and see the change.
 6. **Httpbeat**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`), then in Kibana's Discover tab.
 7. **Sleuth & Zipkin**: Show the traces so far, let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call(s).
@@ -39,8 +39,7 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 #### Demo
 
 * Run bad.jar on the frontend instance: `java -Xmx512m -jar /opt/bad.jar`
-* Run Zipkin on the monitor instance: `java -jar /opt/zipkin.jar`
-* Run backend.jar on the backend instance: `java -jar /opt/backend.jar`
+* Run zipkin.jar on the frontend instance: `java -jar /opt/zipkin.jar`
 * Run frontend.jar on the frontend instance: `java -jar /opt/frontend.jar`
 
 
@@ -60,6 +59,7 @@ Docker
 
 ## Todo
 
+* Set default index pattern
 * Make the call URL configurable in the Java app
 * runit?
 * Use of apache-ab
