@@ -1,10 +1,19 @@
 packetbeat.interfaces.device: any
 
 
+packetbeat.flows:
+  timeout: 30s
+  period: 10s
+
+
+packetbeat.protocols.dns:
+  ports: [53]
+  include_authorities: true
+  include_additionals: true
+
+
 packetbeat.protocols.http:
   ports: [80]
-  send_request: true
-  send_response: true
 
 
 processors:
