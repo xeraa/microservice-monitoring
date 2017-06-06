@@ -4,6 +4,10 @@
   gather_facts: no
 
 
+  vars_files:
+    - variables.yml
+
+
   pre_tasks:
     - name: Install Python2 to make Ansible work
       raw: sudo apt-get update && sudo apt-get -y install python-minimal
@@ -24,3 +28,79 @@
 
     - name: Install the JRE
       apt: name=openjdk-8-jre-headless state=latest install_recommends=no
+
+
+    # Filebeat
+    - name: Install Filebeat
+      apt: deb={{ elastic_download }}/downloads/beats/filebeat/filebeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Filebeat configuration
+      template: src=templates/filebeat.yml dest=/etc/filebeat/filebeat.yml
+
+    - name: Restart Filebeat and make sure it autostarts
+      service: name=filebeat state=restarted enabled=yes
+
+    - name: Add Filebeat dashboard
+      command: >
+        /usr/share/filebeat/scripts/import_dashboards
+        -es {{ elasticsearch_host }}
+        -user {{ elasticsearch_user }}
+        -pass {{ elasticsearch_password }}
+      run_once: true
+
+    - name: Add a default index pattern using Filebeat
+      command: >
+        curl -XPUT "{{ elasticsearch_host }}/.kibana/config/{{ elastic_version }}"
+             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
+             -H "Content-Type: application/json"
+             -d '{"defaultIndex" : "filebeat-*"}'
+      run_once: true
+
+
+    # Metricbeat
+    - name: Install Metricbeat
+      apt: deb={{ elastic_download }}/downloads/beats/metricbeat/metricbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Metricbeat configuration
+      template: src=templates/metricbeat.yml dest=/etc/metricbeat/metricbeat.yml
+
+    - name: Restart Metricbeat and make sure it autostarts
+      service: name=metricbeat state=restarted enabled=yes
+
+    - name: Add Metricbeat dashboard
+      command: >
+        /usr/share/metricbeat/scripts/import_dashboards
+        -es {{ elasticsearch_host }}
+        -user {{ elasticsearch_user }}
+        -pass {{ elasticsearch_password }}
+      run_once: true
+
+
+    # Packetbeat
+    - name: Install Packetbeat
+      apt: deb={{ elastic_download }}/downloads/beats/packetbeat/packetbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Packetbeat configuration
+      template: src=templates/packetbeat.yml dest=/etc/packetbeat/packetbeat.yml
+
+    - name: Restart Packetbeat and make sure it autostarts
+      service: name=packetbeat state=restarted enabled=yes
+
+    - name: Add Packetbeat dashboard
+      command: >
+        /usr/share/packetbeat/scripts/import_dashboards
+        -es {{ elasticsearch_host }}
+        -user {{ elasticsearch_user }}
+        -pass {{ elasticsearch_password }}
+      run_once: true
+
+
+    # nginx
+    - name: Install nginx
+      apt: name=nginx state=latest
+
+    - name: Change the nginx configuration
+      template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
+
+    - name: Restart nginx and make sure it autostarts
+      service: name=nginx state=restarted enabled=yes

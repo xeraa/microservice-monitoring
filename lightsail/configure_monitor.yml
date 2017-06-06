@@ -25,17 +25,6 @@
       command: /usr/share/heartbeat/scripts/import_dashboards -es {{ elasticsearch_host }} -user {{ elasticsearch_user }} -pass {{ elasticsearch_password }}
 
 
-    # nginx
-    - name: Install nginx
-      apt: name=nginx state=latest
-
-    - name: Change the nginx configuration
-      template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
-
-    - name: Restart nginx and make sure it autostarts
-      service: name=nginx state=restarted enabled=yes
-
-
     # Httpbeat
     - name: Install Httpbeat
       apt: deb=https://github.com/christiangalsterer/httpbeat/releases/download/4.0.0/httpbeat-4.0.0-amd64.deb
