@@ -1,6 +1,3 @@
-
-
-
 # Default instance size
 # Options: nano_1_0, micro_1_0, small_1_0, medium_1_0, large_1_0
 # Override: -var 'size=your-size'
@@ -10,10 +7,10 @@ variable "size" {
 
 
 # Default AWS region
-# Options: Currently only us-east-1 (with us-east-1a, us-east-1b, us-east-1d, us-east-1e) for Lightsail
+# Options: eu-central-1, eu-west-1, eu-west-2, us-east-1, us-east-2, us-west-2 for Lightsail
 # Override: -var 'region=your-region'
 variable "region" {
-    default = "us-east-1"
+    default = "eu-west-1"
 }
 
 

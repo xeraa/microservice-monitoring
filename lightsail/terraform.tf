@@ -59,7 +59,7 @@ resource "aws_route53_record" "apex" {
 
 resource "aws_lightsail_instance" "monitor" {
   name              = "monitor"
-  availability_zone = "${var.region}d"
+  availability_zone = "${var.region}c"
   blueprint_id      = "ubuntu_16_04"
   bundle_id         = "${var.size}"
   key_pair_name     = "microservice_monitoring_key_pair"
