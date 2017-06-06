@@ -12,6 +12,9 @@
 
 
     # Heartbeat
+    - name: Purge Heartbeat since it might collide with the Linux package
+      apt: name=heartbeat purge=yes
+
     - name: Install Heartbeat
       apt: deb={{ elastic_download }}/downloads/beats/heartbeat/heartbeat-{{ elastic_version }}-amd64.deb
 
