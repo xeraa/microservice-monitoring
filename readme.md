@@ -59,10 +59,9 @@ Docker
 
 ## Todo
 
-* Make the call URL configurable in the Java app
+* Make the call URL and the Zipkin endpoint configurable in the Java app
+* Don't hardcode the metrics credentials (in Java and the Beats)
 * runit?
-* Use of apache-ab
 * Use backend for the /call
 * Use ES as the Zipkin backend
-* JMXbeat: https://github.com/elastic/beats/pull/3570
 * alerting UI

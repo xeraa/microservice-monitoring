@@ -14,7 +14,8 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-security',
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.springframework.cloud:spring-cloud-starter-sleuth',
-			'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+			'org.springframework.cloud:spring-cloud-sleuth-zipkin',
+			'org.jolokia:jolokia-core'
 	)
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
