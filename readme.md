@@ -39,7 +39,7 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 #### Demo
 
 * Run bad.jar on the frontend instance: `java -Xmx512m -jar /opt/bad.jar`
-* Run zipkin.jar on the frontend instance: `java -jar /opt/zipkin.jar`
+* Run zipkin.jar on the monitor instance: `java -jar /opt/zipkin.jar`
 * Run frontend.jar on the frontend instance: `java -jar /opt/frontend.jar`
 
 
@@ -63,6 +63,6 @@ Docker
 * Make the call URL configurable in the Java app
 * runit?
 * Use of apache-ab
-* Use backend for the /call and enable distributed tracing; put zipkin.jar on the monitor instance
+* Use backend for the /call
 * JMXbeat: https://github.com/elastic/beats/pull/3570
 * alerting UI

@@ -1,4 +1,4 @@
-- hosts: frontend
+- hosts: monitor
   remote_user: ubuntu
   become: true
   gather_facts: no
