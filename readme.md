@@ -10,7 +10,9 @@
 4. **Filebeat modules**: Show the *nginx*, *system*, and *SSH* dashboards.
 5. **Heartbeat**: Run Heartbeat and show the visualization in Kibana, then kill the frontend application and see the change.
 6. **Httpbeat**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Httpbeat and show it in Kibana's Discover tab.
-7. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call(s).
+7. **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
+8. **Visual Builder**: Build a more advanced visualization with the new visual builder, for example the heap usage and the initial heap per node.
+9. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call(s).
 
 
 
