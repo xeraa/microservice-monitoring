@@ -45,16 +45,6 @@ resource "aws_route53_record" "frontend" {
   ttl     = "60"
   records = ["${aws_lightsail_instance.frontend.public_ip_address}"]
 }
-resource "aws_route53_record" "apex" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
-  name    = "${var.domain}"
-  type    = "A"
-  alias {
-    name                   = "frontend.${var.domain}"
-    zone_id                = "${aws_route53_zone.domain.zone_id}"
-    evaluate_target_health = true
-  }
-}
 
 
 resource "aws_lightsail_instance" "monitor" {
@@ -70,4 +60,17 @@ resource "aws_route53_record" "monitor" {
   type    = "A"
   ttl     = "60"
   records = ["${aws_lightsail_instance.monitor.public_ip_address}"]
+}
+
+
+# Add the apex last so that the DNS entry for frontend already exists
+resource "aws_route53_record" "apex" {
+  zone_id = "${aws_route53_zone.domain.zone_id}"
+  name    = "${var.domain}"
+  type    = "A"
+  alias {
+    name                   = "frontend.${var.domain}"
+    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    evaluate_target_health = false
+  }
 }
