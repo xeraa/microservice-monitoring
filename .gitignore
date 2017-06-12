@@ -6,4 +6,5 @@ build/
 *.log
 *.retry
 *.tfstate
+*.tfstate.lock.info
 
