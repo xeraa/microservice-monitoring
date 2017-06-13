@@ -13,7 +13,6 @@ dependencies {
 			'io.zipkin.java:zipkin-server'
 	)
 	runtime('io.zipkin.java:zipkin-autoconfigure-ui')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 
