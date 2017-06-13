@@ -30,6 +30,16 @@
       apt: name=openjdk-8-jre-headless state=latest install_recommends=no
 
 
+    # Global Elasticsearch configuration
+    - name: Register a global index template
+      command: >
+        curl -XPUT "{{ elasticsearch_host }}/_template/template_global"
+             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
+             -H "Content-Type: application/json"
+             -d '{"template": "*", "settings": {"number_of_shards": 1}}'
+      run_once: true
+
+
     # Filebeat
     - name: Install Filebeat
       apt: deb={{ elastic_download }}/downloads/beats/filebeat/filebeat-{{ elastic_version }}-amd64.deb
@@ -53,7 +63,7 @@
         curl -XPUT "{{ elasticsearch_host }}/.kibana/config/{{ elastic_version }}"
              -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
              -H "Content-Type: application/json"
-             -d '{"defaultIndex" : "filebeat-*"}'
+             -d '{"defaultIndex": "filebeat-*"}'
       run_once: true
 
 
