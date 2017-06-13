@@ -37,3 +37,10 @@
 
     - name: Restart Httpbeat and make sure it autostarts, but stop it for now
       service: name=httpbeat state=stopped enabled=yes
+
+    - name: Add Httpbeat index pattern to Kibana (there is no dashboard)
+      command: >
+        curl -XPOST "{{ elasticsearch_host }}/.kibana/index-pattern/httpbeat-*/_create"
+             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
+             -H "Content-Type: application/json"
+             -d '{"title": "httpbeat-*", "timeFieldName": "@timestamp"}'
