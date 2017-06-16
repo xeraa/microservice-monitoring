@@ -17,7 +17,6 @@ dependencies {
 			'org.springframework.cloud:spring-cloud-sleuth-zipkin',
 			'org.jolokia:jolokia-core'
 	)
-	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 
