@@ -10,9 +10,14 @@ jar {
 dependencies {
 	compile(
 			'org.springframework.boot:spring-boot-starter',
-			'io.zipkin.java:zipkin-server'
+			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
+			'org.springframework.boot:spring-boot-starter-security',
+			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.jolokia:jolokia-core',
+			"io.zipkin.java:zipkin-server:${zipkinVersion}",
+			"io.zipkin.java:zipkin-autoconfigure-storage-elasticsearch-http:${zipkinVersion}",
+			"io.zipkin.java:zipkin-autoconfigure-ui:${zipkinVersion}"
 	)
-	runtime('io.zipkin.java:zipkin-autoconfigure-ui')
 }
 
 

@@ -3,6 +3,7 @@ buildscript {
 		springBootVersion = '1.5.4.RELEASE'
 		springCloudVersion = 'Dalston.SR1'
 		logbackEncoderVersion = '4.10'
+		zipkinVersion = '1.26.0'
 	}
 	repositories {
 		mavenCentral()

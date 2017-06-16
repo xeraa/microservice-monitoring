@@ -1,0 +1,2 @@
+# Set the application name in Sleuth / Zipkin
+spring.application.name: zipkin
