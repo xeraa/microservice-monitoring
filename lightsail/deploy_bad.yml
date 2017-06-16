@@ -7,4 +7,9 @@
   tasks:
 
     - name: Deploy our bad.jar
-      copy: src=../java/bad/build/libs/Bad-1.0.jar dest=/opt/bad.jar mode=0755
+      copy:
+        src: ../java/bad/build/libs/Bad-1.0.jar
+        dest: /opt/bad.jar
+        owner: ubuntu
+        group: ubuntu
+        mode: 0500

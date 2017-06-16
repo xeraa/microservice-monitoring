@@ -1,18 +1,15 @@
 - hosts: frontend
   remote_user: ubuntu
   become: true
-  gather_facts: no
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
 
 
   tasks:
 
-    - name: Deploy our frontend.jar
-      copy: src=../java/frontend/build/libs/frontend-1.0.jar dest=/opt/frontend.jar mode=0755
-
-    - name: Make sure that the logging directory exists
-      file:
-        path: /var/log/apps/
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: 0755
+    - include: include_deploy_boot.yml
+      vars:
+        application: frontend
