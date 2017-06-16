@@ -33,16 +33,16 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 5. Create the keypair, DNS settings, and instances with `terraform apply`.
 6. Apply the base configuration to all instances with `ansible-playbook --inventory-file=inventory configure_all.yml`.
 7. Apply the instance specific configuration with `ansible-playbook --inventory-file=inventory configure_monitor.yml` — frontend and backend don't have specific configurations.
-8. Change into the *java/* directory and build all projects with `gradle build`.
-9. Deploy the JARs with `ansible-playbook --inventory-file=inventory deploy_bad.yml`, `ansible-playbook --inventory-file=inventory deploy_backend.yml`, `ansible-playbook --inventory-file=inventory deploy_frontend.yml`, and `ansible-playbook --inventory-file=inventory deploy_zipkin.yml`.
+8. Deploy the JARs with `ansible-playbook --inventory-file=inventory deploy_bad.yml`, `ansible-playbook --inventory-file=inventory deploy_backend.yml`, `ansible-playbook --inventory-file=inventory deploy_frontend.yml`, and `ansible-playbook --inventory-file=inventory deploy_zipkin.yml` (Ansible is also building them).
 
 
 
 #### Demo
 
-* Run bad.jar on the frontend instance: `java -Xmx512m -jar /opt/bad.jar`
-* Run zipkin.jar on the monitor instance: `java -jar /opt/zipkin.jar`
-* Run frontend.jar on the frontend instance: `java -jar /opt/frontend.jar`
+* Run *bad.jar* on the frontend instance: `java -Xmx512m -jar /opt/bad.jar`
+* *zipkin.jar* should already run on the monitor instance as a service.
+* *backend.jar* should already run on the backend instance as a service.
+* *frontend.jar* should already run on the frontend instance as a service.
 
 
 
@@ -64,6 +64,5 @@ Docker
 * Make the call URL and the Zipkin endpoint configurable in the Java app
 * Don't hardcode the metrics credentials (in Java and the Beats)
 * runit?
-* Use backend for the /call
 * Use ES as the Zipkin backend
 * alerting UI

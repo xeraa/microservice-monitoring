@@ -1,0 +1,31 @@
+apply plugin: 'org.springframework.boot'
+
+
+jar {
+	baseName = 'backend'
+	version = '1.0'
+}
+
+
+dependencies {
+	compile(
+			'org.springframework.boot:spring-boot-starter-web',
+			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
+			'org.springframework.boot:spring-boot-starter-security',
+			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.springframework.cloud:spring-cloud-starter-sleuth',
+			'org.springframework.cloud:spring-cloud-sleuth-zipkin',
+			'org.jolokia:jolokia-core'
+	)
+}
+
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+springBoot {
+    executable = true
+}
