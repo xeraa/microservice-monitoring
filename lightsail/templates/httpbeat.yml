@@ -13,6 +13,9 @@ httpbeat.hosts:
     password: secret
 
 
+name: "{{ inventory_hostname }}"
+
+
 processors:
 - add_cloud_metadata: ~
 

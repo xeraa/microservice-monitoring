@@ -45,6 +45,9 @@ metricbeat.modules:
 {% endif %}
 
 
+name: "{{ inventory_hostname }}"
+
+
 processors:
 - add_cloud_metadata: ~
 

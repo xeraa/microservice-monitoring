@@ -16,6 +16,9 @@ packetbeat.protocols.http:
   ports: [80]
 
 
+name: "{{ inventory_hostname }}"
+
+
 processors:
 - add_cloud_metadata: ~
 

@@ -6,6 +6,9 @@ heartbeat.monitors:
   check.response.status: 200
 
 
+name: "{{ inventory_hostname }}"
+
+
 processors:
 - add_cloud_metadata: ~
 

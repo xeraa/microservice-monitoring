@@ -13,6 +13,9 @@ filebeat.modules:
 - module: nginx
 
 
+name: "{{ inventory_hostname }}"
+
+
 processors:
 - add_cloud_metadata: ~
 
