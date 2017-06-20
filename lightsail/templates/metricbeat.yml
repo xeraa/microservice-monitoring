@@ -17,7 +17,6 @@ metricbeat.modules:
   processes: ['.*']
   cgroups: true
 
-{% if inventory_hostname_short != "monitor" %}
 - module: jolokia
   metricsets: ["jmx"]
   hosts: ["localhost:8080"]
@@ -42,7 +41,6 @@ metricbeat.modules:
         - attr: NonHeapMemoryUsage
           field: memory.non_heap_usage
   jmx.instance: "{{ inventory_hostname }}"
-{% endif %}
 
 
 name: "{{ inventory_hostname }}"

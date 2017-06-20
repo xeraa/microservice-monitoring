@@ -1,11 +1,10 @@
 filebeat.prospectors:
-{% if inventory_hostname_short != "monitor" %}
+
 - input_type: log
   paths:
     - /var/log/apps/*.json
   document_type: java-app
   json.message_key: log
-{% endif %}
 
 
 filebeat.modules:
