@@ -1,7 +1,11 @@
 - hosts: monitor
   remote_user: ubuntu
   become: true
-  gather_facts: no
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
 
 
   tasks:
@@ -9,10 +13,13 @@
     - name: Copy our zipkin.jar
       copy: src=../java/zipkin/build/libs/zipkin-1.0.jar dest=/opt/zipkin.jar mode=0755
 
-    - name: Make sure that the logging directory exists
-      file:
-        path: /var/log/apps/
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: 0755
+    - name: Make sure the environment variables are available to sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^Defaults env_keep'
+        line: 'Defaults env_keep += "ES_HOSTS ES_USERNAME ES_PASSWORD"'
+
+    - include: include_deploy_boot.yml
+      vars:
+        application: zipkin
