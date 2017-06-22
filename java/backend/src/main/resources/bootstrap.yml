@@ -1,2 +1,21 @@
-# Set the application name in Sleuth / Zipkin
+# Give the project a nice name
 spring.application.name: backend
+
+# Set the port
+server.port: 8080
+
+# Enable and configure the credentials for /metrics, but only for that
+security:
+  basic.enabled: false
+  user:
+    name: admin
+    password: secret
+management.security:
+  enabled: true
+  roles: SUPERUSER
+
+# Default is 10% of all requests, set it to 100%
+spring.sleuth.sampler.percentage: 1.0
+
+# Configure a remote Zipkin server
+spring.zipkin.baseUrl: http://monitor.xeraa.wtf:80
