@@ -63,5 +63,5 @@ Docker
 
 * Make the call URL and the Zipkin endpoint configurable in the Java app
 * Don't hardcode the metrics credentials (in Java and the Beats)
-* Alerting UI
 * New visualizations
+* MDC logging
