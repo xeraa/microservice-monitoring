@@ -20,7 +20,18 @@ name: "{{ inventory_hostname }}"
 
 
 processors:
+
 - add_cloud_metadata: ~
+
+- drop_event:
+    when:
+      or:
+        # Exclude traces from Zipkin
+        - contains.path: "/api/v"
+        # Exclude pinging metrics
+        - equals.path: "/metrics"
+        # Exclude pinging health
+        - equals.path: "/health"
 
 
 output.elasticsearch:
