@@ -55,6 +55,13 @@
         path: /opt/httpbeat.json
         state: absent
 
+
+    # Watcher
+    - name: Add an example Watch from a local file
       command: >
+        curl -XPUT "{{ elasticsearch_host }}/_xpack/watcher/watch/down"
              -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
              -H "Content-Type: application/json"
+             -d "@files/watch-down.json"
+      delegate_to: 127.0.0.1
+      become: false
