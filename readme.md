@@ -1,10 +1,12 @@
 # Microservice Monitoring
 
+The holy trinity of monitoring — logs, metrics, traces.
+
 
 
 ## Features
 
-1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar*, and see the spike.
+1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike.
 2. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs.
 3. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana.
 4. **Filebeat modules**: Show the *nginx*, *syslog*, and *SSH* dashboards.
@@ -25,7 +27,7 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 
 ### Lightsail
 
-#### Before the Demo
+Make sure you have run this before the demo, because some steps take time and require a decent internet connection.
 
 1. Make sure you have your AWS account set up, access key created, and added as environment variables in `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 2. Create the Elastic Cloud instance with the same version as specified in *variables.yml*'s `elastic_version`, enable Kibana as well as the GeoIP and user agent plugins, and set the environment variables with the values of `ELASTICSEARCH_HOST`, `ELASTICSEARCH_USER`, and `ELASTICSEARCH_PASSWORD`.
@@ -36,32 +38,18 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 7. Apply the instance specific configuration with `ansible-playbook --inventory-file=inventory configure_monitor.yml` — frontend and backend don't have specific configurations.
 8. Deploy the JARs with `ansible-playbook --inventory-file=inventory deploy_bad.yml`, `ansible-playbook --inventory-file=inventory deploy_backend.yml`, `ansible-playbook --inventory-file=inventory deploy_frontend.yml`, and `ansible-playbook --inventory-file=inventory deploy_zipkin.yml` (Ansible is also building them).
 
-
-
-#### Demo
-
-* Run *bad.jar* on the frontend instance: `java -Xmx512m -jar /opt/bad.jar`
-* *zipkin.jar* should already run on the monitor instance as a service.
-* *backend.jar* should already run on the backend instance as a service.
-* *frontend.jar* should already run on the frontend instance as a service.
-
-
-
-#### Cleanup
-
 When you are done, remove the instances, DNS settings, and key with `terraform destroy`.
+
 
 
 ### Local
 
-Docker
-
+Make sure you have run this before the demo, because some steps take time and require a decent internet connection.
 
 
 
 
 ## Todo
 
-* Make the call URL and the Zipkin endpoint configurable in the Java app
 * Don't hardcode the metrics credentials (in Java and the Beats)
 * MDC logging
