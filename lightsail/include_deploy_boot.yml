@@ -34,8 +34,8 @@
     owner: ubuntu
     group: ubuntu
 
-- name: Restart the JAR and make sure it autostarts
-  service: name="{{ application }}" state=restarted enabled=yes
+- name: Restart the JAR, make sure it autostarts, and reload the configuration
+  systemd: name="{{ application }}" state=restarted enabled=yes daemon_reload=yes
 
 - name: Store the deployment event in Elasticsearch so it can be used as an annotation
   command: >
