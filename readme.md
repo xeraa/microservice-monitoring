@@ -6,7 +6,7 @@ The holy trinity of monitoring — logs, metrics, traces.
 
 ## Features
 
-1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike.
+1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the Visual Builder ([example](img/visualbuilder-cpu.png)).
 2. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs.
 3. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana.
 4. **Filebeat modules**: Show the *nginx*, *syslog*, and *SSH* dashboards.
