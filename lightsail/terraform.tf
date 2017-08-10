@@ -24,7 +24,7 @@ resource "aws_lightsail_instance" "backend" {
   blueprint_id      = "ubuntu_16_04"
   bundle_id         = "${var.size}"
   key_pair_name     = "microservice_monitoring_key_pair"
-  depends_on = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
+  depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "backend" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
@@ -42,7 +42,7 @@ resource "aws_lightsail_instance" "frontend" {
   blueprint_id      = "ubuntu_16_04"
   bundle_id         = "${var.size}"
   key_pair_name     = "microservice_monitoring_key_pair"
-  depends_on = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
+  depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "frontend" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
@@ -71,7 +71,7 @@ resource "aws_lightsail_instance" "monitor" {
   blueprint_id      = "ubuntu_16_04"
   bundle_id         = "${var.size}"
   key_pair_name     = "microservice_monitoring_key_pair"
-  depends_on = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
+  depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "monitor" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
