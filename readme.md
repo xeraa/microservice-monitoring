@@ -46,10 +46,27 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 Make sure you have run this before the demo, because some steps take time and require a decent internet connection.
 
+1. Change into the *local/* directory.
+2. Run `docker-compose up`, which will bring up Elasticsearch, Kibana, and all the Beats.
+3.
+4.
+5. Run the Java applications from their directories with `gradle bootRun`.
+6.
+
+When you are done, stop the Java applications and remove the Docker setup with `docker-compose down`.
 
 
 
 ## Todo
 
+* Fix Zipkin credentials
+* Bug in slowest requests with Zipkin + ES?
+* Create custom dashboard and have it imported automatically
+* Keep older JAR versions and only symlink
+* Docker
 * Don't hardcode the metrics credentials (in Java and the Beats)
 * MDC logging
+* Make logging folder configurable, so it can use a relative dir locally
+* Make Java URL calls configurable to run locally
+* Improve traced methods and add async
+* Nicer Java UI
