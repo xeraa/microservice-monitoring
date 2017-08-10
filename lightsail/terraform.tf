@@ -4,23 +4,27 @@ provider "aws" {
 }
 
 
+# Create the SSH key pair
 resource "aws_lightsail_key_pair" "microservice_monitoring_key_pair" {
   name       = "microservice_monitoring_key_pair"
   public_key = "${file("~/.ssh/id_rsa.pub")}"
 }
 
 
+# Create the DNS zone
 resource "aws_route53_zone" "domain" {
   name = "${var.domain}"
 }
 
 
+# Create the backend instance and its DNS entry
 resource "aws_lightsail_instance" "backend" {
   name              = "backend"
   availability_zone = "${var.region}b"
   blueprint_id      = "ubuntu_16_04"
   bundle_id         = "${var.size}"
   key_pair_name     = "microservice_monitoring_key_pair"
+  depends_on = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "backend" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
@@ -31,12 +35,14 @@ resource "aws_route53_record" "backend" {
 }
 
 
+# Create the frontend instance and its DNS entries
 resource "aws_lightsail_instance" "frontend" {
   name              = "frontend"
   availability_zone = "${var.region}a"
   blueprint_id      = "ubuntu_16_04"
   bundle_id         = "${var.size}"
   key_pair_name     = "microservice_monitoring_key_pair"
+  depends_on = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "frontend" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
@@ -45,25 +51,6 @@ resource "aws_route53_record" "frontend" {
   ttl     = "60"
   records = ["${aws_lightsail_instance.frontend.public_ip_address}"]
 }
-
-
-resource "aws_lightsail_instance" "monitor" {
-  name              = "monitor"
-  availability_zone = "${var.region}c"
-  blueprint_id      = "ubuntu_16_04"
-  bundle_id         = "${var.size}"
-  key_pair_name     = "microservice_monitoring_key_pair"
-}
-resource "aws_route53_record" "monitor" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
-  name    = "monitor.${var.domain}"
-  type    = "A"
-  ttl     = "60"
-  records = ["${aws_lightsail_instance.monitor.public_ip_address}"]
-}
-
-
-# Add the apex last so that the DNS entry for frontend already exists
 resource "aws_route53_record" "apex" {
   zone_id = "${aws_route53_zone.domain.zone_id}"
   name    = "${var.domain}"
@@ -73,4 +60,23 @@ resource "aws_route53_record" "apex" {
     zone_id                = "${aws_route53_zone.domain.zone_id}"
     evaluate_target_health = false
   }
+  depends_on = ["aws_route53_record.frontend"]
+}
+
+
+# Create the monitor instance and its DNS entry
+resource "aws_lightsail_instance" "monitor" {
+  name              = "monitor"
+  availability_zone = "${var.region}c"
+  blueprint_id      = "ubuntu_16_04"
+  bundle_id         = "${var.size}"
+  key_pair_name     = "microservice_monitoring_key_pair"
+  depends_on = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
+}
+resource "aws_route53_record" "monitor" {
+  zone_id = "${aws_route53_zone.domain.zone_id}"
+  name    = "monitor.${var.domain}"
+  type    = "A"
+  ttl     = "60"
+  records = ["${aws_lightsail_instance.monitor.public_ip_address}"]
 }
