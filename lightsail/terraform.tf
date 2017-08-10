@@ -15,6 +15,13 @@ resource "aws_lightsail_key_pair" "microservice_monitoring_key_pair" {
 resource "aws_route53_zone" "domain" {
   name = "${var.domain}"
 }
+resource "aws_route53_record" "ns" {
+  zone_id = "${aws_route53_zone.domain.zone_id}"
+  name    = "${aws_route53_zone.domain.name}"
+  type    = "NS"
+  ttl     = "300"
+  records = "${var.domain_ns}"
+}
 
 
 # Create the backend instance and its DNS entry
