@@ -10,6 +10,10 @@
 
   tasks:
 
+    - name: Package the JAR
+      local_action: shell cd ../java/bad/ && gradle build
+      become: false
+
     - name: Deploy our bad.jar
       copy:
         src: ../java/bad/build/libs/Bad-1.0.jar
