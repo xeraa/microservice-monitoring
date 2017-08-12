@@ -61,7 +61,6 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 * Add alerts to the steps
 * Create custom dashboard and have it imported automatically
-* Keep older JAR versions and only symlink
 * Docker
 * Don't hardcode the metrics credentials (in Java and the Beats)
 * MDC logging

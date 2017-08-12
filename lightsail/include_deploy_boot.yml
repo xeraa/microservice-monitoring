@@ -2,13 +2,9 @@
   local_action: shell cd ../java/{{ application }}/ && gradle build
   become: false
 
-- name: Deploy the executable uber JAR
-  copy:
-    src: "../java/{{ application }}/build/libs/{{ application }}-1.0.jar"
-    dest: "/opt/{{ application }}.jar"
-    owner: ubuntu
-    group: ubuntu
-    mode: 0500
+- name: Get the current timestamp
+  set_fact:
+    current_timestamp: "{{ ansible_date_time.epoch }}"
 
 - name: Make sure that the logging directory exists
   file:
@@ -18,13 +14,29 @@
     group: ubuntu
     mode: 0755
 
+- name: Deploy the executable uber JAR
+  copy:
+    src: "../java/{{ application }}/build/libs/{{ application }}-1.0.jar"
+    dest: "/opt/{{ application }}_{{ current_timestamp }}.jar"
+    owner: ubuntu
+    group: ubuntu
+    mode: 0500
+
 - name: Provide a conf file to run it as a service
   template:
     src: templates/{{ application }}.conf
-    dest: "/opt/{{ application }}.conf"
+    dest: "/opt/{{ application }}_{{ current_timestamp }}.conf"
     owner: root
     group: root
     mode: 0400
+
+- name: Link to current version
+  file:
+    src: "/opt/{{ application }}_{{ current_timestamp }}.jar"
+    dest: "/opt/{{ application }}.jar"
+    owner: ubuntu
+    group: ubuntu
+    state: link
 
 - name: Link the JAR so it can be managed as a service through init.d
   file:
@@ -36,6 +48,12 @@
 
 - name: Restart the JAR, make sure it autostarts, and reload the configuration
   systemd: name="{{ application }}" state=restarted enabled=yes daemon_reload=yes
+
+- name: Remove old JARs (keeping the five latest)
+  shell: "ls -tr /opt/{{ application }}_*.jar | head -n -5 | xargs rm -f"
+
+- name: Remove old configs (keeping the five latest)
+  shell: "ls -tr /opt/{{ application }}_*.conf | head -n -5 | xargs rm -f"
 
 - name: Store the deployment event in Elasticsearch so it can be used as an annotation
   command: >
