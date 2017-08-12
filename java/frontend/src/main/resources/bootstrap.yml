@@ -2,7 +2,7 @@
 spring.application.name: frontend
 
 # Set the port
-server.port: 8080
+server.port: ${SERVER_PORT:8080}
 
 # Enable and configure the credentials for /metrics, but only for that
 security:
@@ -17,5 +17,5 @@ management.security:
 # Default is 10% of all requests, set it to 100%
 spring.sleuth.sampler.percentage: 1.0
 
-# Configure a remote Zipkin server
-spring.zipkin.baseUrl: http://monitor.xeraa.wtf:80
+# Configure the Zipkin server
+spring.zipkin.baseUrl: ${ZIPKIN_SERVER:'http://localhost:9411'}

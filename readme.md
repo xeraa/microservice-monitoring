@@ -59,14 +59,12 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
-* Fix Zipkin credentials
-* Bug in slowest requests with Zipkin + ES?
+* Add alerts to the steps
 * Create custom dashboard and have it imported automatically
 * Keep older JAR versions and only symlink
 * Docker
 * Don't hardcode the metrics credentials (in Java and the Beats)
 * MDC logging
-* Make logging folder configurable, so it can use a relative dir locally
 * Make Java URL calls configurable to run locally
 * Improve traced methods and add async
 * Nicer Java UI

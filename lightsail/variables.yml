@@ -6,3 +6,4 @@ elasticsearch_user: "{{ lookup('env','ELASTICSEARCH_USER') }}"
 elasticsearch_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
 
 domain: xeraa.wtf
+zipkin_server: http://monitor.{{ domain }}:80
