@@ -1,5 +1,5 @@
-- name: Package all JARs
-  local_action: shell cd ../java/ && gradle build
+- name: Package the JAR
+  local_action: shell cd ../java/{{ application }}/ && gradle build
   become: false
 
 - name: Deploy the executable uber JAR
@@ -19,8 +19,8 @@
     mode: 0755
 
 - name: Provide a conf file to run it as a service
-  copy:
-    src: templates/app.conf
+  template:
+    src: templates/{{ application }}.conf
     dest: "/opt/{{ application }}.conf"
     owner: root
     group: root
