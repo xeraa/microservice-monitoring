@@ -29,6 +29,8 @@ processors:
       or:
         # Exclude traces from Zipkin
         - contains.path: "/api/v"
+        # Exclude Jolokia calls
+        - contains.path: "/jolokia/?"
         # Exclude pinging metrics
         - equals.path: "/metrics"
         # Exclude pinging health
