@@ -32,7 +32,7 @@ Make sure you have run this before the demo, because some steps take time and re
 1. Make sure you have your AWS account set up, access key created, and added as environment variables in `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 2. Create the Elastic Cloud instance with the same version as specified in *variables.yml*'s `elastic_version`, enable Kibana as well as the GeoIP and user agent plugins, and set the environment variables with the values of `ELASTICSEARCH_HOST`, `ELASTICSEARCH_USER`, and `ELASTICSEARCH_PASSWORD`.
 3. Change into the *lightsail/* directory.
-4. Change the settings to a domain you have registered under Route53 in *inventory*, *variables.tf*, and *variables.yml*. If you have a working Hosted Zone for that domain, import it with `terraform import aws_route53_zone.domain <ID>`. Otherwise you will need up update the Name Servers under Registered Domains with those generated under Hosted Zone after applying the next step (waiting for a [Terraform issue](https://github.com/terraform-providers/terraform-provider-aws/issues/88) to automate this).
+4. Change the settings to a domain you have registered under Route53 in *inventory*, *variables.tf*, and *variables.yml*. If you have a working Hosted Zone for that domain, import it with `terraform import aws_route53_zone.domain <ID>`. Otherwise you will need up update the Name Servers under Registered Domains with those generated under Hosted Zone after applying the next step (waiting for this [Terraform issue](https://github.com/terraform-providers/terraform-provider-aws/issues/88) to automate this).
 5. If you haven't installed the AWS plugin for Terraform, get it with `terraform init` first. Then create the keypair, DNS settings, and instances with `terraform apply`.
 6. Apply the base configuration to all instances with `ansible-playbook --inventory-file=inventory configure_all.yml`.
 7. Apply the instance specific configuration with `ansible-playbook --inventory-file=inventory configure_monitor.yml` — frontend and backend don't have specific configurations.
@@ -53,7 +53,7 @@ Make sure you have run this before the demo, because some steps take time and re
 5. Run the Java applications from their directories with `gradle bootRun`.
 6.
 
-When you are done, stop the Java applications and remove the Docker setup with `docker-compose down`.
+When you are done, stop the Java applications and remove the Docker setup with `docker-compose down -v`.
 
 
 
