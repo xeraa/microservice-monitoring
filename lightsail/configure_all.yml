@@ -109,8 +109,39 @@
     - name: Install nginx
       apt: name=nginx state=latest
 
+    - name: Add the certbot repository
+      apt_repository: repo='ppa:certbot/certbot'
+
+    - name: Install certbot and update the cache for the new PPA
+      apt: name=python-certbot-nginx state=latest update_cache=yes
+
+    - name: Create the certificate
+      command: >
+        certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ inventory_hostname }}
+        creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+      when: inventory_hostname != "frontend." + domain
+
+    - name: Create the certificate plus the apex
+      command: >
+        certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ inventory_hostname }} -d {{ domain }}
+        creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+      when: inventory_hostname == "frontend." + domain
+
+    - name: Add crontab to renew certificates every second month on Sunday night
+      cron: minute="30" hour="3" weekday="0" month="*/2" job="certbot renew >> /var/log//var/log/letsencrypt/renew.log"
+
+    - name: Generate strong dhparams, but only if the file doesn't exist
+      command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
+
     - name: Change the nginx configuration
       template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
 
-    - name: Restart nginx and make sure it autostarts
-      service: name=nginx state=restarted enabled=yes
+    - name: Add the apex
+      replace:
+        path: /etc/nginx/sites-available/default
+        regexp: 'server_name {{ inventory_hostname }};'
+        replace: 'server_name {{ inventory_hostname }} {{ domain }};'
+      when: inventory_hostname == "frontend." + domain
+
+    - name: Reload nginx and make sure it autostarts
+      service: name=nginx state=reloaded enabled=yes

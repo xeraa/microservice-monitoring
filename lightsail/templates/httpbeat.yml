@@ -1,9 +1,9 @@
 httpbeat.hosts:
-- url: http://{{ domain }}/health
+- url: https://{{ domain }}/health
   method: get
   schedule: "@every 10s"
   output_format: json
-- url: http://{{ domain }}/metrics
+- url: https://{{ domain }}/metrics
   method: get
   schedule: "@every 10s"
   output_format: json

@@ -1,6 +1,6 @@
 heartbeat.monitors:
 - type: http
-  urls: ["http://{{ domain }}/health"]
+  urls: ["https://{{ domain }}/health"]
   schedule: '@every 10s'
   timeout: 3s
   check.response.status: 200

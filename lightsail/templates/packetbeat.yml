@@ -13,7 +13,8 @@ packetbeat.protocols.dns:
 
 
 packetbeat.protocols.http:
-  ports: [80]
+  ports: [80, 8080]
+  real_ip_header: "X-Forwarded-For"
 
 
 name: "{{ inventory_hostname }}"

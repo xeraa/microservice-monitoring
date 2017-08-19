@@ -38,21 +38,21 @@ public class FrontendController {
 	public String callHome() throws InterruptedException {
 		log.log(Level.INFO, "Calling home");
 		Thread.sleep(this.random.nextInt(2000));
-		return restTemplate.getForObject("http://backend.xeraa.wtf:80/home", String.class);
+		return restTemplate.getForObject("https://backend.xeraa.wtf/home", String.class);
 	}
 
 	@RequestMapping("/call-bad")
 	public String callBad() throws InterruptedException {
 		log.log(Level.INFO, "Calling bad");
 		Thread.sleep(this.random.nextInt(2000));
-		return restTemplate.getForObject("http://frontend.xeraa.wtf:80/bad", String.class);
+		return restTemplate.getForObject("https://frontend.xeraa.wtf/bad", String.class);
 	}
 
 	@RequestMapping("/call-nested")
 	public String callNested() throws InterruptedException {
 		log.log(Level.INFO, "Calling call");
 		Thread.sleep(this.random.nextInt(1000));
-		return restTemplate.getForObject("http://frontend.xeraa.wtf:80/call", String.class);
+		return restTemplate.getForObject("https://frontend.xeraa.wtf/call", String.class);
 	}
 
 }
