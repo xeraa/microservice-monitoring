@@ -60,10 +60,10 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
+* Fix calls to the backend
 * Add alerts to the steps
 * Create custom dashboard and have it imported automatically
 * Docker
 * Don't hardcode the metrics credentials (in Java and the Beats)
 * MDC logging
-* Make Java URL calls configurable to run locally
 * Improve traced methods and add async

@@ -1,6 +1,7 @@
 package net.xeraa.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,12 @@ public class BackendController {
     @Autowired
     private Random random;
 
+    @Value("${APP_BACKEND:#{'http://localhost:8081'}}")
+    private String backendUrl;
+
+    @Value("${APP_FRONTEND:#{'http://localhost:8080'}}")
+    private String frontendUrl;
+
     @RequestMapping("/home")
     public String home() {
         log.log(Level.INFO, "You called home");
@@ -28,16 +35,18 @@ public class BackendController {
 
     @RequestMapping("/call-bad")
     public String callBad() throws InterruptedException {
-        log.log(Level.INFO, "Calling bad");
+        String callUrl = frontendUrl + "/bad";
+        log.log(Level.INFO, "Calling " + callUrl);
         Thread.sleep(this.random.nextInt(2000));
-        return restTemplate.getForObject("https://frontend.xeraa.wtf/bad", String.class);
+        return restTemplate.getForObject(callUrl, String.class);
     }
 
     @RequestMapping("/call-nested")
     public String callNested() throws InterruptedException {
-        log.log(Level.INFO, "Calling call");
+        String callUrl = frontendUrl + "/call";
+        log.log(Level.INFO, "Calling " + callUrl);
         Thread.sleep(this.random.nextInt(1000));
-        return restTemplate.getForObject("https://frontend.xeraa.wtf/call", String.class);
+        return restTemplate.getForObject(callUrl, String.class);
     }
 
 }
