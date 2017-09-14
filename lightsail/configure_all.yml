@@ -115,33 +115,53 @@
     - name: Install certbot and update the cache for the new PPA
       apt: name=python-certbot-nginx state=latest update_cache=yes
 
+    - name: Add the hostname to the certificates to create
+      set_fact:
+        certificates:
+          - "{{ inventory_hostname }}"
+
+    - name: Add more domains to the frontend certificate
+      set_fact:
+        certificates:
+          - "{{ inventory_hostname }}"
+          - "{{ domain }}"
+          - "www.{{ domain }}"
+      when: inventory_hostname == "frontend." + domain
+
     - name: Create the certificate
       command: >
-        certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ inventory_hostname }}
+        certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ certificates | join(',') }}
         creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-      when: inventory_hostname != "frontend." + domain
-
-    - name: Create the certificate plus the apex
-      command: >
-        certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ inventory_hostname }} -d {{ domain }}
-        creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-      when: inventory_hostname == "frontend." + domain
 
     - name: Add crontab to renew certificates every second month on Sunday night
       cron: minute="30" hour="3" weekday="0" month="*/2" job="certbot renew >> /var/log//var/log/letsencrypt/renew.log"
 
     - name: Generate strong dhparams, but only if the file doesn't exist
-      command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
+      command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
 
     - name: Change the nginx configuration
       template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
 
-    - name: Add the apex
-      replace:
-        path: /etc/nginx/sites-available/default
-        regexp: 'server_name {{ inventory_hostname }};'
-        replace: 'server_name {{ inventory_hostname }} {{ domain }};'
-      when: inventory_hostname == "frontend." + domain
-
     - name: Reload nginx and make sure it autostarts
       service: name=nginx state=reloaded enabled=yes
+
+    - name: Try HTTP
+      uri: url="http://{{ inventory_hostname }}" validate_certs=no follow_redirects=none status_code=301
+      register: response
+      retries: 3
+      delay: 2
+
+    - name: Fail if HTTP is not being redirected to HTTPS
+      fail:
+      when: response.status != 301
+
+    - name: Try HTTPS; TODO reenable the TLS check, but Ansible 2.3.2.0 fails for TLS 1.2
+      uri: url="https://{{ inventory_hostname }}" validate_certs=no status_code=502,200
+      register: response
+
+    - name: >
+        Fail if the return code is not:
+          502 Bad Gateway, since the Java application is not there yet
+          200 Ok, if we rerun the playbook after deploying the Java app
+      fail:
+      when: response.status != 502 and response.status != 200
