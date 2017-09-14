@@ -60,7 +60,7 @@
 
     - name: Add a default index pattern using Filebeat
       command: >
-        curl -XPUT "{{ elasticsearch_host }}/.kibana/config/{{ elastic_version }}"
+        curl -XPUT "{{ elasticsearch_host }}/.kibana/doc/{{ elastic_version }}"
              -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
              -H "Content-Type: application/json"
              -d '{"defaultIndex": "filebeat-*"}'
