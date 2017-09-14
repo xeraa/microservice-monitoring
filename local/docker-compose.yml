@@ -1,0 +1,97 @@
+---
+version: '2'
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:$ELASTIC_VERSION
+    container_name: elasticsearch
+    environment:
+      - cluster.name=microservice-monitoring
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    ports:
+      - 9200:9200
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks: ['stack']
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:$ELASTIC_VERSION
+    container_name: kibana
+    ports: ['127.0.0.1:5601:5601']
+    networks: ['stack']
+    depends_on: ['elasticsearch']
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:$ELASTIC_VERSION
+    container_name: filebeat
+    # If the host system has logs at "/var/log", mount them at "/mnt/log"
+    # inside the container, where Filebeat can find them.
+    volumes: ['/var/log:/mnt/log:ro']
+    networks: ['stack']
+    depends_on: ['elasticsearch']
+
+  heartbeat:
+    image: docker.elastic.co/beats/heartbeat:$ELASTIC_VERSION
+    container_name: heartbeat
+    networks: ['stack']
+    depends_on: ['elasticsearch']
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
+    container_name: metricbeat
+    networks: ['stack']
+    # The commented sections below enable Metricbeat to monitor the Docker host,
+    # rather than the Metricbeat container. It's problematic with Docker for
+    # Windows, however, since "/proc", "/sys", etc. don't exist on Windows.
+    volumes:
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+      # Provide a custom Metricbeat configuration
+      - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+    command: metricbeat -e -system.hostfs=/hostfs
+    #network_mode: "host"
+    networks: ['stack']
+    depends_on: ['elasticsearch']
+
+  packetbeat:
+    image: docker.elastic.co/beats/packetbeat:$ELASTIC_VERSION
+    container_name: packetbeat
+    # Packetbeat needs some elevated privileges capture network traffic.
+    # We'll grant them with POSIX capabilities.
+    cap_add: ['NET_RAW', 'NET_ADMIN']
+    # Use "host mode" networking to allow Packetbeat to capture traffic from
+    # real network interface on the host, rather than being isolated to the
+    # container's virtual interface.
+    network_mode: host
+    # Since we did that, Packetbeat is not part of the "stack" Docker network
+    # that the other containers are connected to, and thus can't resolve the
+    # hostname "elasticsearch". Instead, we'll tell it to find Elasticsearch
+    # on "localhost", which is the Docker host machine in this context.
+    command: packetbeat -v -e -E output.elasticsearch.hosts='["localhost:9200"]'
+    depends_on: ['elasticsearch']
+
+  # Run a short-lived container to set up Kibana index patterns and dashboards.
+#  configure_kibana:
+#    # Any Beats image will suffice. We'll use Metricbeat.
+#    image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
+#    volumes: ['./scripts/configure-kibana.sh:/usr/local/bin/configure-kibana.sh:ro']
+#    command: /usr/local/bin/configure-kibana.sh
+#    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}']
+#    networks: ['stack']
+#    depends_on: ['kibana']
+
+
+volumes:
+  esdata:
+    driver: local
+
+
+networks:
+  stack: {}
