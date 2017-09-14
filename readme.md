@@ -1,14 +1,14 @@
 # Microservice Monitoring
 
-The holy trinity of monitoring — logs, metrics, traces.
+The holy trinity of observability — logs, metrics, traces.
 
 
 
 ## Features
 
 1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the [Visual Builder](img/visualbuilder-cpu.png).
-2. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs.
-3. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana by filtering down on `type: java-app` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`.
+2. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the DNS dashboard as well.
+3. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana by filtering down on `type: java-app` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you could also visualize in a bar chart and split on the `json.thread`.
 4. **Filebeat modules**: Show the *nginx*, *syslog*, and *SSH* dashboards.
 5. **Heartbeat**: Run Heartbeat and show the visualization in Kibana, then kill the frontend application and see the change.
 6. **Httpbeat**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Httpbeat and show it in Kibana's Discover tab.
@@ -64,6 +64,5 @@ When you are done, stop the Java applications and remove the Docker setup with `
 * Add alerts to the steps
 * Create custom dashboard and have it imported automatically
 * Docker
-* Don't hardcode the metrics credentials (in Java and the Beats)
 * MDC logging
 * Improve traced methods and add async
