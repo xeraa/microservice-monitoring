@@ -30,6 +30,11 @@
     group: root
     mode: 0400
 
+- name: Check if there is a previous version
+  stat:
+    path: "/opt/{{ application }}.jar"
+  register: symlink
+
 - name: Link to current version
   file:
     src: "/opt/{{ application }}_{{ current_timestamp }}.jar"
@@ -49,15 +54,31 @@
 - name: Restart the JAR, make sure it autostarts, and reload the configuration
   systemd: name="{{ application }}" state=restarted enabled=yes daemon_reload=yes
 
-- name: Remove old JARs (keeping the five latest)
-  shell: "ls -tr /opt/{{ application }}_*.jar | head -n -5 | xargs rm -f"
+- name: Wait for the Java application to start up
+  pause: seconds=30
 
-- name: Remove old configs (keeping the five latest)
-  shell: "ls -tr /opt/{{ application }}_*.conf | head -n -5 | xargs rm -f"
+- name: Check if the service is available; TODO reenable the TLS check, but Ansible 2.3.2.0 fails for TLS 1.2 (https://github.com/ansible/ansible/issues/25402)
+  uri: url="https://{{ inventory_hostname }}/health" validate_certs=no
+  register: response
+  ignore_errors: yes
 
 - name: Store the deployment event in Elasticsearch so it can be used as an annotation
   command: >
     curl -XPOST "{{ elasticsearch_host }}/events/deployment"
          -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
          -H "Content-Type: application/json"
-         -d '{"@timestamp": "{{ ansible_date_time.iso8601 }}", "application": "{{ application }}", "host": "{{ inventory_hostname }}"}'
+         -d '{ "@timestamp": "{{ ansible_date_time.iso8601 }}",
+               "application": "{{ application }}",
+               "host": "{{ inventory_hostname }}",
+               "status": "{{ response.status }}"
+            }'
+  ignore_errors: yes
+
+#- include: include_deploy_boot_rollback.yml
+#  when: response.status != 200
+
+- name: Remove old JARs (keeping the five latest good ones)
+  shell: "ls -tr /opt/{{ application }}_*.jar | head -n -5 | xargs rm -f"
+
+- name: Remove old configs (keeping the five latest good ones)
+  shell: "ls -tr /opt/{{ application }}_*.conf | head -n -5 | xargs rm -f"

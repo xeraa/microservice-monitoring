@@ -155,7 +155,7 @@
       fail:
       when: response.status != 301
 
-    - name: Try HTTPS; TODO reenable the TLS check, but Ansible 2.3.2.0 fails for TLS 1.2
+    - name: Try HTTPS; TODO reenable the TLS check, but Ansible 2.3.2.0 fails for TLS 1.2 (https://github.com/ansible/ansible/issues/25402)
       uri: url="https://{{ inventory_hostname }}" validate_certs=no status_code=502,200
       register: response
 

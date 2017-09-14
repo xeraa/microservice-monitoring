@@ -13,6 +13,3 @@
     - include: include_deploy_boot.yml
       vars:
         application: zipkin
-
-    - name: Restart Zipkin to apply the parameters that were just set
-      systemd: name="zipkin" state=restarted daemon_reload=yes
