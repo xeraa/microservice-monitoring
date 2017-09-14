@@ -62,6 +62,17 @@ resource "aws_route53_record" "apex" {
   }
   depends_on = ["aws_route53_record.frontend"]
 }
+resource "aws_route53_record" "www" {
+  zone_id = "${aws_route53_zone.domain.zone_id}"
+  name    = "www.${var.domain}"
+  type    = "A"
+  alias {
+    name                   = "frontend.${var.domain}"
+    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    evaluate_target_health = false
+  }
+  depends_on = ["aws_route53_record.frontend"]
+}
 
 
 # Create the monitor instance and its DNS entry
