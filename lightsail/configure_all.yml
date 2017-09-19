@@ -8,6 +8,10 @@
     - variables.yml
 
 
+  vars:
+      kibana_basic_auth: "{{ elasticsearch_user }}:{{ elasticsearch_password  }}"
+
+
   pre_tasks:
     - name: Install Python2 to make Ansible work
       raw: sudo apt-get update && sudo apt-get -y install python-minimal
@@ -128,6 +132,13 @@
           - "www.{{ domain }}"
       when: inventory_hostname == "frontend." + domain
 
+    - name: Add more domains to the monitor certificate
+      set_fact:
+        certificates:
+          - "{{ inventory_hostname }}"
+          - "kibana.{{ domain }}"
+      when: inventory_hostname == "monitor." + domain
+
     - name: Create the certificate
       command: >
         certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ certificates | join(',') }}
@@ -138,6 +149,9 @@
 
     - name: Generate strong dhparams, but only if the file doesn't exist
       command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
+
+    - name: Set a global TLS configuration
+      template: src=templates/tls.conf dest=/etc/nginx/tls.conf
 
     - name: Change the nginx configuration
       template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default

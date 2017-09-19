@@ -4,6 +4,8 @@ elastic_download: https://artifacts.elastic.co
 elasticsearch_host: "{{ lookup('env','ELASTICSEARCH_HOST') }}"
 elasticsearch_user: "{{ lookup('env','ELASTICSEARCH_USER') }}"
 elasticsearch_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
+kibana_host: "{{ lookup('env','KIBANA_HOST') }}"
+kibana_id: "{{ lookup('env','KIBANA_ID') }}"
 
 domain: xeraa.wtf
 backend_server: https://backend.{{ domain }}

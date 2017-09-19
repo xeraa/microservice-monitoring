@@ -91,3 +91,14 @@ resource "aws_route53_record" "monitor" {
   ttl     = "60"
   records = ["${aws_lightsail_instance.monitor.public_ip_address}"]
 }
+resource "aws_route53_record" "kibana" {
+  zone_id = "${aws_route53_zone.domain.zone_id}"
+  name    = "kibana.${var.domain}"
+  type    = "A"
+  alias {
+    name                   = "monitor.${var.domain}"
+    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    evaluate_target_health = false
+  }
+  depends_on = ["aws_route53_record.monitor"]
+}
