@@ -6,15 +6,16 @@ The holy trinity of observability — logs, metrics, traces.
 
 ## Features
 
-1. **Metricbeat**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the [Visual Builder](img/visualbuilder-cpu.png).
-2. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the DNS dashboard as well.
-3. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana by filtering down on `type: java-app` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you could also visualize in a bar chart and split on the `json.thread`.
-4. **Filebeat modules**: Show the *nginx*, *syslog*, and *SSH* dashboards.
-5. **Heartbeat**: Run Heartbeat and show the visualization in Kibana, then kill the frontend application and see the change.
-6. **Httpbeat**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Httpbeat and show it in Kibana's Discover tab.
-7. **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
-8. **Visual Builder**: Build a more advanced visualization with the new visual builder, for example the [heap usage](img/visualbuilder-heapusage.png) and include the deployment *events* as an [annotation](img/visualbuilder-annotation.png).
-9. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Show the raw data in Elasticsearch if there is time.
+1. **Metricbeat system**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the [Visual Builder](img/visualbuilder-cpu.png).
+1. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the DNS dashboard as well.
+1. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana by filtering down on `type: java-app` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you could also visualize in a bar chart and split on the `json.thread`.
+1. **Filebeat modules**: Show the *nginx*, *syslog*, and *SSH* dashboards.
+1. **Heartbeat**: Run Heartbeat and show the visualization in Kibana, then kill the frontend application and see the change.
+1. **Metricbeat application**: Show the values of `nginx.stubstatus` and optionally visualize `nginx.stubstatus.active` in the Visual Builder.
+1. **Httpbeat**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Httpbeat and show it in Kibana's Discover tab.
+1. **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
+1. **Visual Builder**: Build a more advanced visualization with the new visual builder, for example the [heap usage](img/visualbuilder-heapusage.png) and include the deployment *events* as an [annotation](img/visualbuilder-annotation.png).
+1. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Show the raw data in Elasticsearch if there is time.
   Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call.
 
 

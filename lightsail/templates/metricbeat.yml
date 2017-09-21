@@ -17,6 +17,12 @@ metricbeat.modules:
   processes: ['.*']
   cgroups: true
 
+- module: nginx
+  metricsets: ["stubstatus"]
+  enabled: true
+  period: 10s
+  hosts: ["https://{{ inventory_hostname }}"]
+
 - module: jolokia
   metricsets: ["jmx"]
   hosts: ["localhost:8080"]
