@@ -22,7 +22,7 @@
       template: src=templates/heartbeat.yml dest=/etc/heartbeat/heartbeat.yml
 
     - name: Restart Heartbeat and make sure it autostarts
-      service: name=heartbeat state=started enabled=yes
+      service: name=heartbeat state=restarted enabled=yes
 
     - name: Add Heartbeat dashboard
       command: /usr/share/heartbeat/scripts/import_dashboards -es {{ elasticsearch_host }} -user {{ elasticsearch_user }} -pass {{ elasticsearch_password }}
@@ -36,7 +36,7 @@
       template: src=templates/httpbeat.yml dest=/etc/httpbeat/httpbeat.yml
 
     - name: Restart Httpbeat and make sure it autostarts
-      service: name=httpbeat state=started enabled=yes
+      service: name=httpbeat state=restarted enabled=yes
 
     - name: Get the Httpbeat index pattern for Kibana
       get_url:
