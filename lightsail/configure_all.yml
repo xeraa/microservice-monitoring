@@ -160,7 +160,7 @@
       service: name=nginx state=reloaded enabled=yes
 
     - name: Try HTTP
-      uri: url="http://{{ inventory_hostname }}" validate_certs=no follow_redirects=none status_code=301
+      uri: url="http://{{ inventory_hostname }}" follow_redirects=none status_code=301
       register: response
       retries: 3
       delay: 2
@@ -169,13 +169,23 @@
       fail:
       when: response.status != 301
 
-    - name: Try HTTPS; TODO reenable the TLS check, but Ansible 2.3.2.0 fails for TLS 1.2 (https://github.com/ansible/ansible/issues/25402)
-      uri: url="https://{{ inventory_hostname }}" validate_certs=no status_code=502,200
-      register: response
+    - name: Check HTTPS
+      openssl_certificate:
+        path: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+        provider: assertonly
+        issuer:
+          O: Let's Encrypt
+        has_expired: false
+        subject_alt_name:
+          - "DNS:{{ inventory_hostname }}"
 
-    - name: >
-        Fail if the return code is not:
-          502 Bad Gateway, since the Java application is not there yet
-          200 Ok, if we rerun the playbook after deploying the Java app
-      fail:
-      when: response.status != 502 and response.status != 200
+    - name: Check HTTPS apex
+      openssl_certificate:
+        path: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+        provider: assertonly
+        issuer:
+          O: Let's Encrypt
+        has_expired: false
+        subject_alt_name:
+          - "DNS:{{ domain }}"
+      when: inventory_hostname == "frontend." + domain
