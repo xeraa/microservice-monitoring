@@ -1,5 +1,5 @@
 - name: Package the JAR
-  local_action: shell cd ../java/{{ application }}/ && gradle build
+  local_action: shell cd ../java/{{ application }}/; gradle build
   become: false
 
 - name: Get the current timestamp

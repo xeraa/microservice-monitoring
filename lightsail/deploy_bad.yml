@@ -11,7 +11,7 @@
   tasks:
 
     - name: Package the JAR
-      local_action: shell cd ../java/bad/ && gradle build
+      local_action: shell cd ../java/bad/; gradle build
       become: false
 
     - name: Deploy our bad.jar
