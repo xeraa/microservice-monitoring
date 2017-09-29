@@ -11,17 +11,45 @@ metricbeat.modules:
     - memory
     - network
     - process
+    - process_summary
     - socket
   enabled: true
   period: 10s
   processes: ['.*']
   cgroups: true
+  cpu.metrics:  ["percentages"]
+  core.metrics: ["percentages"]
+  process.include_top_n:
+    enabled: true
+    by_cpu: 20
+    by_memory: 20
 
 - module: nginx
   metricsets: ["stubstatus"]
   enabled: true
   period: 10s
   hosts: ["https://{{ inventory_hostname }}"]
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8080"]
+  namespace: "health"
+  path: "/health"
+  method: "GET"
+  username: admin
+  password: secret
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8080"]
+  namespace: "metrics"
+  path: "/metrics"
+  method: "GET"
+  username: admin
+  password: secret
+
 
 - module: jolokia
   metricsets: ["jmx"]
@@ -60,3 +88,12 @@ output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"
   password: "{{ elasticsearch_password }}"
+
+
+setup.kibana:
+  host: "{{ kibana_host }}"
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup.dashboards.enabled: true

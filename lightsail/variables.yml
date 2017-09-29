@@ -1,4 +1,4 @@
-elastic_version: 5.6.1
+elastic_version: 6.0.0-rc1
 elastic_download: https://artifacts.elastic.co
 
 elasticsearch_host: "{{ lookup('env','ELASTICSEARCH_HOST') }}"

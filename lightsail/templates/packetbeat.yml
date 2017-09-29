@@ -6,13 +6,15 @@ packetbeat.flows:
   period: 10s
 
 
-packetbeat.protocols.dns:
+packetbeat.protocols:
+
+- type: icmp
+  enabled: true
+
+- type: dns
   ports: [53]
-  include_authorities: true
-  include_additionals: true
 
-
-packetbeat.protocols.http:
+- type: http
   ports: [80, 8080]
   real_ip_header: "X-Forwarded-For"
 
@@ -41,3 +43,12 @@ output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"
   password: "{{ elasticsearch_password }}"
+
+
+setup.kibana:
+  host: "{{ kibana_host }}"
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup.dashboards.enabled: true

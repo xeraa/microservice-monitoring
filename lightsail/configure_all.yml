@@ -54,14 +54,6 @@
     - name: Restart Filebeat and make sure it autostarts
       service: name=filebeat state=restarted enabled=yes
 
-    - name: Add Filebeat dashboard
-      command: >
-        /usr/share/filebeat/scripts/import_dashboards
-        -es {{ elasticsearch_host }}
-        -user {{ elasticsearch_user }}
-        -pass {{ elasticsearch_password }}
-      run_once: true
-
     - name: Add a default index pattern using Filebeat
       command: >
         curl -XPUT "{{ elasticsearch_host }}/.kibana/doc/{{ elastic_version }}"
@@ -81,14 +73,6 @@
     - name: Restart Metricbeat and make sure it autostarts
       service: name=metricbeat state=restarted enabled=yes
 
-    - name: Add Metricbeat dashboard
-      command: >
-        /usr/share/metricbeat/scripts/import_dashboards
-        -es {{ elasticsearch_host }}
-        -user {{ elasticsearch_user }}
-        -pass {{ elasticsearch_password }}
-      run_once: true
-
 
     # Packetbeat
     - name: Install Packetbeat
@@ -100,13 +84,6 @@
     - name: Restart Packetbeat and make sure it autostarts
       service: name=packetbeat state=restarted enabled=yes
 
-    - name: Add Packetbeat dashboard
-      command: >
-        /usr/share/packetbeat/scripts/import_dashboards
-        -es {{ elasticsearch_host }}
-        -user {{ elasticsearch_user }}
-        -pass {{ elasticsearch_password }}
-      run_once: true
 
 
     # nginx
