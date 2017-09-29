@@ -54,12 +54,12 @@
     - name: Restart Filebeat and make sure it autostarts
       service: name=filebeat state=restarted enabled=yes
 
-    - name: Add a default index pattern using Filebeat
+    - name: Add a default index pattern using Filebeat and hide the X-Pack banner
       command: >
-        curl -XPUT "{{ elasticsearch_host }}/.kibana/doc/{{ elastic_version }}"
+        curl -XPUT "{{ elasticsearch_host }}/.kibana/doc/config:{{ elastic_version }}"
              -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
              -H "Content-Type: application/json"
-             -d '{"defaultIndex": "filebeat-*"}'
+             -d '{"defaultIndex": "filebeat-*", "xPackMonitoring:showBanner": false}'
       run_once: true
 
 
