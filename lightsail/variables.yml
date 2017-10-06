@@ -10,6 +10,7 @@ kibana_host: "{{ lookup('env','KIBANA_HOST') }}"
 kibana_id: "{{ lookup('env','KIBANA_ID') }}"
 
 # Setup of the infrastructure
+env: production
 domain: xeraa.wtf
 backend_server: https://backend.{{ domain }}
 frontend_server: https://frontend.{{ domain }}

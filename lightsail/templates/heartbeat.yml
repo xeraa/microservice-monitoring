@@ -34,6 +34,7 @@ heartbeat.monitors:
 
 
 name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
 
 
 processors:

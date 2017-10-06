@@ -16,6 +16,7 @@ filebeat.modules:
 
 
 name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
 
 
 processors:
