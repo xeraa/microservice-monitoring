@@ -8,8 +8,8 @@ server.port: ${SERVER_PORT:4711}
 security:
   basic.enabled: false
   user:
-    name: admin
-    password: secret
+    name: ${USER}
+    password: ${PASSWORD}
 management.security:
   enabled: true
   roles: SUPERUSER

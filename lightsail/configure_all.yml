@@ -9,7 +9,7 @@
 
 
   vars:
-      kibana_basic_auth: "{{ elasticsearch_user }}:{{ elasticsearch_password  }}"
+      kibana_basic_auth: "{{ attendee_user }}:{{ attendee_password  }}"
 
 
   pre_tasks:
