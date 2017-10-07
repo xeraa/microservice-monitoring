@@ -27,26 +27,10 @@ public class BackendController {
     @Value("${APP_FRONTEND:#{'http://localhost:8080'}}")
     private String frontendUrl;
 
-    @RequestMapping("/home")
+    @RequestMapping("/slow")
     public String home() {
-        log.log(Level.INFO, "You called home");
-        return "Called home!";
-    }
-
-    @RequestMapping("/call-bad")
-    public String callBad() throws InterruptedException {
-        String callUrl = frontendUrl + "/bad";
-        log.log(Level.INFO, "Calling " + callUrl);
-        Thread.sleep(this.random.nextInt(2000));
-        return restTemplate.getForObject(callUrl, String.class);
-    }
-
-    @RequestMapping("/call-nested")
-    public String callNested() throws InterruptedException {
-        String callUrl = frontendUrl + "/call";
-        log.log(Level.INFO, "Calling " + callUrl);
-        Thread.sleep(this.random.nextInt(1000));
-        return restTemplate.getForObject(callUrl, String.class);
+        log.log(Level.INFO, "You called something slow");
+        return "This is so slow...";
     }
 
 }

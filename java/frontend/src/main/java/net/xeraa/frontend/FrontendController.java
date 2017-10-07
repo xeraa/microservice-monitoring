@@ -34,43 +34,40 @@ public class FrontendController {
 	private String frontendUrl;
 
 	@RequestMapping("/good")
-	public String good(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
+	public void good(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
 		model.addAttribute("name", name);
 		if(!"World".equals(name)) {
 			MDC.put("name", name);
 		}
 		log.log(Level.INFO, "Calling something good");
-		return "good";
 	}
 
 	@RequestMapping("/bad")
-	public String bad() {
+	public void bad() {
 		log.log(Level.INFO, "Calling something bad");
 		throw new RuntimeException("My bad, something went wrong...");
 	}
 
+	@RequestMapping("/null")
+	public void nullpointer() {
+		log.log(Level.INFO, "Calling something null");
+		throw new NullPointerException("This is indeed null...");
+	}
+
 	@RequestMapping("/call")
-	public String callHome() throws InterruptedException {
-		String callUrl = frontendUrl + "/home";
+	public void home(Model model) throws InterruptedException {
+		String callUrl = backendUrl + "/slow";
 		log.log(Level.INFO, "Calling " + callUrl);
 		Thread.sleep(this.random.nextInt(2000));
-		return restTemplate.getForObject(callUrl, String.class);
+		model.addAttribute("returnValue", restTemplate.getForObject(callUrl, String.class));
 	}
 
 	@RequestMapping("/call-bad")
-	public String callBad() throws InterruptedException {
+	public void callBad() throws InterruptedException {
 		String callUrl = frontendUrl + "/bad";
 		log.log(Level.INFO, "Calling " + callUrl);
 		Thread.sleep(this.random.nextInt(2000));
-		return restTemplate.getForObject(callUrl, String.class);
-	}
-
-	@RequestMapping("/call-nested")
-	public String callNested() throws InterruptedException {
-		String callUrl = frontendUrl + "/call";
-		log.log(Level.INFO, "Calling " + callUrl);
-		Thread.sleep(this.random.nextInt(1000));
-		return restTemplate.getForObject(callUrl, String.class);
+		restTemplate.getForObject(callUrl, String.class);
 	}
 
 }
