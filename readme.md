@@ -6,17 +6,18 @@ The holy trinity of observability — logs, metrics, traces.
 
 ## Features
 
-1. **Metricbeat System**: Show the process dashboard in Kibana with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the [Visual Builder](img/visualbuilder-cpu.png).
-1. **Packetbeat**: Show the HTTP dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the DNS dashboard as well.
-1. **Filebeat modules**: Show the *nginx*, *syslog*, and *SSH* dashboards.
-1. **Filebeat**: Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana by filtering down on `type: java-app` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you could also visualize in a bar chart and split on the `json.thread`.
-1. **Heartbeat**: Run Heartbeat and show the visualization in Kibana, then kill the frontend application and see the change.
-1. **Metricbeat nginx**: Show the values of `nginx.stubstatus` and optionally visualize `nginx.stubstatus.active` in the Visual Builder.
-1. **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Httpbeat and show it in Kibana's Discover tab.
+1. **Metricbeat System**: Show the *[Metricbeat System] Overview* dashboard in Kibana and then switch to *[Metricbeat System] Host overview* with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the [Time Series Visual Builder](img/visualbuilder-cpu.png).
+1. **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, and *[Packetbeat] HTTP* dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the *[Packetbeat] DNS Tunneling* dashboard as well.
+1. **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat System] Syslog dashboard*, and *[Filebeat System] SSH login attempts* dashboards.
+1. **Filebeat**: Let attendees hit */good* with a parameter and point out the MDC logging under `json.name`. Let attendees hit */bad* and show the stacktrace both in the JSON log file and in Kibana by filtering down on `application:java` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you could also visualize in a bar chart.
+1. **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then kill the frontend application and see the change.
+1. **Metricbeat nginx**: Show the values of `nginx.stubstatus` and optionally visualize `nginx.stubstatus.active`.
+1. **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
 1. **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
-1. **Visual Builder**: Build a more advanced visualization with the new visual builder, for example the [heap usage](img/visualbuilder-heapusage.png) and include the deployment *events* as an [annotation](img/visualbuilder-annotation.png).
-1. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like. Show the raw data in Elasticsearch if there is time.
+1. **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example the [heap usage](img/visualbuilder-heapusage.png) and include the deployment *events* as an [annotation](img/visualbuilder-annotation.png).
+1. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call*, */call-bad*, and */call-nested* to see where the slowness is coming from and how errors look like.
   Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call.
+1. **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 
 
@@ -65,5 +66,4 @@ When you are done, stop the Java applications and remove the Docker setup with `
 * Add alerts to the steps
 * Create custom dashboard and have it imported automatically
 * Docker
-* MDC logging
 * Improve traced methods and add async
