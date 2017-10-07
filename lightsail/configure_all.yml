@@ -85,6 +85,16 @@
       service: name=packetbeat state=restarted enabled=yes
 
 
+    # Auditbeat
+    - name: Install Auditbeat
+      apt: deb={{ elastic_download }}/downloads/beats/auditbeat/auditbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Auditbeat configuration
+      template: src=templates/auditbeat.yml dest=/etc/auditbeat/auditbeat.yml
+
+    - name: Restart Auditbeat and make sure it autostarts
+      service: name=auditbeat state=restarted enabled=yes
+
 
     # nginx
     - name: Install nginx

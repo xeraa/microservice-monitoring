@@ -1,0 +1,36 @@
+auditbeat.modules:
+
+- module: audit
+  metricsets: ["kernel"]
+  kernel.audit_rules: |
+    -w /etc/passwd -p wa -k identity
+
+- module: audit
+  metricsets: [file]
+  file.paths:
+  - /opt/
+  file.max_file_size: 100 MiB
+  file.hash_types: [sha1]
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup.kibana:
+  host: "{{ kibana_host }}"
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup.dashboards.enabled: true
