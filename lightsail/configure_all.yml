@@ -1,7 +1,7 @@
 - hosts: all
   remote_user: ubuntu
   become: true
-  gather_facts: no
+  gather_facts: yes
 
 
   vars_files:
@@ -15,6 +15,26 @@
   pre_tasks:
     - name: Install Python2 to make Ansible work
       raw: sudo apt-get update && sudo apt-get -y install python-minimal
+
+
+  post_tasks:
+    - name: Get the local user
+      command: whoami
+      register: local_username
+      delegate_to: 127.0.0.1
+      become: false
+    - name: Store the playbook run event in Elasticsearch so it can be used as an annotation
+      command: >
+        curl -XPOST "{{ elasticsearch_host }}/events/deployment"
+             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
+             -H "Content-Type: application/json"
+             -d '{
+                  "@timestamp": "{{ ansible_date_time.iso8601 }}",
+                  "application": "configure_all",
+                  "system": "ansible",
+                  "host": "{{ inventory_hostname }}",
+                  "user": "{{ local_username.stdout }}"
+                }'
 
 
   tasks:
