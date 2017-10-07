@@ -17,8 +17,6 @@ metricbeat.modules:
   period: 10s
   processes: ['.*']
   cgroups: true
-  cpu.metrics:  ["percentages"]
-  core.metrics: ["percentages"]
   process.include_top_n:
     enabled: true
     by_cpu: 20
@@ -37,8 +35,8 @@ metricbeat.modules:
   namespace: "health"
   path: "/health"
   method: "GET"
-  username: admin
-  password: secret
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
 
 - module: http
   metricsets: ["json"]
@@ -47,9 +45,8 @@ metricbeat.modules:
   namespace: "metrics"
   path: "/metrics"
   method: "GET"
-  username: admin
-  password: secret
-
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
 
 - module: jolokia
   metricsets: ["jmx"]
