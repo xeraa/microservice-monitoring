@@ -43,6 +43,7 @@
 		</rollingPolicy>
 		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
 			<providers>
+				<mdc/>
 				<timestamp>
 					<timeZone>UTC</timeZone>
 				</timestamp>
@@ -69,7 +70,7 @@
 						"pid": "${PID:-}",
 						"thread": "%thread",
 						"class": "%logger",
-						"caller": "%caller",
+						"mdc": "%mdc",
 						"rest": "%message"
 						}
 					</pattern>
