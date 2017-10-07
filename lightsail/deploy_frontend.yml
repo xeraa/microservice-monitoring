@@ -10,6 +10,6 @@
 
   tasks:
 
-    - include: include_deploy_boot.yml
+    - include_tasks: include_deploy_boot.yml
       vars:
         application: frontend

@@ -74,7 +74,7 @@
             }'
   ignore_errors: yes
 
-#- include: include_deploy_boot_rollback.yml
+#- include_tasks: include_deploy_boot_rollback.yml
 #  when: response.status != 200
 
 - name: Remove old JARs (keeping the five latest good ones)
