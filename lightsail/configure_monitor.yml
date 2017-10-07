@@ -22,6 +22,62 @@
       service: name=heartbeat-elastic state=restarted enabled=yes
 
 
+    # Dashboard user
+    - name: Create a role for a user to only view the dashboards
+      command: >
+        curl -XPUT "{{ elasticsearch_host }}/.security-v6/doc/role-read_dashboard"
+             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
+             -H "Content-Type: application/json"
+             -d '{
+                  "cluster": [],
+                  "indices": [
+                    {
+                      "names": [
+                        "heartbeat-*",
+                        "packetbeat-*",
+                        "auditbeat-*",
+                        "metricbeat-*",
+                        "filebeat-*"
+                      ],
+                      "privileges": [
+                        "read"
+                      ],
+                      "field_security": {
+                        "grant": [
+                          "*"
+                        ]
+                      }
+                    }
+                  ],
+                  "run_as": [],
+                  "metadata": {},
+                  "type": "role"
+                }'
+      delegate_to: 127.0.0.1
+      become: false
+
+    - name: Create the dashboard user with the credentials admin password
+      command: >
+        curl -XPUT "{{ elasticsearch_host }}/.security-v6/doc/user-admin"
+             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
+             -H "Content-Type: application/json"
+             -d '{
+                  "username": "admin",
+                  "password": "$2a$10$jGHas/yjV7dY/Pw2a0aeDu92zu.M16dkGbwdf8zGT8uXdMZ3Q9ghi",
+                  "roles": [
+                    "read_dashboard",
+                    "kibana_dashboard_only_user"
+                  ],
+                  "full_name": "Dashboard User",
+                  "email": "dashboard@xeraa.wtf",
+                  "metadata": {},
+                  "enabled": true,
+                  "type": "user"
+                }'
+      delegate_to: 127.0.0.1
+      become: false
+
+
     # Watcher
     - name: Add an example Watch from a local file
       command: >
