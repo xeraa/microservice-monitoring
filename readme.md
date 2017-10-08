@@ -63,7 +63,7 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
-* MongoDB or MySQL on the backend with TCP Heartbeat monitoring
+* MySQL on the backend with TCP Heartbeat monitoring
 * Docker
 * Fix Metricbeat for HTTP /metrics
 * Improve traced methods and add async

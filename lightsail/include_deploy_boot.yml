@@ -83,9 +83,6 @@
             }'
   ignore_errors: yes
 
-#- include_tasks: include_deploy_boot_rollback.yml
-#  when: response.status != 200
-
 - name: Remove old JARs (keeping the five latest good ones)
   shell: "ls -tr /opt/{{ application }}_*.jar | head -n -5 | xargs rm -f"
 
