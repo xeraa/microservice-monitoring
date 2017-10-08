@@ -4,6 +4,9 @@ spring.application.name: zipkin
 # Set the port
 server.port: ${SERVER_PORT:4711}
 
+# Set the path to Zipkin
+server.contextPath: /
+
 # Enable and configure the credentials for /metrics, but only for that
 security:
   basic.enabled: false
