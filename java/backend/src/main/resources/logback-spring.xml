@@ -83,6 +83,6 @@
 	<root level="INFO">
 		<appender-ref ref="console"/>
 		<appender-ref ref="json"/>
-		<!--<appender-ref ref="flatfile"/>-->
+		<appender-ref ref="flatfile"/>
 	</root>
 </configuration>
