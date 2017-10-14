@@ -80,6 +80,5 @@ public class FrontendController {
 		restTemplate.getForObject(callUrl, String.class);
 		log.log(Level.INFO, () -> String.format("Calling %s with a delay of %s ms", callUrl, millis));
 	}
-	}
 
 }
