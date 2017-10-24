@@ -1,9 +1,9 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.7.RELEASE'
+		springBootVersion = '1.5.8.RELEASE'
 		springCloudVersion = 'Dalston.SR4'
 		logbackEncoderVersion = '4.11'
-		zipkinVersion = '2.2.0'
+		zipkinVersion = '2.2.1'
 	}
 	repositories {
 		mavenCentral()
