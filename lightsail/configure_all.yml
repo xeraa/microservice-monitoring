@@ -183,11 +183,13 @@
     - name: Reload nginx and make sure it autostarts
       service: name=nginx state=reloaded enabled=yes
 
-    - name: Try HTTP
+    - name: Check HTTP
       uri: url="http://{{ inventory_hostname }}" follow_redirects=none status_code=301
       register: response
       retries: 3
       delay: 2
+      delegate_to: 127.0.0.1
+      become: false
 
     - name: Fail if HTTP is not being redirected to HTTPS
       fail:
