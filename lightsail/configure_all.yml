@@ -186,7 +186,10 @@
       service: name=nginx state=reloaded enabled=yes
 
     - name: Check HTTP
-      uri: url="http://{{ inventory_hostname }}" follow_redirects=none status_code=301
+      uri:
+        url: "http://{{ inventory_hostname }}"
+        follow_redirects: none
+        status_code: 301
       register: response
       retries: 3
       delay: 2
