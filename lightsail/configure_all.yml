@@ -92,8 +92,10 @@
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
         body:
-          defaultIndex: filebeat-*
-          xPackMonitoring:showBanner: false
+          type: config
+          config:
+            defaultIndex: "filebeat-*"
+            "xPackMonitoring:showBanner": false
         status_code:
           - 201
           - 200
