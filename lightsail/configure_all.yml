@@ -138,7 +138,7 @@
       apt: name=nginx state=latest
 
     - name: Add the certbot repository
-      apt_repository: repo='ppa:certbot/certbot'
+      apt_repository: repo="ppa:certbot/certbot"
 
     - name: Install certbot and update the cache for the new PPA
       apt: name=python-certbot-nginx state=latest update_cache=yes

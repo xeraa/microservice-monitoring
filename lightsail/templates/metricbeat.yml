@@ -32,9 +32,9 @@ metricbeat.modules:
   metricsets: ["json"]
   period: 10s
   hosts: ["localhost:8080"]
-  namespace: "health"
-  path: "/health"
-  method: "GET"
+  namespace: health
+  path: /health
+  method: GET
   username: {{ attendee_user }}
   password: {{ attendee_password }}
 
@@ -42,9 +42,9 @@ metricbeat.modules:
   metricsets: ["json"]
   period: 10s
   hosts: ["localhost:8080"]
-  namespace: "metrics"
-  path: "/metrics"
-  method: "GET"
+  namespace: metrics
+  path: /metrics
+  method: GET
   username: {{ attendee_user }}
   password: {{ attendee_password }}
 
@@ -53,19 +53,19 @@ metricbeat.modules:
   hosts: ["localhost:8080"]
   username: admin
   password: secret
-  namespace: "metrics"
+  namespace: metrics
   jmx.mappings:
-    - mbean: 'java.lang:type=Runtime'
+    - mbean: "java.lang:type=Runtime"
       attributes:
         - attr: Uptime
           field: uptime
-    - mbean: 'java.lang:type=GarbageCollector,name=ConcurrentMarkSweep'
+    - mbean: "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
       attributes:
         - attr: CollectionTime
           field: gc.cms_collection_time
         - attr: CollectionCount
           field: gc.cms_collection_count
-    - mbean: 'java.lang:type=Memory'
+    - mbean: "java.lang:type=Memory"
       attributes:
         - attr: HeapMemoryUsage
           field: memory.heap_usage

@@ -24,17 +24,17 @@ metricbeat.modules:
   password: secret
   namespace: "metrics"
   jmx.mappings:
-    - mbean: 'java.lang:type=Runtime'
+    - mbean: "java.lang:type=Runtime"
       attributes:
         - attr: Uptime
           field: uptime
-    - mbean: 'java.lang:type=GarbageCollector,name=ConcurrentMarkSweep'
+    - mbean: "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
       attributes:
         - attr: CollectionTime
           field: gc.cms_collection_time
         - attr: CollectionCount
           field: gc.cms_collection_count
-    - mbean: 'java.lang:type=Memory'
+    - mbean: "java.lang:type=Memory"
       attributes:
         - attr: HeapMemoryUsage
           field: memory.heap_usage

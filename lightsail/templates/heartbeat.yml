@@ -2,25 +2,25 @@ heartbeat.monitors:
 
 - type: http
   urls: ["https://{{ domain }}/health"]
-  schedule: '@every 10s'
+  schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
   urls: ["https://backend.{{ domain }}/health"]
-  schedule: '@every 10s'
+  schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
   urls: ["https://monitor.{{ domain }}/health"]
-  schedule: '@every 10s'
+  schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
   urls: ["https://kibana.{{ domain }}"]
-  schedule: '@every 10s'
+  schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
@@ -28,7 +28,7 @@ heartbeat.monitors:
   urls: ["{{ elasticsearch_host }}"]
   username: {{ elasticsearch_user }}
   password: {{ elasticsearch_password }}
-  schedule: '@every 10s'
+  schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
