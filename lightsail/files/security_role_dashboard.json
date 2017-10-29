@@ -1,0 +1,25 @@
+{
+  "cluster": [],
+  "indices": [
+    {
+      "names": [
+        "auditbeat-*",
+        "filebeat-*",
+        "heartbeat-*",
+        "metricbeat-*",
+        "packetbeat-*"
+      ],
+      "privileges": [
+        "read"
+      ],
+      "field_security": {
+        "grant": [
+          "*"
+        ]
+      }
+    }
+  ],
+  "run_as": [],
+  "metadata": {},
+  "type": "role"
+}

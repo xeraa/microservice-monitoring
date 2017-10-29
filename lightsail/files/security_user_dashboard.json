@@ -1,0 +1,13 @@
+{
+  "username": "admin",
+  "password": "$2a$10$jGHas/yjV7dY/Pw2a0aeDu92zu.M16dkGbwdf8zGT8uXdMZ3Q9ghi",
+  "roles": [
+    "read_dashboard",
+    "kibana_dashboard_only_user"
+  ],
+  "full_name": "Dashboard User",
+  "email": "dashboard@xeraa.wtf",
+  "metadata": {},
+  "enabled": true,
+  "type": "user"
+}

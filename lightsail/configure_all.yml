@@ -24,17 +24,19 @@
       delegate_to: 127.0.0.1
       become: false
     - name: Store the playbook run event in Elasticsearch so it can be used as an annotation
-      command: >
-        curl -XPOST "{{ elasticsearch_host }}/events/deployment"
-             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
-             -H "Content-Type: application/json"
-             -d '{
-                  "@timestamp": "{{ ansible_date_time.iso8601 }}",
-                  "application": "configure_all",
-                  "system": "ansible",
-                  "host": "{{ inventory_hostname }}",
-                  "user": "{{ local_username.stdout }}"
-                }'
+      uri:
+        url: "{{elasticsearch_host}}events/deployment"
+        body_format: json
+        method: POST
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        body:
+          "@timestamp": "{{ ansible_date_time.iso8601 }}"
+          application: configure_all
+          system: ansible
+          host: "{{ inventory_hostname }}"
+          user: "{{ local_username.stdout }}"
+        status_code: 201
 
 
   tasks:
@@ -56,11 +58,19 @@
 
     # Global Elasticsearch configuration
     - name: Register a global index template
-      command: >
-        curl -XPUT "{{ elasticsearch_host }}/_template/template_global"
-             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
-             -H "Content-Type: application/json"
-             -d '{"template": "*", "settings": {"number_of_shards": 1}}'
+      uri:
+        url: "{{elasticsearch_host}}_template/template_global"
+        body_format: json
+        method: PUT
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        body:
+          template: "*"
+          settings:
+            number_of_shards: 1
+        status_code:
+          - 201
+          - 200
       run_once: true
 
 
@@ -75,11 +85,18 @@
       service: name=filebeat state=restarted enabled=yes
 
     - name: Add a default index pattern using Filebeat and hide the X-Pack banner
-      command: >
-        curl -XPUT "{{ elasticsearch_host }}/.kibana/doc/config:{{ elastic_version }}"
-             -u "{{ elasticsearch_user }}:{{ elasticsearch_password }}"
-             -H "Content-Type: application/json"
-             -d '{"defaultIndex": "filebeat-*", "xPackMonitoring:showBanner": false}'
+      uri:
+        url: "{{elasticsearch_host}}.kibana/doc/config:{{ elastic_version }}"
+        body_format: json
+        method: PUT
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        body:
+          defaultIndex: filebeat-*
+          xPackMonitoring:showBanner: false
+        status_code:
+          - 201
+          - 200
       run_once: true
 
 
