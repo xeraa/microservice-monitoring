@@ -1,7 +1,7 @@
 [all]
-backend.xeraa.wtf
-frontend.xeraa.wtf
-monitor.xeraa.wtf
+backend.xeraa.wtf ansible_python_interpreter=/usr/bin/python3
+frontend.xeraa.wtf ansible_python_interpreter=/usr/bin/python3
+monitor.xeraa.wtf ansible_python_interpreter=/usr/bin/python3
 
 
 [backend]
