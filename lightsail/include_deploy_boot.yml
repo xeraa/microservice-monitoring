@@ -57,8 +57,8 @@
 - name: Wait for the Java application to start up
   pause: seconds=30
 
-- name: Check if the service is available; TODO reenable the TLS check, but Ansible 2.3.2.0 fails for TLS 1.2 (https://github.com/ansible/ansible/issues/25402)
-  uri: url="https://{{ inventory_hostname }}/health" validate_certs=no
+- name: Check if the service is available
+  uri: url="https://{{ inventory_hostname }}/health"
   register: response
   ignore_errors: yes
 
