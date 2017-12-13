@@ -46,10 +46,9 @@ output.elasticsearch:
   password: "{{ elasticsearch_password }}"
 
 
-setup.kibana:
-  host: "{{ kibana_host }}"
-  username: "{{ elasticsearch_user }}"
-  password: "{{ elasticsearch_password }}"
-
-
-setup.dashboards.enabled: true
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true
