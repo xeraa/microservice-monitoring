@@ -23,6 +23,7 @@
       register: local_username
       delegate_to: 127.0.0.1
       become: false
+      changed_when: false
     - name: Store the playbook run event in Elasticsearch so it can be used as an annotation
       uri:
         url: "{{elasticsearch_host}}events/deployment"
@@ -47,14 +48,14 @@
       apt: upgrade=dist
 
     - name: Install NTP to avoid time drift and PIP to manage Python dependencies
-      apt: name={{ item }} state=latest
+      apt: name={{ item }}
       with_items:
         - ntp
         - ntpdate
         - python3-pip
 
     - name: Install the JRE
-      apt: name=openjdk-8-jre-headless state=latest install_recommends=no
+      apt: name=openjdk-8-jre-headless install_recommends=no
 
     - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
       pip: name=pyopenssl
@@ -72,6 +73,8 @@
           template: "*"
           settings:
             number_of_shards: 1
+            number_of_replicas: 0
+            refresh_interval: 2s
         status_code:
           - 201
           - 200
