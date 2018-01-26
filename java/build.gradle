@@ -1,7 +1,7 @@
 buildscript {
 	ext {
 		springBootVersion = '1.5.9.RELEASE'
-		springCloudVersion = 'Dalston.SR4'
+		springCloudVersion = 'Dalston.SR5'
 		logbackEncoderVersion = '4.11'
 		zipkinVersion = '2.4.5'
 	}
