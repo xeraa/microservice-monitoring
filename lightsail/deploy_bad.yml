@@ -13,6 +13,7 @@
     - name: Package the JAR
       local_action: shell cd ../java/bad/; gradle build
       become: false
+      changed_when: true
 
     - name: Deploy our bad.jar
       copy:
@@ -27,6 +28,7 @@
       register: local_username
       delegate_to: 127.0.0.1
       become: false
+      changed_when: false
 
     - name: Store the deployment event in Elasticsearch so it can be used as an annotation
       uri:

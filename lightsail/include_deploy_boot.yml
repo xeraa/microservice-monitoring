@@ -1,6 +1,7 @@
 - name: Package the JAR
   local_action: shell cd ../java/{{ application }}/; gradle build
   become: false
+  changed_when: true
 
 - name: Get the current timestamp
   set_fact:
@@ -67,6 +68,7 @@
   register: local_username
   delegate_to: 127.0.0.1
   become: false
+  changed_when: false
 
 - name: Store the deployment event in Elasticsearch so it can be used as an annotation
   uri:
@@ -87,6 +89,7 @@
 
 - name: Remove old JARs (keeping the five latest good ones)
   shell: "ls -tr /opt/{{ application }}_*.jar | head -n -5 | xargs rm -f"
+  register: remove_output
 
 - name: Remove old configs (keeping the five latest good ones)
   shell: "ls -tr /opt/{{ application }}_*.conf | head -n -5 | xargs rm -f"
