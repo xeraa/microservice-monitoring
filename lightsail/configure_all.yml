@@ -144,13 +144,16 @@
 
     # nginx
     - name: Install nginx
-      apt: name=nginx state=latest
+      apt: name=nginx
+
+    - name: Stop nginx so that Certbot can bind to port 80
+      service: name=nginx state=stopped
 
     - name: Add the certbot repository
       apt_repository: repo="ppa:certbot/certbot"
 
     - name: Install certbot and update the cache for the new PPA
-      apt: name=python-certbot-nginx state=latest update_cache=yes
+      apt: name=python-certbot-nginx update_cache=yes
 
     - name: Add the hostname to the certificates to create
       set_fact:
@@ -174,11 +177,13 @@
 
     - name: Create the certificate
       command: >
-        certbot certonly --standalone --agree-tos --email admin@{{ domain }} -d {{ certificates | join(',') }}
+        certbot certonly --non-interactive --standalone
+        --agree-tos --email admin@{{ domain }}
+        -d {{ certificates | join(',') }}
         creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 
     - name: Add crontab to renew certificates every second month on Sunday night
-      cron: minute="30" hour="3" weekday="0" month="*/2" job="certbot renew >> /var/log//var/log/letsencrypt/renew.log"
+      cron: minute="30" hour="3" weekday="0" month="*/2" job="service nginx stop && certbot renew >> /var/log//var/log/letsencrypt/renew.log && service nginx start"
 
     - name: Generate strong dhparams, but only if the file doesn't exist
       command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
@@ -189,8 +194,8 @@
     - name: Change the nginx configuration
       template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
 
-    - name: Reload nginx and make sure it autostarts
-      service: name=nginx state=reloaded enabled=yes
+    - name: Restart nginx and make sure it autostarts
+      service: name=nginx state=restarted enabled=yes
 
     - name: Check HTTP
       uri:
