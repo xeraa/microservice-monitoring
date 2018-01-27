@@ -14,7 +14,7 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-security',
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.jolokia:jolokia-core',
-			"io.zipkin.java:zipkin:${zipkinVersion}",
+			"io.zipkin.zipkin2:zipkin:${zipkinVersion}",
 			"io.zipkin.java:zipkin-server:${zipkinVersion}",
 			"io.zipkin.java:zipkin-autoconfigure-storage-elasticsearch-http:${zipkinVersion}",
 			"io.zipkin.java:zipkin-autoconfigure-ui:${zipkinVersion}"
