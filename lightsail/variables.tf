@@ -20,3 +20,9 @@ variable "region" {
 variable "domain" {
   default = "xeraa.wtf"
 }
+
+
+# Zone ID of the domain, no default
+# Options: You should provide the Zone ID of the domain in the environment variable TF_VAR_zone_id
+# Override: -var 'zone_id=XXXXXXXXXXXXX'
+variable "zone_id" {}

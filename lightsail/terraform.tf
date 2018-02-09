@@ -11,12 +11,6 @@ resource "aws_lightsail_key_pair" "microservice_monitoring_key_pair" {
 }
 
 
-# Create the DNS zone
-resource "aws_route53_zone" "domain" {
-  name = "${var.domain}"
-}
-
-
 # Create the backend instance and its DNS entry
 resource "aws_lightsail_instance" "backend" {
   name              = "backend"
@@ -27,7 +21,7 @@ resource "aws_lightsail_instance" "backend" {
   depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "backend" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
+  zone_id = "${var.zone_id}"
   name    = "backend.${var.domain}"
   type    = "A"
   ttl     = "60"
@@ -45,30 +39,30 @@ resource "aws_lightsail_instance" "frontend" {
   depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "frontend" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
+  zone_id = "${var.zone_id}"
   name    = "frontend.${var.domain}"
   type    = "A"
   ttl     = "60"
   records = ["${aws_lightsail_instance.frontend.public_ip_address}"]
 }
 resource "aws_route53_record" "apex" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
+  zone_id = "${var.zone_id}"
   name    = "${var.domain}"
   type    = "A"
   alias {
     name                   = "frontend.${var.domain}"
-    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    zone_id                = "${var.zone_id}"
     evaluate_target_health = false
   }
   depends_on = ["aws_route53_record.frontend"]
 }
 resource "aws_route53_record" "www" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
+  zone_id = "${var.zone_id}"
   name    = "www.${var.domain}"
   type    = "A"
   alias {
     name                   = "frontend.${var.domain}"
-    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    zone_id                = "${var.zone_id}"
     evaluate_target_health = false
   }
   depends_on = ["aws_route53_record.frontend"]
@@ -85,19 +79,19 @@ resource "aws_lightsail_instance" "monitor" {
   depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
 }
 resource "aws_route53_record" "monitor" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
+  zone_id = "${var.zone_id}"
   name    = "monitor.${var.domain}"
   type    = "A"
   ttl     = "60"
   records = ["${aws_lightsail_instance.monitor.public_ip_address}"]
 }
 resource "aws_route53_record" "kibana" {
-  zone_id = "${aws_route53_zone.domain.zone_id}"
+  zone_id = "${var.zone_id}"
   name    = "kibana.${var.domain}"
   type    = "A"
   alias {
     name                   = "monitor.${var.domain}"
-    zone_id                = "${aws_route53_zone.domain.zone_id}"
+    zone_id                = "${var.zone_id}"
     evaluate_target_health = false
   }
   depends_on = ["aws_route53_record.monitor"]
