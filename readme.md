@@ -17,7 +17,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 1. **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
 1. **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example the [heap usage](img/visualbuilder-heapusage.png) and include the deployment *events* as an [annotation](img/visualbuilder-annotation.png).
 1. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like.
-  Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call.
+  Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call. And you can even use the `ZIPKIN_UI_LOGS_URL` to link back to the relevant Kibana logs.
 1. **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 

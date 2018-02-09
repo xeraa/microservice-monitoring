@@ -17,7 +17,7 @@ management.security:
   enabled: true
   roles: SUPERUSER
 
-# Configure Zipkin to use Elasticsearch for storage
+# Configure Zipkin to use Elasticsearch for storage and connect to Kibana
 zipkin:
   self-tracing:
     enabled: false
@@ -32,3 +32,4 @@ zipkin:
       index-replicas: ${ES_INDEX_REPLICAS:1}
       username: ${ES_USERNAME:elastic}
       password: ${ES_PASSWORD:changeme}
+  ui.logs-url: ${:localhost:5601/app/kibana#/discover?_a=(index:'filebeat-*',query:(language:lucene,query:'{traceId}'))}
