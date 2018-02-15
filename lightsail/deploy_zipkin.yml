@@ -8,6 +8,12 @@
     - variables.yml
 
 
+  post_tasks:
+    - include_tasks: include_event.yml
+      vars:
+        application: deploy_zipkin
+
+
   tasks:
 
     - include_tasks: include_deploy_boot.yml
