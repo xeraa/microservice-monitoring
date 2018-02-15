@@ -29,3 +29,9 @@
         group: ubuntu
         mode: 0500
 
+    - name: Automatically run the bad.jar with a cron job
+      cron:
+        name: "Run /opt/bad.jar every 10 minutes"
+        minute: "*/6"
+        hour: "*"
+        job: "java -Xmx400m -jar /opt/bad.jar"
