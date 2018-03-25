@@ -1,6 +1,7 @@
 # Version to install
-elastic_version: 6.2.1
+elastic_version: 6.2.3
 elastic_download: https://artifacts.elastic.co
+
 
 # Elastic Cloud credentials
 elasticsearch_host: "{{ lookup('env','ELASTICSEARCH_HOST') }}"
@@ -9,6 +10,7 @@ elasticsearch_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
 kibana_host: "{{ lookup('env','KIBANA_HOST') }}"
 kibana_id: "{{ lookup('env','KIBANA_ID') }}"
 
+
 # Setup of the infrastructure
 env: production
 domain: xeraa.wtf
@@ -16,6 +18,7 @@ backend_server: https://backend.{{ domain }}
 frontend_server: https://frontend.{{ domain }}
 zipkin_server: https://monitor.{{ domain }}
 zipkin_kibana: https://kibana.{{ domain }}/app/kibana#/discover?_a=(index:'filebeat-*',query:(language:lucene,query:'{traceId}'))
+
 
 # Public credentials for /health, /metrics, and Kibana dashboard-only mode
 attendee_user: admin
