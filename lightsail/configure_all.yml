@@ -172,7 +172,7 @@
       cron: minute="30" hour="3" weekday="0" month="*/2" job="service nginx stop && certbot renew >> /var/log//var/log/letsencrypt/renew.log && service nginx start"
 
     - name: Generate strong dhparams, but only if the file doesn't exist
-      command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
+      command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
 
     - name: Set a global TLS configuration
       template: src=templates/tls.conf dest=/etc/nginx/tls.conf
