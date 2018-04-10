@@ -1,8 +1,13 @@
 auditbeat.modules:
 
-- module: audit
-  metricsets: ["kernel"]
-  kernel.audit_rules: |
+- module: auditd
+  resolve_ids: true
+  failure_mode: silent
+  backlog_limit: 8196
+  rate_limit: 0
+  include_raw_message: false
+  include_warnings: false
+  audit_rules: |
     ## Identity changes
     -w /etc/group -p wa -k identity
     -w /etc/passwd -p wa -k identity
@@ -11,10 +16,11 @@ auditbeat.modules:
     -a always,exit -F arch=b64 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EACCES -k access
     -a always,exit -F arch=b64 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
 
-- module: audit
-  metricsets: [file]
-  file.paths:
+- module: file_integrity
+  paths:
   - /opt/
+  scan_at_start: true
+  scan_rate_per_sec: 50 MiB
   file.max_file_size: 100 MiB
   file.hash_types: [sha1]
 
