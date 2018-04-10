@@ -47,6 +47,7 @@ metricbeat.modules:
   method: GET
   username: {{ attendee_user }}
   password: {{ attendee_password }}
+  dedot.enabled: true #Fix the naming pattern of having "foo" and "foo.bar"
 
 - module: jolokia
   metricsets: ["jmx"]
