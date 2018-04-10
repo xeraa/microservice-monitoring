@@ -38,9 +38,9 @@ Make sure you have run this before the demo, because some steps take time and re
 1. Change the settings to a domain you have registered under Route53 in *inventory*, *variables.tf*, and *variables.yml*. Set the Hosted Zone for that domain and export the Zone ID under the environment variable `TF_VAR_zone_id`. If you haven't created the Hosted Zone yet, you should set it up in the AWS Console first and then set the environment variable.
 1. If you haven't installed the AWS plugin for Terraform, get it with `terraform init` first. Then create the keypair, DNS settings, and instances with `terraform apply`.
 1. Open HTTPS on the network configuration on all instances (waiting for this [Terraform issue](https://github.com/terraform-providers/terraform-provider-aws/issues/700)).
-1. Apply the base configuration to all instances with `ansible-playbook --inventory-file=inventory configure_all.yml`.
-1. Apply the instance specific configuration with `ansible-playbook --inventory-file=inventory configure_monitor.yml` — frontend and backend don't have specific configurations.
-1. Deploy the JARs with `ansible-playbook --inventory-file=inventory deploy_bad.yml`, `ansible-playbook --inventory-file=inventory deploy_backend.yml`, `ansible-playbook --inventory-file=inventory deploy_frontend.yml`, and `ansible-playbook --inventory-file=inventory deploy_zipkin.yml` (Ansible is also building them).
+1. Apply the base configuration to all instances with `ansible-playbook configure_all.yml`.
+1. Apply the instance specific configuration with `ansible-playbook configure_monitor.yml` — frontend and backend don't have specific configurations.
+1. Deploy the JARs with `ansible-playbook deploy_bad.yml`, `ansible-playbook deploy_backend.yml`, `ansible-playbook deploy_frontend.yml`, and `ansible-playbook deploy_zipkin.yml` (Ansible is also building them).
 
 When you are done, remove the instances, DNS settings, and key with `terraform destroy`.
 
