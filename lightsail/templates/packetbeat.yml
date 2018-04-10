@@ -43,6 +43,9 @@ processors:
         - equals.path: "/health"
 
 
+xpack.monitoring.enabled: true
+
+
 output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"

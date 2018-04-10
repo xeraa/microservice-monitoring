@@ -6,6 +6,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ## Features
 
+1. **X-Pack Monitoring**: Start the overview page to show the systems we are using for monitoring.
 1. **Metricbeat System**: Show the *[Metricbeat System] Overview* dashboard in Kibana and then switch to *[Metricbeat System] Host overview* with auto-refresh, run *bad.jar* with `java -Xmx512m -jar /opt/bad.jar`, and see the spike. Optionally build a nicer overview with the [Time Series Visual Builder](img/visualbuilder-cpu.png).
 1. **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, and *[Packetbeat] HTTP* dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the *[Packetbeat] DNS Tunneling* and *[Packetbeat] TLS Sessions* dashboards as well.
 1. **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat System] Syslog dashboard*, and *[Filebeat System] SSH login attempts* dashboards.
