@@ -66,7 +66,6 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 * MySQL on the backend with TCP Heartbeat monitoring
 * Docker
-* Fix Metricbeat for HTTP /metrics
 * Improve traced methods and add async
 * https://www.elastic.co/guide/en/logstash/current/plugins-outputs-cloudwatch.html (https://aws.amazon.com/about-aws/whats-new/2017/09/amazon-route-53-announces-support-for-dns-query-logging/ etc)?
 * http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html?
