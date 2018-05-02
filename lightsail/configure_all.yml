@@ -47,6 +47,42 @@
       pip: name=pyopenssl
 
 
+    # osquery
+    - name: Add osquery's repository key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 1484120AC4E9F8A1A577AEEE97A80C63C9D8B80B
+        state: present
+
+    - name: Add osquery's server repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://osquery-packages.s3.amazonaws.com/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"
+        state: present
+
+    - name: Install osquery
+      apt: name=osquery update_cache=true
+
+    - name: Allow osquery to access the rsyslog.conf
+      blockinfile:
+        path: /etc/rsyslog.conf
+        block: |
+          template(
+            name="OsqueryCsvFormat"
+            type="string"
+            string="%timestamp:::date-rfc3339,csv%,%hostname:::csv%,%syslogseverity:::csv%,%syslogfacility-text:::csv%,%syslogtag:::csv%,%msg:::csv%\n"
+          )
+          *.* action(type="ompipe" Pipe="/var/osquery/syslog_pipe" template="OsqueryCsvFormat")
+
+    - name: Restart rsyslog
+      service: name=rsyslog state=restarted
+
+    - name: Add a configuration file for osquery
+      template: src=templates/osquery.conf dest=/etc/osquery/osquery.conf
+
+    - name: Restart osquery and make sure it autostarts
+      service: name=osqueryd state=restarted enabled=yes
+
+
     # Global Elasticsearch configuration
     - name: Register a global index template
       uri:
