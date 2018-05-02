@@ -4,6 +4,7 @@ buildscript {
 		springCloudVersion = 'Dalston.SR5'
 		logbackEncoderVersion = '5.0'
 		zipkinVersion = '2.7.1'
+		elasticApmVersion = '0.1.2'
 	}
 	repositories {
 		mavenCentral()

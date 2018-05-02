@@ -15,7 +15,8 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.springframework.cloud:spring-cloud-starter-sleuth',
 			'org.springframework.cloud:spring-cloud-sleuth-zipkin',
-			'org.jolokia:jolokia-core'
+			'org.jolokia:jolokia-core',
+			"co.elastic.apm:apm-agent-java:${elasticApmVersion}"
 	)
 }
 
