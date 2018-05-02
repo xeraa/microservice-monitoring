@@ -6,36 +6,36 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ## Features
 
-1. **X-Pack Monitoring**: Start the overview page to show the systems we are using for monitoring.
-1. **Metricbeat System**: Show the *[Metricbeat System] Overview* dashboard in Kibana and then switch to *[Metricbeat System] Host overview*. If you show all hosts, you will see little spikes approximately every 5 minutes — this is a rogue process we are running with a cron job and we want to find it.
-1. Build an overview with the Time Series Visual Builder:
+* **X-Pack Monitoring**: Start the overview page to show the systems we are using for monitoring.
+* **Metricbeat System**: Show the *[Metricbeat System] Overview* dashboard in Kibana and then switch to *[Metricbeat System] Host overview*. If you show all hosts, you will see little spikes approximately every 5 minutes — this is a rogue process we are running with a cron job and we want to find it.
+* Build an overview with the Time Series Visual Builder:
   * A sum over the field `system.memory.actual.used.bytes` and group by the term `beat.name`.
   * A sum over the field `system.process.memory.rss.bytes` and group by the term `system.process.name`. Optionally move this visualization to the negative axis to make it easier to visualize with a calculation on `params.process*-1` (`process` is your variable name).
 
 ![](img/rogue-process.png)
 
-1. **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, and *[Packetbeat] HTTP* dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the *[Packetbeat] DNS Tunneling* dashboards as well.
-1. **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat System] Syslog dashboard*, and *[Filebeat System] SSH login attempts* dashboards.
-1. **Filebeat**: Let attendees hit */good* with a parameter and point out the MDC logging under `json.name` and the context view for one log message. Let attendees hit */bad* and */null* to show the stacktrace both in the JSON log file and in Kibana by filtering down on `application:java` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you can use for visualization too.
+* **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, and *[Packetbeat] HTTP* dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. Optionally show the *[Packetbeat] DNS Tunneling* dashboards as well.
+* **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat System] Syslog dashboard*, and *[Filebeat System] SSH login attempts* dashboards.
+* **Filebeat**: Let attendees hit */good* with a parameter and point out the MDC logging under `json.name` and the context view for one log message. Let attendees hit */bad* and */null* to show the stacktrace both in the JSON log file and in Kibana by filtering down on `application:java` and `json.severity: ERROR`. Also point out the `meta.*` information and `json.stack_hash`, which you can use for visualization too.
 
 ![](img/stacktraces.png)
 
-1. **Auditbeat**: Show changes to the */opt/* folder with the *[Auditbeat File Integrity] Overview* dashboard.
-1. **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then kill the frontend application and see the change.
-1. **Metricbeat nginx**: Show the values of `nginx.stubstatus` and optionally visualize `nginx.stubstatus.active` and `nginx.stubstatus.waiting`.
-1. **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
-1. **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
-1. **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example to show the heap usage in percent by calculating the `jolokia.metrics.memory.heap_usage.used` divided by `jolokia.metrics.memory.heap_usage.max`.
+* **Auditbeat**: Show changes to the */opt/* folder with the *[Auditbeat File Integrity] Overview* dashboard.
+* **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then kill the frontend application and see the change.
+* **Metricbeat nginx**: Show the values of `nginx.stubstatus` and optionally visualize `nginx.stubstatus.active` and `nginx.stubstatus.waiting`.
+* **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
+* **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
+* **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example to show the heap usage in percent by calculating the `jolokia.metrics.memory.heap_usage.used` divided by `jolokia.metrics.memory.heap_usage.max`.
 
 ![](img/heap-usage.png)
 
-1. **Annotations**: Include the deployment *events* as an annotations.
+* **Annotations**: Include the deployment *events* as an annotations.
 
 ![](img/heap-usage-annotated.png)
 
-1. **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like.
+* **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like.
   Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call. And you can even use the `ZIPKIN_UI_LOGS_URL` to link back to the relevant Kibana logs.
-1. **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
+* **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 
 
