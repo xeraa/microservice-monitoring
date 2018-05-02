@@ -28,6 +28,17 @@
       service: name=heartbeat-elastic state=restarted enabled=yes
 
 
+    # APM
+    - name: Install APM
+      apt: deb={{ elastic_download }}/downloads/apm-server/apm-server-{{ elastic_version }}-amd64.deb
+
+    - name: Change the APM configuration
+      template: src=templates/apm-server.yml dest=/etc/apm-server/apm-server.yml
+
+    - name: Restart APM and make sure it autostarts
+      service: name=apm-server state=restarted enabled=yes
+
+
     # Dashboard user
     - name: Create a role for a user to only view the dashboards
       uri:
@@ -40,11 +51,8 @@
         status_code:
           - 201
           - 200
-    # APM
-    - name: Install APM
-      apt: deb={{ elastic_download }}/downloads/apm-server/apm-server-{{ elastic_version }}-amd64.deb
 
-    - name: Create the dashboard user with the credentials admin password
+    - name: Create the dashboard user with the credentials "admin" and "password"
       uri:
         url: "{{elasticsearch_host}}.security-6/doc/user-admin"
         body_format: json
@@ -55,13 +63,6 @@
         status_code:
           - 201
           - 200
-    - name: Change the APM configuration
-      template: src=templates/apm-server.yml dest=/etc/apm-server/apm-server.yml
-
-    - name: Restart APM and make sure it autostarts
-      service: name=apm-server state=restarted enabled=yes
-
-
 
 
     # Watcher
