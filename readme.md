@@ -80,8 +80,12 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
+* nginx always uses the dashboard user
+* Upgrade to Spring Boot 2
+* https://codecentric.github.io/chaos-monkey-spring-boot/
+* https://github.com/elastic/apm-agent-java
+* Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
 * MySQL on the backend with TCP Heartbeat monitoring
 * Docker
 * Improve traced methods and add async
-* https://www.elastic.co/guide/en/logstash/current/plugins-outputs-cloudwatch.html (https://aws.amazon.com/about-aws/whats-new/2017/09/amazon-route-53-announces-support-for-dns-query-logging/ etc)?
-* http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html?
+* https://www.elastic.co/guide/en/logstash/current/plugins-outputs-cloudwatch.html (https://aws.amazon.com/about-aws/whats-new/2017/09/amazon-route-53-announces-support-for-dns-query-logging/ etc)
