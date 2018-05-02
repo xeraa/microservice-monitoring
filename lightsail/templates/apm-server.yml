@@ -1,0 +1,32 @@
+apm-server:
+  host: "0.0.0.0:8200"
+  frontend:
+    enabled: false
+
+  #secret_token:
+
+  #ssl.enabled: true
+  #ssl.certificate : "/etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem"
+  #ssl.key : "/etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem"
+
+
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true
+
+
+#logging.level: debug
