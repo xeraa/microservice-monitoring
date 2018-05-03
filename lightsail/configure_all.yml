@@ -195,6 +195,7 @@
         certificates:
           - "{{ inventory_hostname }}"
           - "kibana.{{ domain }}"
+          - "dashboard.{{ domain }}"
       when: inventory_hostname == "monitor." + domain
 
     - name: Create the certificate

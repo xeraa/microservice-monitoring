@@ -96,3 +96,14 @@ resource "aws_route53_record" "kibana" {
   }
   depends_on = ["aws_route53_record.monitor"]
 }
+resource "aws_route53_record" "dashboard" {
+  zone_id = "${var.zone_id}"
+  name    = "dashboard.${var.domain}"
+  type    = "A"
+  alias {
+    name                   = "monitor.${var.domain}"
+    zone_id                = "${var.zone_id}"
+    evaluate_target_health = false
+  }
+  depends_on = ["aws_route53_record.monitor"]
+}

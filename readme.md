@@ -80,7 +80,6 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
-* nginx always uses the dashboard user
 * Upgrade to Spring Boot 2
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * https://github.com/elastic/apm-agent-java
