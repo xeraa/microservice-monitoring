@@ -22,7 +22,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 * **Auditbeat**: Show changes to the */opt/* folder with the *[Auditbeat File Integrity] Overview* dashboard.
 * **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then kill the frontend application and see the change.
-* **Metricbeat nginx**: Show the values of `nginx.stubstatus` and optionally visualize `nginx.stubstatus.active` and `nginx.stubstatus.waiting`.
+* **Metricbeat nginx**: Show the *[Metricbeat Nginx] Overview* dashboard.
 * **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
 * **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
 * **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example to show the heap usage in percent by calculating the `jolokia.metrics.memory.heap_usage.used` divided by `jolokia.metrics.memory.heap_usage.max`.
