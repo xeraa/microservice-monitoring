@@ -113,22 +113,21 @@
     - name: Restart Filebeat and make sure it autostarts
       service: name=filebeat state=restarted enabled=yes
 
-    - name: Add a default index pattern using Filebeat and hide the X-Pack banner
-      uri:
-        url: "{{elasticsearch_host}}.kibana/doc/config:{{ elastic_version }}"
-        body_format: json
-        method: PUT
-        user: "{{ elasticsearch_user }}"
-        password: "{{ elasticsearch_password }}"
-        body:
-          type: config
-          config:
-            defaultIndex: "filebeat-*"
-            "xPackMonitoring:showBanner": false
-        status_code:
-          - 201
-          - 200
-      run_once: true
+    #- name: Set filebeat-* as the default index pattern
+    #  uri:
+    #    url: "{{kibana_host}}api/kibana/settings/defaultIndex"
+    #    body_format: json
+    #    method: POST
+    #    user: "{{ elasticsearch_user }}"
+    #    password: "{{ elasticsearch_password }}"
+    #    headers:
+    #      kbn-xsrf: kibana
+    #    body:
+    #      value: filebeat-*
+    #    status_code:
+    #      - 201
+    #      - 200
+    #  run_once: true
 
 
     # Metricbeat
