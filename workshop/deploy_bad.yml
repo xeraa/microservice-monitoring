@@ -1,0 +1,37 @@
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
+
+
+  post_tasks:
+    - include_tasks: include_event.yml
+      vars:
+        application: deploy_bad
+
+
+  tasks:
+
+    - name: Package the JAR
+      local_action: shell cd ../java/bad/; gradle build
+      become: false
+      changed_when: true
+
+    - name: Deploy our bad.jar
+      copy:
+        src: ../java/bad/build/libs/Bad-1.0.jar
+        dest: /opt/bad.jar
+        owner: ubuntu
+        group: ubuntu
+        mode: 0500
+
+    - name: Automatically run the bad.jar with a cron job
+      cron:
+        name: "Run /opt/bad.jar every 10 minutes"
+        minute: "*/6"
+        hour: "*"
+        job: "java -Xmx400m -jar /opt/bad.jar"

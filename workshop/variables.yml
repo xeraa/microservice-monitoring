@@ -1,0 +1,24 @@
+# Version to install
+elastic_version: 6.2.4
+elastic_download: https://artifacts.elastic.co
+
+
+# Elastic Cloud credentials
+elasticsearch_host: http://localhost:9200/
+elasticsearch_user: admin
+elasticsearch_password: secret
+kibana_host: http://localhost:5601
+
+
+# Setup of the infrastructure
+env: workshop
+domain: xeraa.wtf
+backend_server: http://localhost:8081
+frontend_server: http://localhost:8080
+zipkin_server: http://localhost:8082
+zipkin_kibana: https://localhost:5601/app/kibana#/discover?_a=(index:'filebeat-*',query:(language:lucene,query:'{traceId}'))
+
+
+# Public credentials for /health, /metrics, and Kibana dashboard-only mode
+attendee_user: admin
+attendee_password: secret

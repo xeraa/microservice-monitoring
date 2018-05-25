@@ -1,0 +1,22 @@
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
+
+
+  post_tasks:
+    - include_tasks: include_event.yml
+      vars:
+        application: deploy_backend
+
+
+  tasks:
+
+    - include_tasks: include_deploy_boot.yml
+      vars:
+        application: backend
+        port: 8081

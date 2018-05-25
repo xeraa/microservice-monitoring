@@ -1,0 +1,210 @@
+metricbeat.modules:
+
+- module: system
+  metricsets:
+    - cpu
+    - load
+    - core
+    - diskio
+    - filesystem
+    - fsstat
+    - memory
+    - network
+    - process
+    - process_summary
+    - socket
+  enabled: true
+  period: 10s
+  processes: ['.*']
+  cgroups: true
+  process.include_top_n:
+    enabled: true
+    by_cpu: 20
+    by_memory: 20
+
+- module: nginx
+  metricsets: ["stubstatus"]
+  enabled: true
+  period: 10s
+  hosts: ["https://{{ inventory_hostname }}"]
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8080"]
+  namespace: health
+  path: /health
+  method: GET
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
+  fields:
+    service: frontend
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8080"]
+  namespace: metrics
+  path: /metrics
+  method: GET
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
+  dedot.enabled: true #Fix the naming pattern of having "foo" and "foo.bar"
+  fields:
+    service: frontend
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8081"]
+  namespace: health
+  path: /health
+  method: GET
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
+  fields:
+    service: backend
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8081"]
+  namespace: metrics
+  path: /metrics
+  method: GET
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
+  dedot.enabled: true #Fix the naming pattern of having "foo" and "foo.bar"
+  fields:
+    service: backend
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8082"]
+  namespace: health
+  path: /health
+  method: GET
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
+  fields:
+    service: zipkin
+
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["localhost:8082"]
+  namespace: metrics
+  path: /metrics
+  method: GET
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
+  dedot.enabled: true #Fix the naming pattern of having "foo" and "foo.bar"
+  fields:
+    service: zipkin
+
+- module: jolokia
+  metricsets: ["jmx"]
+  hosts: ["localhost:8080"]
+  username: admin
+  password: secret
+  namespace: metrics
+  jmx.mappings:
+    - mbean: "java.lang:type=Runtime"
+      attributes:
+        - attr: Uptime
+          field: uptime
+    - mbean: "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
+      attributes:
+        - attr: CollectionTime
+          field: gc.cms_collection_time
+        - attr: CollectionCount
+          field: gc.cms_collection_count
+    - mbean: "java.lang:type=Memory"
+      attributes:
+        - attr: HeapMemoryUsage
+          field: memory.heap_usage
+        - attr: NonHeapMemoryUsage
+          field: memory.non_heap_usage
+  jmx.instance: "{{ inventory_hostname }}"
+  fields:
+    service: frontend
+
+- module: jolokia
+  metricsets: ["jmx"]
+  hosts: ["localhost:8081"]
+  username: admin
+  password: secret
+  namespace: metrics
+  jmx.mappings:
+    - mbean: "java.lang:type=Runtime"
+      attributes:
+        - attr: Uptime
+          field: uptime
+    - mbean: "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
+      attributes:
+        - attr: CollectionTime
+          field: gc.cms_collection_time
+        - attr: CollectionCount
+          field: gc.cms_collection_count
+    - mbean: "java.lang:type=Memory"
+      attributes:
+        - attr: HeapMemoryUsage
+          field: memory.heap_usage
+        - attr: NonHeapMemoryUsage
+          field: memory.non_heap_usage
+  jmx.instance: "{{ inventory_hostname }}"
+  fields:
+    service: backend
+
+- module: jolokia
+  metricsets: ["jmx"]
+  hosts: ["localhost:8082"]
+  username: admin
+  password: secret
+  namespace: metrics
+  jmx.mappings:
+    - mbean: "java.lang:type=Runtime"
+      attributes:
+        - attr: Uptime
+          field: uptime
+    - mbean: "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
+      attributes:
+        - attr: CollectionTime
+          field: gc.cms_collection_time
+        - attr: CollectionCount
+          field: gc.cms_collection_count
+    - mbean: "java.lang:type=Memory"
+      attributes:
+        - attr: HeapMemoryUsage
+          field: memory.heap_usage
+        - attr: NonHeapMemoryUsage
+          field: memory.non_heap_usage
+  jmx.instance: "{{ inventory_hostname }}"
+  fields:
+    service: zipkin
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true

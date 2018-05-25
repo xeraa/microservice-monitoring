@@ -1,0 +1,52 @@
+heartbeat.monitors:
+
+- type: http
+  urls: ["http://localhost:8080/health"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+- type: http
+  urls: ["http://localhost:8081/health"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+- type: http
+  urls: ["http://localhost:8082/health"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+- type: http
+  urls: ["{{ elasticsearch_host }}"]
+  username: {{ elasticsearch_user }}
+  password: {{ elasticsearch_password }}
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true

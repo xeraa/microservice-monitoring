@@ -1,0 +1,323 @@
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
+
+
+  pre_tasks:
+    - name: Install Python2 to make Ansible work
+      raw: sudo apt-get update && sudo apt-get -y install python-minimal
+
+
+  post_tasks:
+    - include_tasks: include_event.yml
+      vars:
+        application: configure_all
+
+
+  tasks:
+
+
+    # System
+    - name: Update and upgrade apt packages
+      apt: upgrade=dist
+
+    - name: Install NTP to avoid time drift and PIP to manage Python dependencies plus its build tools
+      apt: name={{ item }}
+      with_items:
+        - ntp
+        - ntpdate
+        - python3-pip
+        - build-essential
+        - libssl-dev
+        - libffi-dev
+        - git
+        - gradle
+
+    - name: Install the JRE
+      apt: name=openjdk-8-jdk install_recommends=no
+
+    - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
+      pip: name=pyopenssl
+
+
+    # Allow SSH login
+    - name: Add the user 'workshop' with the password 'secret'
+      user:
+        name: workshop
+        password: '$6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3lpdELN07/Kpo7EjjWnm9zusFg/LLFv6oc.ynu/'
+        groups: sudo
+        state: present
+
+    - name: Allow password based authentication for SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication yes'
+        state: present
+
+    - name: Allow our workshop user to log in via SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: 'AllowUsers ubuntu workshop'
+        state: present
+
+    - name: Restart SSH
+      service: name=ssh state=restarted
+
+
+
+    # osquery
+    - name: Add osquery's repository key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 1484120AC4E9F8A1A577AEEE97A80C63C9D8B80B
+        state: present
+
+    - name: Add osquery's server repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://osquery-packages.s3.amazonaws.com/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"
+        state: present
+
+    - name: Install osquery
+      apt: name=osquery update_cache=true
+
+    - name: Allow osquery to access the rsyslog.conf
+      blockinfile:
+        path: /etc/rsyslog.conf
+        block: |
+          template(
+            name="OsqueryCsvFormat"
+            type="string"
+            string="%timestamp:::date-rfc3339,csv%,%hostname:::csv%,%syslogseverity:::csv%,%syslogfacility-text:::csv%,%syslogtag:::csv%,%msg:::csv%\n"
+          )
+          *.* action(type="ompipe" Pipe="/var/osquery/syslog_pipe" template="OsqueryCsvFormat")
+
+    - name: Restart rsyslog
+      service: name=rsyslog state=restarted
+
+    - name: Add a configuration file for osquery
+      template: src=templates/osquery.conf dest=/etc/osquery/osquery.conf
+
+    - name: Restart osquery and make sure it autostarts
+      service: name=osqueryd state=restarted enabled=yes
+
+
+    # Elasticsearch
+    - name: Install Elasticsearch
+      apt: deb={{ elastic_download }}/downloads/elasticsearch/elasticsearch-{{ elastic_version }}.deb
+
+    - name: Stop Elasticsearch
+      service: name=elasticsearch state=stopped
+
+    - name: Change Elasticsearch's memory usage to 512MB
+      lineinfile:
+        dest: /etc/elasticsearch/jvm.options
+        regexp: "^-Xms"
+        line: "-Xms512m"
+        state: present
+    - lineinfile:
+        dest: /etc/elasticsearch/jvm.options
+        regexp: "^-Xmx"
+        line: "-Xmx512m"
+        state: present
+
+    - name: Do not swap
+      lineinfile:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: "bootstrap.memory_lock"
+        line: "bootstrap.memory_lock: true"
+      state: present
+
+    - name: Collect the list of installed Elasticsearch plugins
+      command: /usr/share/elasticsearch/bin/elasticsearch-plugin list
+      register: elasticsearch_plugins
+
+    - name: Add the ingest-geoip plugin to Elasticsearch
+      command: /usr/share/elasticsearch/bin/elasticsearch-plugin install ingest-geoip --batch
+      when: "'ingest-geoip' not in elasticsearch_plugins.stdout"
+
+    - name: Add the ingest-user-agent plugin to Elasticsearch
+      command: /usr/share/elasticsearch/bin/elasticsearch-plugin install ingest-user-agent --batch
+      when: "'ingest-user-agent' not in elasticsearch_plugins.stdout"
+
+    - name: Add X-Pack to Elasticsearch
+      command: /usr/share/elasticsearch/bin/elasticsearch-plugin install x-pack --batch
+      when: "'x-pack' not in elasticsearch_plugins.stdout"
+
+    - name: Remove a user for Elasticsearch (just in case we want to make any changes)
+      command: /usr/share/elasticsearch/bin/x-pack/users userdel {{ elasticsearch_user }}
+      ignore_errors: true
+
+    - name: Create a user for Elasticsearch
+      command: /usr/share/elasticsearch/bin/x-pack/users useradd {{ elasticsearch_user }} -p {{ elasticsearch_password }} -r superuser
+
+    - name: Restart Elasticsearch and make sure it autostarts
+      service: name=elasticsearch state=restarted enabled=yes
+
+    - name: Wait for Elasticsearch to become available
+      wait_for:
+        port: 9200
+        delay: 5
+
+    - name: Register a global index template
+      uri:
+        url: "{{elasticsearch_host}}_template/template_global"
+        body_format: json
+        method: PUT
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        body:
+          template: "*"
+          settings:
+            number_of_shards: 1
+            number_of_replicas: 0
+            refresh_interval: 2s
+        status_code:
+          - 201
+          - 200
+      run_once: true
+
+
+    # Kibana
+    - name: Install Kibana
+      apt: deb={{ elastic_download }}/downloads/kibana/kibana-{{ elastic_version }}-amd64.deb
+
+    - name: Stop Kibana
+      service: name=kibana state=stopped
+
+    - name: Make Kibana available on all network interfaces
+      lineinfile:
+        dest: /etc/kibana/kibana.yml
+        regexp: '^server.host'
+        line: 'server.host: "0.0.0.0"'
+
+    - name: Create the Kibana logging directory
+      file:
+        path: /var/log/kibana/
+        state: directory
+        owner: kibana
+        group: kibana
+
+    #- name: Enable persistent Kibana logs
+    #  lineinfile:
+    #    dest: /etc/kibana/kibana.yml
+    #    regexp: '^logging.dest'
+    #    line: 'logging.dest: /var/log/kibana/kibana.log'
+
+    - name: Collect the list of installed Kibana plugins
+      command: /usr/share/kibana/bin/kibana-plugin list
+      register: kibana_plugins
+
+    - name: Add X-Pack to Kibana — this will take a while
+      command: /usr/share/kibana/bin/kibana-plugin install x-pack
+      become: true
+      become_user: kibana
+      when: "'x-pack' not in kibana_plugins.stdout"
+
+    - name: Set the username for the Elasticsearch user
+      lineinfile:
+        dest: /etc/kibana/kibana.yml
+        regexp: "^elasticsearch.username"
+        line: "elasticsearch.username: {{ elasticsearch_user }}"
+        state: present
+
+    - name: Set the password for the Elasticsearch user
+      lineinfile:
+        dest: /etc/kibana/kibana.yml
+        regexp: "^elasticsearch.password"
+        line: "elasticsearch.password: {{ elasticsearch_password }}"
+        state: present
+
+    - name: Restart Kibana and make sure it autostarts
+      service: name=kibana state=restarted enabled=yes
+
+    - name: Wait for Kibana to become available, since later steps depend on this
+      wait_for:
+        port: 5601
+        delay: 5
+
+
+    # Filebeat
+    - name: Install Filebeat
+      apt: deb={{ elastic_download }}/downloads/beats/filebeat/filebeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Filebeat configuration
+      template: src=templates/filebeat.yml dest=/etc/filebeat/filebeat.yml
+
+    - name: Restart Filebeat and make sure it autostarts
+      service: name=filebeat state=restarted enabled=yes
+
+
+    # Metricbeat
+    - name: Install Metricbeat
+      apt: deb={{ elastic_download }}/downloads/beats/metricbeat/metricbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Metricbeat configuration
+      template: src=templates/metricbeat.yml dest=/etc/metricbeat/metricbeat.yml
+
+    - name: Restart Metricbeat and make sure it autostarts
+      service: name=metricbeat state=restarted enabled=yes
+
+
+    # Packetbeat
+    - name: Install Packetbeat
+      apt: deb={{ elastic_download }}/downloads/beats/packetbeat/packetbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Packetbeat configuration
+      template: src=templates/packetbeat.yml dest=/etc/packetbeat/packetbeat.yml
+
+    - name: Restart Packetbeat and make sure it autostarts
+      service: name=packetbeat state=restarted enabled=yes
+
+
+    # Auditbeat
+    - name: Install Auditbeat
+      apt: deb={{ elastic_download }}/downloads/beats/auditbeat/auditbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Auditbeat configuration
+      template: src=templates/auditbeat.yml dest=/etc/auditbeat/auditbeat.yml
+
+    - name: Restart Auditbeat and make sure it autostarts
+      service: name=auditbeat state=restarted enabled=yes
+
+
+    # Heartbeat
+    - name: Install Heartbeat
+      apt: deb={{ elastic_download }}/downloads/beats/heartbeat/heartbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Heartbeat configuration
+      template: src=templates/heartbeat.yml dest=/etc/heartbeat/heartbeat.yml
+
+    - name: Restart Heartbeat and make sure it autostarts
+      service: name=heartbeat-elastic state=restarted enabled=yes
+
+
+    # Watcher
+    - name: Add an example Watch from a local file
+      uri:
+        url: "{{elasticsearch_host}}_xpack/watcher/watch/heapsize"
+        body_format: json
+        method: PUT
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        body: "{{ lookup('file','alerting_heapsize.json') }}"
+        status_code:
+          - 201
+          - 200
+
+
+    # nginx
+    - name: Install nginx
+      apt: name=nginx
+
+    - name: Change the nginx configuration
+      template: src=templates/nginx.conf dest=/etc/nginx/sites-available/default
+
+    - name: Restart nginx and make sure it autostarts
+      service: name=nginx state=restarted enabled=yes

@@ -1,0 +1,21 @@
+- name: Get the local user
+  command: whoami
+  register: local_username
+  delegate_to: 127.0.0.1
+  become: false
+  changed_when: false
+
+- name: Store the playbook run event in Elasticsearch so it can be used as an annotation
+  uri:
+    url: "{{elasticsearch_host}}events/deployment"
+    body_format: json
+    method: POST
+    user: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+    body:
+      "@timestamp": "{{ ansible_date_time.iso8601 }}"
+      application: "{{ application }}"
+      system: ansible
+      host: "{{ inventory_hostname }}"
+      user: "{{ local_username.stdout }}"
+    status_code: 201

@@ -1,0 +1,57 @@
+packetbeat.interfaces.device: any
+
+
+packetbeat.flows:
+  timeout: 30s
+  period: 10s
+
+
+packetbeat.protocols:
+
+- type: icmp
+  enabled: true
+
+- type: dns
+  ports: [53]
+
+- type: http
+  ports: [80, 8080, 8081, 8082]
+  real_ip_header: "X-Forwarded-For"
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+
+- add_cloud_metadata: ~
+
+- drop_event:
+    when:
+      or:
+        # Exclude traces from Zipkin
+        - contains.path: "/api/v"
+        # Exclude Jolokia calls
+        - contains.path: "/jolokia/?"
+        # Exclude pinging metrics
+        - equals.path: "/metrics"
+        # Exclude pinging health
+        - equals.path: "/health"
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true

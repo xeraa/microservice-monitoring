@@ -63,6 +63,18 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 
 
+### Workshop
+
+Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the ports: 5601, 8082
+
+Credentials:
+
+* SSH: `ssh workshop@workshop-<number>.xeraa.wtf` / workshop / secret
+* Elasticsearch: `http://localhost:9200` / admin / secret
+* Kibana: `http://workshop-<number>.xeraa.wtf:5601` / admin / secret
+
+
+
 ### Local
 
 Make sure you have run this before the demo, because some steps take time and require a decent internet connection.
