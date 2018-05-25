@@ -1,2 +1,7 @@
 [all]
 workshop-[0:0].xeraa.wtf ansible_python_interpreter=/usr/bin/python3
+
+
+# If there are a lot of hosts and you run into concurrency issues, try to split them up and run with --limit='group0'
+#[group0]
+#workshop-[0:4].xeraa.wtf ansible_python_interpreter=/usr/bin/python3
