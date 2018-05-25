@@ -25,7 +25,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 * **Metricbeat nginx**: Show the *[Metricbeat Nginx] Overview* dashboard.
 * **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
 * **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
-* **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example to show the heap usage in percent by calculating the `jolokia.metrics.memory.heap_usage.used` divided by `jolokia.metrics.memory.heap_usage.max`.
+* **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example to show the heap usage in percent by calculating the average of `jolokia.metrics.memory.heap_usage.used` divided by the max of `jolokia.metrics.memory.heap_usage.max`.
 
 ![](img/heap-usage.png)
 
@@ -69,9 +69,9 @@ Very similar to the Lightsail setup above. The main difference is that everythin
 
 Credentials:
 
-* SSH: `ssh workshop@workshop-<number>.xeraa.wtf` / workshop / secret
-* Elasticsearch: `http://localhost:9200` / admin / secret
-* Kibana: `http://workshop-<number>.xeraa.wtf:5601` / admin / secret
+* SSH: `ssh workshop@workshop-<number>.xeraa.wtf` workshop / secret
+* Elasticsearch: `http://localhost:9200` admin / secret
+* Kibana: `http://workshop-<number>.xeraa.wtf:5601` admin / secret
 
 
 

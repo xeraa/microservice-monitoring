@@ -181,7 +181,6 @@
         status_code:
           - 201
           - 200
-      run_once: true
 
 
     # Kibana
