@@ -225,11 +225,11 @@
         owner: kibana
         group: kibana
 
-    #- name: Enable persistent Kibana logs
-    #  lineinfile:
-    #    dest: /etc/kibana/kibana.yml
-    #    regexp: '^logging.dest'
-    #    line: 'logging.dest: /var/log/kibana/kibana.log'
+    - name: Enable persistent Kibana logs
+      lineinfile:
+        dest: /etc/kibana/kibana.yml
+        regexp: '^logging.dest'
+        line: 'logging.dest: /var/log/kibana/kibana.log'
 
     - name: Set the username for the Elasticsearch user
       lineinfile:
