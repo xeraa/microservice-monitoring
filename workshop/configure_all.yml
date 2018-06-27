@@ -38,7 +38,7 @@
         - git
         - gradle
 
-    - name: Install the JRE
+    - name: Install the JDK
       apt: name=openjdk-8-jdk install_recommends=no
 
     - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
