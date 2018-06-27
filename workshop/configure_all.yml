@@ -64,7 +64,7 @@
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers'
-        line: 'AllowUsers ubuntu workshop'
+        line: 'AllowUsers ubuntu {{ ssh_user }}'
         state: present
 
     - name: Restart SSH

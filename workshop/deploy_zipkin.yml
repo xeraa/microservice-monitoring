@@ -19,4 +19,4 @@
     - include_tasks: include_deploy_boot.yml
       vars:
         application: zipkin
-        port: 8082
+        port: 8200

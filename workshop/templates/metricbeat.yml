@@ -26,12 +26,12 @@ metricbeat.modules:
   metricsets: ["stubstatus"]
   enabled: true
   period: 10s
-  hosts: ["https://{{ inventory_hostname }}"]
+  hosts: ["{{ inventory_hostname }}"]
 
 - module: http
   metricsets: ["json"]
   period: 10s
-  hosts: ["localhost:8080"]
+  hosts: ["{{ frontend_server }}"]
   namespace: health
   path: /health
   method: GET
@@ -43,7 +43,7 @@ metricbeat.modules:
 - module: http
   metricsets: ["json"]
   period: 10s
-  hosts: ["localhost:8080"]
+  hosts: ["{{ frontend_server }}"]
   namespace: metrics
   path: /metrics
   method: GET
@@ -56,7 +56,7 @@ metricbeat.modules:
 - module: http
   metricsets: ["json"]
   period: 10s
-  hosts: ["localhost:8081"]
+  hosts: ["{{ backend_server }}"]
   namespace: health
   path: /health
   method: GET
@@ -68,7 +68,7 @@ metricbeat.modules:
 - module: http
   metricsets: ["json"]
   period: 10s
-  hosts: ["localhost:8081"]
+  hosts: ["{{ backend_server }}"]
   namespace: metrics
   path: /metrics
   method: GET
@@ -81,7 +81,7 @@ metricbeat.modules:
 - module: http
   metricsets: ["json"]
   period: 10s
-  hosts: ["localhost:8082"]
+  hosts: ["{{ zipkin_server }}"]
   namespace: health
   path: /health
   method: GET
@@ -93,7 +93,7 @@ metricbeat.modules:
 - module: http
   metricsets: ["json"]
   period: 10s
-  hosts: ["localhost:8082"]
+  hosts: ["{{ zipkin_server }}"]
   namespace: metrics
   path: /metrics
   method: GET
@@ -105,7 +105,7 @@ metricbeat.modules:
 
 - module: jolokia
   metricsets: ["jmx"]
-  hosts: ["localhost:8080"]
+  hosts: ["{{ frontend_server }}"]
   username: admin
   password: secret
   namespace: metrics
@@ -132,7 +132,7 @@ metricbeat.modules:
 
 - module: jolokia
   metricsets: ["jmx"]
-  hosts: ["localhost:8081"]
+  hosts: ["{{ backend_server }}"]
   username: admin
   password: secret
   namespace: metrics
@@ -159,7 +159,7 @@ metricbeat.modules:
 
 - module: jolokia
   metricsets: ["jmx"]
-  hosts: ["localhost:8082"]
+  hosts: ["{{ zipkin_server }}"]
   username: admin
   password: secret
   namespace: metrics

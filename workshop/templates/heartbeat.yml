@@ -1,19 +1,19 @@
 heartbeat.monitors:
 
 - type: http
-  urls: ["http://localhost:8080/health"]
+  urls: ["{{ frontend_server }}/health"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
-  urls: ["http://localhost:8081/health"]
+  urls: ["{{ backend_server }}/health"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
-  urls: ["http://localhost:8082/health"]
+  urls: ["{{ zipkin_server }}/health"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
