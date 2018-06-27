@@ -20,6 +20,7 @@
       local_action: shell cd ../java/bad/; gradle build
       become: false
       changed_when: true
+      run_once: true
 
     - name: Deploy our bad.jar
       copy:
