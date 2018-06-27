@@ -93,14 +93,26 @@ metricbeat.modules:
       attributes:
         - attr: CollectionTime
           field: gc.cms_collection_time
+          event: gc
         - attr: CollectionCount
           field: gc.cms_collection_count
+          event: gc
     - mbean: "java.lang:type=Memory"
       attributes:
         - attr: HeapMemoryUsage
           field: memory.heap_usage
+          event: heap
         - attr: NonHeapMemoryUsage
           field: memory.non_heap_usage
+          event: heap
+    - mbean: "java.lang:type=Threading"
+      attributes:
+        - attr: ThreadCount
+          field: thread.count
+          event: thread
+        - attr: DaemonThreadCount
+          field: thread.daemon
+          event: thread
   jmx.instance: "{{ inventory_hostname }}"
   fields:
     service: frontend
@@ -120,12 +132,15 @@ metricbeat.modules:
       attributes:
         - attr: CollectionTime
           field: gc.cms_collection_time
+          event: gc
         - attr: CollectionCount
           field: gc.cms_collection_count
+          event: gc
     - mbean: "java.lang:type=Memory"
       attributes:
         - attr: HeapMemoryUsage
           field: memory.heap_usage
+          event: heap
         - attr: NonHeapMemoryUsage
           field: memory.non_heap_usage
           event: heap
