@@ -15,7 +15,7 @@ packetbeat.protocols:
   ports: [53]
 
 - type: http
-  ports: [80, 8080, 8081, 8082]
+  ports: [80, 5601, 8080, 8081, 8200]
   real_ip_header: "X-Forwarded-For"
 
 
