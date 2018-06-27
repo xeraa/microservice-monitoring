@@ -57,8 +57,12 @@
     owner: ubuntu
     group: ubuntu
 
-- name: Restart the JAR, make sure it autostarts, and reload the configuration
-  systemd: name="{{ application }}" state=restarted enabled=yes daemon_reload=yes
+- name: Reload the configuration and make the service autostart
+  systemd: name="{{ application }}" enabled=yes daemon_reload=yes
+  ignore_errors: true
+
+- name: Restart the service
+  systemd: name="{{ application }}" state=restarted
 
 - name: Wait for the Java application to start up
   pause: seconds=30
