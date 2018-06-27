@@ -115,18 +115,18 @@
     - name: Stop Elasticsearch
       service: name=elasticsearch state=stopped
 
-    - name: Change Elasticsearch's minimum memory usage to 512MB
+    - name: Change Elasticsearch's minimum memory usage
       lineinfile:
         dest: /etc/elasticsearch/jvm.options
         regexp: "^-Xms"
-        line: "-Xms512m"
+        line: "-Xms768m"
         state: present
 
-    - name: Change Elasticsearch's maximum memory usage to 512MB
+    - name: Change Elasticsearch's maximum memory usage
       lineinfile:
         dest: /etc/elasticsearch/jvm.options
         regexp: "^-Xmx"
-        line: "-Xmx512m"
+        line: "-Xmx768m"
         state: present
 
     - name: Do not swap
