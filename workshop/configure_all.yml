@@ -134,6 +134,20 @@
         line: "bootstrap.memory_lock: true"
       state: present
 
+    - name: Enable monitoring of the Elastic Stack components
+      lineinfile:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: "xpack.monitoring.collection.enabled"
+        line: "xpack.monitoring.collection.enabled: true"
+        state: present
+
+    - name: Enable security
+      lineinfile:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: "xpack.security.enabled"
+        line: "xpack.security.enabled: true"
+        state: present
+
     - name: Collect the list of installed Elasticsearch plugins
       command: /usr/share/elasticsearch/bin/elasticsearch-plugin list
       register: elasticsearch_plugins
@@ -146,16 +160,12 @@
       command: /usr/share/elasticsearch/bin/elasticsearch-plugin install ingest-user-agent --batch
       when: "'ingest-user-agent' not in elasticsearch_plugins.stdout"
 
-    - name: Add X-Pack to Elasticsearch
-      command: /usr/share/elasticsearch/bin/elasticsearch-plugin install x-pack --batch
-      when: "'x-pack' not in elasticsearch_plugins.stdout"
-
     - name: Remove a user for Elasticsearch (just in case we want to make any changes)
-      command: /usr/share/elasticsearch/bin/x-pack/users userdel {{ elasticsearch_user }}
+      command: /usr/share/elasticsearch/bin/elasticsearch-users userdel {{ elasticsearch_user }}
       ignore_errors: true
 
     - name: Create a user for Elasticsearch
-      command: /usr/share/elasticsearch/bin/x-pack/users useradd {{ elasticsearch_user }} -p {{ elasticsearch_password }} -r superuser
+      command: /usr/share/elasticsearch/bin/elasticsearch-users useradd {{ elasticsearch_user }} -p {{ elasticsearch_password }} -r superuser
 
     - name: Restart Elasticsearch and make sure it autostarts
       service: name=elasticsearch state=restarted enabled=yes
@@ -164,6 +174,16 @@
       wait_for:
         port: 9200
         delay: 5
+
+    - name: Active the 30 day X-Pack trial
+      uri:
+        url: "{{elasticsearch_host}}_xpack/license/start_trial?acknowledge=true"
+        method: POST
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        status_code:
+          - 200
+          - 403 #Trial was already activated
 
     - name: Register a global index template
       uri:
@@ -208,16 +228,6 @@
     #    dest: /etc/kibana/kibana.yml
     #    regexp: '^logging.dest'
     #    line: 'logging.dest: /var/log/kibana/kibana.log'
-
-    - name: Collect the list of installed Kibana plugins
-      command: /usr/share/kibana/bin/kibana-plugin list
-      register: kibana_plugins
-
-    - name: Add X-Pack to Kibana — this will take a while
-      command: /usr/share/kibana/bin/kibana-plugin install x-pack
-      become: true
-      become_user: kibana
-      when: "'x-pack' not in kibana_plugins.stdout"
 
     - name: Set the username for the Elasticsearch user
       lineinfile:

@@ -1,5 +1,5 @@
 # Version to install
-elastic_version: 6.2.4
+elastic_version: 6.3.0
 elastic_download: https://artifacts.elastic.co
 
 
