@@ -134,7 +134,7 @@
         dest: /etc/elasticsearch/elasticsearch.yml
         regexp: "bootstrap.memory_lock"
         line: "bootstrap.memory_lock: true"
-      state: present
+        state: present
 
     - name: Enable monitoring of the Elastic Stack components
       lineinfile:
