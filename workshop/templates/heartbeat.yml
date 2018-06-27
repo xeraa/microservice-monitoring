@@ -33,6 +33,7 @@ tags: ["{{ env }}", "lightsail"]
 
 processors:
 - add_cloud_metadata: ~
+- add_host_metadata: ~
 
 
 xpack.monitoring.enabled: true
