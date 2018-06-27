@@ -17,7 +17,7 @@ ssh_user: workshop
 ssh_password: $6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3lpdELN07/Kpo7EjjWnm9zusFg/LLFv6oc.ynu/ # "secret", generate with mkpasswd --method=sha-512
 backend_server: http://localhost:8081
 frontend_server: http://localhost:8080
-zipkin_server: http://localhost:8082
+zipkin_server: http://localhost:8200
 zipkin_kibana: https://localhost:5601/app/kibana#/discover?_a=(index:'filebeat-*',query:(language:lucene,query:'{traceId}'))
 
 

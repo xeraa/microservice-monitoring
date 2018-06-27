@@ -65,7 +65,7 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 ### Workshop
 
-Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the ports: 5601, 8082
+Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the ports: 5601, 8200
 
 Credentials:
 
