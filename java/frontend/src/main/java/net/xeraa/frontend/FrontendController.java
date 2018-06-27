@@ -45,6 +45,7 @@ public class FrontendController {
 			MDC.put("name", name);
 		}
 		log.log(Level.INFO, "Calling something good");
+		MDC.clear();
 	}
 
 	@RequestMapping("/bad")
