@@ -34,8 +34,6 @@ processors:
 - drop_event:
     when:
       or:
-        # Exclude traces from Zipkin
-        - contains.path: "/api/v"
         # Exclude Jolokia calls
         - contains.path: "/jolokia/?"
         # Exclude pinging metrics

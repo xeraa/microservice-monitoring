@@ -163,6 +163,14 @@
       service: name=packetbeat state=restarted enabled=yes
 
 
+    # APM
+    - name: Fetch the APM agent
+      get_url:
+        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java }}/elastic-apm-agent-{{ apm_java }}.jar"
+        dest: "/opt/elastic-apm-agent-{{ apm_java }}.jar"
+        mode: 0444
+
+
     # nginx
     - name: Install nginx
       apt: name=nginx

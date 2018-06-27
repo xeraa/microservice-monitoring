@@ -33,8 +33,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ![](img/heap-usage-annotated.png)
 
-* **Sleuth & Zipkin**: Show the traces in the log so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like.
-  Also use the [Zipkin Chrome extension](https://github.com/openzipkin/zipkin-browser-extension) to show the current call. And you can even use the `ZIPKIN_UI_LOGS_URL` to link back to the relevant Kibana logs.
+* **APM**: Show the traces so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like.
 * **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 
@@ -65,7 +64,7 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 ### Workshop
 
-Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the ports: 5601, 8200
+Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the port 5601 for Kibana (Elasticsearch, APM,... are only accessible on localhost).
 
 Credentials:
 
@@ -94,7 +93,6 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 * Upgrade to Spring Boot 2
 * https://codecentric.github.io/chaos-monkey-spring-boot/
-* https://github.com/elastic/apm-agent-java
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
 * MySQL on the backend with TCP Heartbeat monitoring
 * Docker

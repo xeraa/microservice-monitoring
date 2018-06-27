@@ -28,6 +28,7 @@ metricbeat.modules:
   period: 10s
   hosts: ["https://{{ inventory_hostname }}"]
 
+{% if inventory_hostname_short != 'monitor' %}
 - module: http
   metricsets: ["json"]
   period: 10s
@@ -85,6 +86,7 @@ metricbeat.modules:
           field: thread.daemon
           event: thread
   jmx.instance: "{{ inventory_hostname }}"
+{% endif %}
 
 
 name: "{{ inventory_hostname }}"

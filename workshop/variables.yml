@@ -19,7 +19,6 @@ ssh_password: $6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3l
 frontend_server: localhost:8080
 backend_server: localhost:8081
 apm_server: localhost:8200
-apm_binary: /opt/
 
 
 # Public credentials for /health, /metrics, and Kibana dashboard-only mode

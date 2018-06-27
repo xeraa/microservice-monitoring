@@ -13,12 +13,6 @@ heartbeat.monitors:
   check.response.status: 200
 
 - type: http
-  urls: ["https://monitor.{{ domain }}/health"]
-  schedule: "@every 10s"
-  timeout: 3s
-  check.response.status: 200
-
-- type: http
   urls: ["https://kibana.{{ domain }}"]
   schedule: "@every 10s"
   timeout: 3s
@@ -31,6 +25,11 @@ heartbeat.monitors:
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
+
+- type: tcp
+  hosts: ["{{ apm_server }}"]
+  schedule: "@every 10s"
+  timeout: 3s
 
 
 name: "{{ inventory_hostname }}"

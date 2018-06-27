@@ -1,5 +1,6 @@
 filebeat.prospectors:
 
+{% if inventory_hostname_short != 'monitor' %}
 # Collect the JSON log files from the Spring Boot apps
 - type: log
   paths:
@@ -8,6 +9,7 @@ filebeat.prospectors:
   fields:
     application: java
   json.message_key: log
+{% endif %}
 
 
 filebeat.modules:

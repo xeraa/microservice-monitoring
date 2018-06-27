@@ -16,8 +16,7 @@ env: production
 domain: xeraa.wtf
 backend_server: https://backend.{{ domain }}
 frontend_server: https://frontend.{{ domain }}
-zipkin_server: https://monitor.{{ domain }}
-zipkin_kibana: https://kibana.{{ domain }}/app/kibana#/discover?_a=(index:'filebeat-*',query:(language:lucene,query:'{traceId}'))
+apm_server: http://monitor.{{ domain }}:8200
 
 
 # Public credentials for /health, /metrics, and Kibana dashboard-only mode
