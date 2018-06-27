@@ -339,6 +339,24 @@
           - 200
 
 
+    # APM
+    - name: Install APM
+      apt: deb={{ elastic_download }}/downloads/apm-server/apm-server-{{ elastic_version }}-amd64.deb
+
+    - name: Change the APM configuration
+      template: src=templates/apm-server.yml dest=/etc/apm-server/apm-server.yml
+
+    - name: Restart APM and make sure it autostarts
+      service: name=apm-server state=restarted enabled=yes
+
+    - name: Fetch the APM agent
+      get_url:
+        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java }}/elastic-apm-agent-{{ apm_java }}.jar"
+        dest: "/opt/elastic-apm-agent-{{ apm_java }}.jar"
+        mode: 0444
+
+
+
     # nginx
     - name: Install nginx
       apt: name=nginx

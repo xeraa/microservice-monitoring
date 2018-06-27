@@ -2,9 +2,7 @@ package net.xeraa.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -20,9 +18,6 @@ public class BackendController {
 
     @Autowired
     private RestTemplate restTemplate;
-
-    @Autowired
-    private Tracer tracer;
 
     @Autowired
     private Random random;
@@ -47,7 +42,7 @@ public class BackendController {
     public String backgroundTask1() throws InterruptedException {
         int millis = this.random.nextInt(1000);
         Thread.sleep(millis);
-        this.tracer.addTag("background-sleep-millis", String.valueOf(millis));
+        //this.tracer.addTag("background-sleep-millis", String.valueOf(millis));
         log.log(Level.INFO, () -> String.format("Background task ran with a delay of %s ms", millis));
         return "This ";
     }
@@ -55,7 +50,7 @@ public class BackendController {
     public String backgroundTask2() throws InterruptedException {
         int millis = this.random.nextInt(1000);
         Thread.sleep(millis);
-        this.tracer.addTag("background-sleep-millis", String.valueOf(millis));
+        //this.tracer.addTag("background-sleep-millis", String.valueOf(millis));
         log.log(Level.INFO, () -> String.format("Background task ran with a delay of %s ms", millis));
         return "is ";
     }

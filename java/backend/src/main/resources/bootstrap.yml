@@ -13,10 +13,3 @@ security:
 management.security:
   enabled: true
   roles: SUPERUSER
-
-# Trace 100% of the calls (default is 10%) and exclude the automatic pingers
-spring.sleuth.sampler.percentage: 1.0
-spring.sleuth.web.skipPattern: (^/jolokia.*|^/health.*|^/metrics.*)
-
-# Configure the Zipkin server
-spring.zipkin.baseUrl: ${ZIPKIN_SERVER:'http://localhost:9411'}

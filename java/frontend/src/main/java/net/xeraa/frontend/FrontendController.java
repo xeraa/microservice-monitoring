@@ -3,8 +3,6 @@ package net.xeraa.frontend;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.sleuth.SpanAccessor;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +20,6 @@ public class FrontendController {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
-	@Autowired
-	private Tracer tracer;
-
-	@Autowired
-	private SpanAccessor accessor;
 
 	@Autowired
 	private Random random;
@@ -65,7 +57,7 @@ public class FrontendController {
 		String callUrl = backendUrl + "/slow";
 		int millis = this.random.nextInt(2000);
 		Thread.sleep(millis);
-		this.tracer.addTag("random-sleep-millis", String.valueOf(millis));
+		//this.tracer.addTag("random-sleep-millis", String.valueOf(millis));
 		model.addAttribute("returnValue", restTemplate.getForObject(callUrl, String.class));
 		log.log(Level.INFO, () -> String.format("Calling %s with a delay of %s ms", callUrl, millis));
 	}
@@ -75,7 +67,7 @@ public class FrontendController {
 		String callUrl = frontendUrl + "/bad";
 		int millis = this.random.nextInt(2000);
 		Thread.sleep(millis);
-		this.tracer.addTag("random-sleep-millis", String.valueOf(millis));
+		//this.tracer.addTag("random-sleep-millis", String.valueOf(millis));
 		restTemplate.getForObject(callUrl, String.class);
 		log.log(Level.INFO, () -> String.format("Calling %s with a delay of %s ms", callUrl, millis));
 	}

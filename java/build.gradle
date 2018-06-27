@@ -3,8 +3,6 @@ buildscript {
 		springBootVersion = '1.5.13.RELEASE'
 		springCloudVersion = 'Dalston.SR5'
 		logbackEncoderVersion = '5.0'
-		zipkinVersion = '2.7.5'
-		elasticApmVersion = '0.1.2'
 	}
 	repositories {
 		mavenCentral()

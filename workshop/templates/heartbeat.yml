@@ -13,18 +13,17 @@ heartbeat.monitors:
   check.response.status: 200
 
 - type: http
-  urls: ["{{ zipkin_server }}/health"]
-  schedule: "@every 10s"
-  timeout: 3s
-  check.response.status: 200
-
-- type: http
   urls: ["{{ elasticsearch_host }}"]
   username: {{ elasticsearch_user }}
   password: {{ elasticsearch_password }}
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
+
+- type: tcp
+  hosts: ["{{ apm_server }}"]
+  schedule: "@every 10s"
+  timeout: 3s
 
 
 name: "{{ inventory_hostname }}"

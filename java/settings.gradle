@@ -1,1 +1,1 @@
-include 'backend', 'bad', 'frontend', 'zipkin'
+include 'backend', 'bad', 'frontend'

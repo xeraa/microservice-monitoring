@@ -1,6 +1,7 @@
 # Version to install
 elastic_version: 6.3.0
 elastic_download: https://artifacts.elastic.co
+apm_java: 0.5.1
 
 
 # Elasticsearch credentials
@@ -17,8 +18,8 @@ ssh_user: workshop
 ssh_password: $6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3lpdELN07/Kpo7EjjWnm9zusFg/LLFv6oc.ynu/ # "secret", generate with mkpasswd --method=sha-512
 frontend_server: localhost:8080
 backend_server: localhost:8081
-zipkin_server: localhost:8200
-zipkin_kibana: http://localhost:5601/app/kibana#/discover?_a=(index:'filebeat-*',query:(language:lucene,query:'{traceId}'))
+apm_server: localhost:8200
+apm_binary: /opt/
 
 
 # Public credentials for /health, /metrics, and Kibana dashboard-only mode

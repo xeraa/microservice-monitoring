@@ -78,31 +78,6 @@ metricbeat.modules:
   fields:
     service: backend
 
-- module: http
-  metricsets: ["json"]
-  period: 10s
-  hosts: ["{{ zipkin_server }}"]
-  namespace: health
-  path: /health
-  method: GET
-  username: {{ attendee_user }}
-  password: {{ attendee_password }}
-  fields:
-    service: zipkin
-
-- module: http
-  metricsets: ["json"]
-  period: 10s
-  hosts: ["{{ zipkin_server }}"]
-  namespace: metrics
-  path: /metrics
-  method: GET
-  username: {{ attendee_user }}
-  password: {{ attendee_password }}
-  dedot.enabled: true #Fix the naming pattern of having "foo" and "foo.bar"
-  fields:
-    service: zipkin
-
 - module: jolokia
   metricsets: ["jmx"]
   hosts: ["{{ frontend_server }}"]
@@ -153,36 +128,18 @@ metricbeat.modules:
           field: memory.heap_usage
         - attr: NonHeapMemoryUsage
           field: memory.non_heap_usage
+          event: heap
+    - mbean: "java.lang:type=Threading"
+      attributes:
+        - attr: ThreadCount
+          field: thread.count
+          event: thread
+        - attr: DaemonThreadCount
+          field: thread.daemon
+          event: thread
   jmx.instance: "{{ inventory_hostname }}"
   fields:
     service: backend
-
-- module: jolokia
-  metricsets: ["jmx"]
-  hosts: ["{{ zipkin_server }}"]
-  username: admin
-  password: secret
-  namespace: metrics
-  jmx.mappings:
-    - mbean: "java.lang:type=Runtime"
-      attributes:
-        - attr: Uptime
-          field: uptime
-    - mbean: "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
-      attributes:
-        - attr: CollectionTime
-          field: gc.cms_collection_time
-        - attr: CollectionCount
-          field: gc.cms_collection_count
-    - mbean: "java.lang:type=Memory"
-      attributes:
-        - attr: HeapMemoryUsage
-          field: memory.heap_usage
-        - attr: NonHeapMemoryUsage
-          field: memory.non_heap_usage
-  jmx.instance: "{{ inventory_hostname }}"
-  fields:
-    service: zipkin
 
 
 name: "{{ inventory_hostname }}"

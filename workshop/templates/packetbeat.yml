@@ -15,7 +15,7 @@ packetbeat.protocols:
   ports: [53]
 
 - type: http
-  ports: [80, 5601, 8080, 8081, 8200]
+  ports: [80, 5601, 8080, 8081]
   real_ip_header: "X-Forwarded-For"
 
 
@@ -31,8 +31,6 @@ processors:
 - drop_event:
     when:
       or:
-        # Exclude traces from Zipkin
-        - contains.path: "/api/v"
         # Exclude Jolokia calls
         - contains.path: "/jolokia/?"
         # Exclude pinging metrics

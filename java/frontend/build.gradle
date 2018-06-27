@@ -15,10 +15,7 @@ dependencies {
 			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
 			'org.springframework.boot:spring-boot-starter-security',
 			'org.springframework.boot:spring-boot-starter-actuator',
-			'org.springframework.cloud:spring-cloud-starter-sleuth',
-			'org.springframework.cloud:spring-cloud-sleuth-zipkin',
-			'org.jolokia:jolokia-core',
-			"co.elastic.apm:apm-agent-java:${elasticApmVersion}"
+			'org.jolokia:jolokia-core'
 	)
 }
 
