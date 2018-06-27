@@ -46,10 +46,10 @@
 
 
     # Allow SSH login
-    - name: Add the user 'workshop' with the password 'secret'
+    - name: Add the user for the workshop attendees
       user:
-        name: workshop
-        password: '$6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3lpdELN07/Kpo7EjjWnm9zusFg/LLFv6oc.ynu/'
+        name: "{{ ssh_user }}"
+        password: "{{ssh_password }}"
         groups: sudo
         state: present
 
@@ -115,13 +115,15 @@
     - name: Stop Elasticsearch
       service: name=elasticsearch state=stopped
 
-    - name: Change Elasticsearch's memory usage to 512MB
+    - name: Change Elasticsearch's minimum memory usage to 512MB
       lineinfile:
         dest: /etc/elasticsearch/jvm.options
         regexp: "^-Xms"
         line: "-Xms512m"
         state: present
-    - lineinfile:
+
+    - name: Change Elasticsearch's maximum memory usage to 512MB
+      lineinfile:
         dest: /etc/elasticsearch/jvm.options
         regexp: "^-Xmx"
         line: "-Xmx512m"
@@ -199,8 +201,8 @@
             number_of_replicas: 0
             refresh_interval: 2s
         status_code:
-          - 201
           - 200
+          - 201
 
 
     # Kibana
@@ -252,6 +254,17 @@
         delay: 5
 
 
+    # Auditbeat
+    - name: Install Auditbeat
+      apt: deb={{ elastic_download }}/downloads/beats/auditbeat/auditbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Auditbeat configuration
+      template: src=templates/auditbeat.yml dest=/etc/auditbeat/auditbeat.yml
+
+    - name: Restart Auditbeat and make sure it autostarts
+      service: name=auditbeat state=restarted enabled=yes
+
+
     # Filebeat
     - name: Install Filebeat
       apt: deb={{ elastic_download }}/downloads/beats/filebeat/filebeat-{{ elastic_version }}-amd64.deb
@@ -261,6 +274,17 @@
 
     - name: Restart Filebeat and make sure it autostarts
       service: name=filebeat state=restarted enabled=yes
+
+
+    # Heartbeat
+    - name: Install Heartbeat
+      apt: deb={{ elastic_download }}/downloads/beats/heartbeat/heartbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Heartbeat configuration
+      template: src=templates/heartbeat.yml dest=/etc/heartbeat/heartbeat.yml
+
+    - name: Restart Heartbeat and make sure it autostarts
+      service: name=heartbeat-elastic state=restarted enabled=yes
 
 
     # Metricbeat
@@ -273,6 +297,22 @@
     - name: Restart Metricbeat and make sure it autostarts
       service: name=metricbeat state=restarted enabled=yes
 
+    #- name: Set metricbeat-* as the default index pattern
+    #  uri:
+    #    url: "{{kibana_host}}api/kibana/settings/defaultIndex"
+    #    body_format: json
+    #    method: POST
+    #    user: "{{ elasticsearch_user }}"
+    #    password: "{{ elasticsearch_password }}"
+    #    headers:
+    #      kbn-xsrf: kibana
+    #    body:
+    #      value: metricbeat-*
+    #    status_code:
+    #      - 201
+    #      - 200
+    #  run_once: true
+
 
     # Packetbeat
     - name: Install Packetbeat
@@ -283,28 +323,6 @@
 
     - name: Restart Packetbeat and make sure it autostarts
       service: name=packetbeat state=restarted enabled=yes
-
-
-    # Auditbeat
-    - name: Install Auditbeat
-      apt: deb={{ elastic_download }}/downloads/beats/auditbeat/auditbeat-{{ elastic_version }}-amd64.deb
-
-    - name: Change the Auditbeat configuration
-      template: src=templates/auditbeat.yml dest=/etc/auditbeat/auditbeat.yml
-
-    - name: Restart Auditbeat and make sure it autostarts
-      service: name=auditbeat state=restarted enabled=yes
-
-
-    # Heartbeat
-    - name: Install Heartbeat
-      apt: deb={{ elastic_download }}/downloads/beats/heartbeat/heartbeat-{{ elastic_version }}-amd64.deb
-
-    - name: Change the Heartbeat configuration
-      template: src=templates/heartbeat.yml dest=/etc/heartbeat/heartbeat.yml
-
-    - name: Restart Heartbeat and make sure it autostarts
-      service: name=heartbeat-elastic state=restarted enabled=yes
 
 
     # Watcher
