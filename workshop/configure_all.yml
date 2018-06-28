@@ -51,6 +51,7 @@
         name: "{{ ssh_user }}"
         password: "{{ssh_password }}"
         groups: sudo
+        shell: /bin/bash
         state: present
 
     - name: Allow password based authentication for SSH
