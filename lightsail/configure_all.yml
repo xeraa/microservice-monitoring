@@ -76,8 +76,17 @@
     - name: Restart rsyslog
       service: name=rsyslog state=restarted
 
-    - name: Add a configuration file for osquery
-      template: src=templates/osquery.conf dest=/etc/osquery/osquery.conf
+    - name: Get the it-compliance configuration
+      get_url:
+        url: https://raw.githubusercontent.com/facebook/osquery/master/packs/it-compliance.conf
+        dest: /etc/osquery/it-compliance.conf
+        mode: 0644
+
+    - name: Get the ossec-rootkit configuration
+      get_url:
+        url: https://raw.githubusercontent.com/facebook/osquery/master/packs/ossec-rootkit.conf
+        dest: /etc/osquery/ossec-rootkit.conf
+        mode: 0644
 
     - name: Restart osquery and make sure it autostarts
       service: name=osqueryd state=restarted enabled=yes
