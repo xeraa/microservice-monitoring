@@ -88,6 +88,9 @@
     - name: Install osquery
       apt: name=osquery update_cache=true
 
+    - name: Stop osquery since it sometimes need a few seconds between stop and start to work properly
+      service: name=osqueryd state=stopped
+
     - name: Allow osquery to access the rsyslog.conf
       blockinfile:
         path: /etc/rsyslog.conf
@@ -101,6 +104,9 @@
 
     - name: Restart rsyslog
       service: name=rsyslog state=restarted
+
+    - name: Provide the base configuration for osquery
+      template: src=templates/osquery.conf dest=/etc/osquery/osquery.conf
 
     - name: Get the it-compliance configuration
       get_url:
