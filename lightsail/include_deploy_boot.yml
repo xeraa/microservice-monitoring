@@ -15,9 +15,20 @@
     group: ubuntu
     mode: 0755
 
+# Check that we can reach services on the monitor instance
+- name: Check APM is accessible before deploying the application
+  wait_for:
+    host: "monitor.{{ domain }}"
+    port: "{{ item }}"
+    state: started
+    delay: 0
+    timeout: 3
+  with_items:
+    - 8200
+
 - name: Deploy the executable uber JAR
   copy:
-    src: "../java/{{ application }}/build/libs/{{ application }}-1.0.jar"
+    src: "../java/{{ application }}/build/libs/{{ application }}.jar"
     dest: "/opt/{{ application }}_{{ current_timestamp }}.jar"
     owner: ubuntu
     group: ubuntu

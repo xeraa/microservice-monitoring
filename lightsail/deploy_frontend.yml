@@ -16,17 +16,6 @@
 
   tasks:
 
-    # Check that we can reach services on the monitor instance
-    - name: Check all port numbers are accessible from current host
-      wait_for:
-        host: "monitor.{{ domain }}"
-        port: "{{ item }}"
-        state: started
-        delay: 0
-        timeout: 3
-      with_items:
-        - 8200
-
     - include_tasks: include_deploy_boot.yml
       vars:
         application: frontend
