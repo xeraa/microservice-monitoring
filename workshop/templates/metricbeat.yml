@@ -81,8 +81,8 @@ metricbeat.modules:
 - module: jolokia
   metricsets: ["jmx"]
   hosts: ["{{ frontend_server }}"]
-  username: admin
-  password: secret
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
   namespace: metrics
   jmx.mappings:
     - mbean: "java.lang:type=Runtime"
@@ -120,8 +120,8 @@ metricbeat.modules:
 - module: jolokia
   metricsets: ["jmx"]
   hosts: ["{{ backend_server }}"]
-  username: admin
-  password: secret
+  username: {{ attendee_user }}
+  password: {{ attendee_password }}
   namespace: metrics
   jmx.mappings:
     - mbean: "java.lang:type=Runtime"
