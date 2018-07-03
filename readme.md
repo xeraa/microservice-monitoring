@@ -21,7 +21,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 ![](img/stacktraces.png)
 
 * **Auditbeat**: Show changes to the */opt/* folder with the *[Auditbeat File Integrity] Overview* dashboard.
-* **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then kill the frontend application and see the change.
+* **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then stop and start the frontend application with `ansible-playbook restart_frontend.yml` or do it manually and see the change.
 * **Metricbeat nginx**: Show the *[Metricbeat Nginx] Overview* dashboard.
 * **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
 * **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
