@@ -1,6 +1,7 @@
 # Version to install
 elastic_version: 6.3.0
 elastic_download: https://artifacts.elastic.co
+apm_java: 0.5.1
 
 
 # Elastic Cloud credentials
