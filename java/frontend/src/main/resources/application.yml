@@ -1,0 +1,17 @@
+# Give the project a nice name
+spring.application.name: frontend
+
+# Set the port
+server.port: ${SERVER_PORT:8080}
+
+# Enable and configure the credentials for actuator
+spring.security.user:
+  name: ${USER}
+  password: ${PASSWORD}
+  roles: ACTUATOR
+
+# Enable all the actuator endpoints and keep them under the base path
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: "*"

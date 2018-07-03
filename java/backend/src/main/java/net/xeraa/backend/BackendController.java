@@ -19,8 +19,7 @@ public class BackendController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private Random random;
+    private Random random = new Random();
 
     @Value("${APP_BACKEND:#{'http://localhost:8081'}}")
     private String backendUrl;

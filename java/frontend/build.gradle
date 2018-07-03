@@ -1,4 +1,5 @@
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 
 jar {
@@ -20,13 +21,6 @@ dependencies {
 }
 
 
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
-}
-
-
-springBoot {
-    executable = true
+bootJar {
+    launchScript()
 }

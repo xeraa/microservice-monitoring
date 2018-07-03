@@ -91,7 +91,7 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
-* Upgrade to Spring Boot 2
+* Fix JMX (403), HTTP (only list of metrics but no values)
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
 * MySQL on the backend with TCP Heartbeat monitoring

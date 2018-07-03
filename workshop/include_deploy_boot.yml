@@ -21,7 +21,7 @@
 
 - name: Deploy the executable uber JAR
   copy:
-    src: "/opt/microservice-monitoring/java/{{ application }}/build/libs/{{ application }}-1.0.jar"
+    src: "/opt/microservice-monitoring/java/{{ application }}/build/libs/{{ application }}.jar"
     dest: "/opt/{{ application }}_{{ current_timestamp }}.jar"
     owner: ubuntu
     group: ubuntu
