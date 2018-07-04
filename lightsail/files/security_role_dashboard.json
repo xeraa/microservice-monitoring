@@ -3,10 +3,15 @@
   "indices": [
     {
       "names": [
-        "*"
+        "apm-*",
+        "metricbeat-*",
+        "packetbeat-*",
+        "filebeat-*",
+        "heartbeat-*",
+        "auditbeat-*"
       ],
       "privileges": [
-        "*"
+        "read"
       ],
       "field_security": {
         "grant": [
