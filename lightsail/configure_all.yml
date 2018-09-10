@@ -162,21 +162,7 @@
       service: name=packetbeat state=restarted enabled=yes
 
 
-    # APM
-    - name: Fetch the APM agent
-      get_url:
-        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java }}/elastic-apm-agent-{{ apm_java }}.jar"
-        dest: "/opt/elastic-apm-agent-{{ apm_java }}.jar"
-        mode: 0444
-
-
-    # nginx
-    - name: Install nginx
-      apt: name=nginx
-
-    - name: Stop nginx so that Certbot can bind to port 80
-      service: name=nginx state=stopped
-
+    # TLS
     - name: Add the certbot repository
       apt_repository: repo="ppa:certbot/certbot"
 
@@ -194,7 +180,7 @@
           - "{{ inventory_hostname }}"
           - "{{ domain }}"
           - "www.{{ domain }}"
-      when: inventory_hostname == "frontend." + domain
+      when: inventory_hostname_short == "frontend"
 
     - name: Add more domains to the monitor certificate
       set_fact:
@@ -202,7 +188,11 @@
           - "{{ inventory_hostname }}"
           - "kibana.{{ domain }}"
           - "dashboard.{{ domain }}"
-      when: inventory_hostname == "monitor." + domain
+      when: inventory_hostname_short == "monitor"
+
+    - name: Just to be extra sure, explicitly stop nginx (if it is installed)
+      service: name=nginx state=stopped
+      ignore_errors: yes
 
     - name: Create the certificate
       command: >
@@ -211,11 +201,22 @@
         -d {{ certificates | join(',') }}
         creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 
-    - name: Add crontab to renew certificates every second month on Sunday night
-      cron: minute="30" hour="3" weekday="0" month="*/2" job="service nginx stop && certbot renew >> /var/log//var/log/letsencrypt/renew.log && service nginx start"
-
     - name: Generate strong dhparams, but only if the file doesn't exist
       command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
+
+
+    # APM
+    - name: Fetch the APM agent for the frondend and backend instances
+      get_url:
+        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java }}/elastic-apm-agent-{{ apm_java }}.jar"
+        dest: "/opt/elastic-apm-agent-{{ apm_java }}.jar"
+        mode: 0444
+      when: inventory_hostname_short != "monitor"
+
+
+    # nginx
+    - name: Install nginx
+      apt: name=nginx
 
     - name: Set a global TLS configuration
       template: src=templates/tls.conf dest=/etc/nginx/tls.conf
@@ -260,4 +261,4 @@
         has_expired: false
         subject_alt_name:
           - "DNS:{{ domain }}"
-      when: inventory_hostname == "frontend." + domain
+      when: inventory_hostname_short == "frontend"
