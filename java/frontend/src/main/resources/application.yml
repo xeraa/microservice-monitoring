@@ -4,14 +4,9 @@ spring.application.name: frontend
 # Set the port
 server.port: ${SERVER_PORT:8080}
 
-# Enable and configure the credentials for actuator
-spring.security.user:
-  name: ${USER}
-  password: ${PASSWORD}
-  roles: ACTUATOR
-
-# Enable all the actuator endpoints and keep them under the base path
-management:
-  endpoints.web:
+# Enable all the actuator endpoints for HTTP (keep them under the base path) and JMX
+management.endpoints:
+  web:
     base-path: /
     exposure.include: "*"
+  jmx.exposure.include: "*"

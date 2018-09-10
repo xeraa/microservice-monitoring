@@ -12,7 +12,6 @@ dependencies {
 	compile(
 			'org.springframework.boot:spring-boot-starter-web',
 			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
-			'org.springframework.boot:spring-boot-starter-security',
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.jolokia:jolokia-core'
 	)

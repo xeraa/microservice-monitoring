@@ -36,8 +36,6 @@ metricbeat.modules:
   namespace: health
   path: /health
   method: GET
-  username: {{ attendee_user }}
-  password: {{ attendee_password }}
 
 - module: http
   metricsets: ["json"]
@@ -53,8 +51,6 @@ metricbeat.modules:
 - module: jolokia
   metricsets: ["jmx"]
   hosts: ["localhost:8080"]
-  username: {{ attendee_user }}
-  password: {{ attendee_password }}
   namespace: metrics
   jmx.mappings:
     - mbean: "java.lang:type=Runtime"
