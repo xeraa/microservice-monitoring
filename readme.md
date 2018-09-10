@@ -91,6 +91,7 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
+* Configurable APM token and enable TLS
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
 * MySQL on the backend with TCP Heartbeat monitoring

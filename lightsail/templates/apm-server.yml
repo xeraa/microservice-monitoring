@@ -3,7 +3,7 @@ apm-server:
   frontend:
     enabled: false
 
-  #secret_token:
+  secret_token: secret
 
   #ssl.enabled: true
   #ssl.certificate : "/etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem"
