@@ -37,7 +37,7 @@ processors:
         # Exclude Jolokia calls
         - contains.path: "/jolokia/?"
         # Exclude pinging metrics
-        - equals.path: "/metrics"
+        - contains.path: "/metrics"
         # Exclude pinging health
         - equals.path: "/health"
 
