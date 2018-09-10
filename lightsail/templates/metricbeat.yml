@@ -37,16 +37,27 @@ metricbeat.modules:
   path: /health
   method: GET
 
+{% for metric in ('http.server.requests', 'process.files.max', 'jvm.gc.memory.promoted', 'tomcat.cache.hit',
+                  'jvm.memory.committed', 'system.load.average.1m', 'tomcat.cache.access', 'jvm.memory.used',
+                  'jvm.gc.max.data.size', 'system.cpu.count', 'logback.events', 'tomcat.global.sent',
+                  'jvm.buffer.memory.used', 'tomcat.sessions.created', 'jvm.memory.max', 'jvm.threads.daemon',
+                  'system.cpu.usage', 'jvm.gc.memory.allocated', 'tomcat.global.request.max',
+                  'tomcat.global.request', 'tomcat.sessions.expired', 'jvm.threads.live', 'jvm.threads.peak',
+                  'tomcat.global.received', 'process.uptime', 'tomcat.sessions.rejected', 'process.cpu.usage',
+                  'jvm.gc.pause', 'tomcat.threads.config.max', 'jvm.classes.loaded', 'jvm.classes.unloaded',
+                  'tomcat.global.error', 'tomcat.sessions.active.current', 'tomcat.sessions.alive.max',
+                  'jvm.gc.live.data.size', 'tomcat.servlet.request.max', 'tomcat.threads.current',
+                  'tomcat.servlet.request', 'process.files.open', 'jvm.buffer.count', 'jvm.buffer.total.capacity',
+                  'tomcat.sessions.active.max', 'tomcat.threads.busy', 'process.start.time', 'tomcat.servlet.error') %}
 - module: http
   metricsets: ["json"]
   period: 10s
   hosts: ["localhost:8080"]
   namespace: metrics
-  path: /metrics
+  path: "/metrics/{{ metric }}"
   method: GET
-  username: {{ attendee_user }}
-  password: {{ attendee_password }}
-  dedot.enabled: true #Fix the naming pattern of having "foo" and "foo.bar"
+  dedot.enabled: true
+{% endfor %}
 
 - module: jolokia
   metricsets: ["jmx"]
