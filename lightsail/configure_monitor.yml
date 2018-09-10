@@ -52,14 +52,14 @@
           - 201
           - 200
 
-    - name: Create the dashboard user with the credentials "admin" and "password"
+    - name: Create the dashboard user
       uri:
-        url: "{{elasticsearch_host}}.security-6/doc/user-admin"
+        url: "{{elasticsearch_host}}_xpack/security/user/{{ attendee_user }}"
         body_format: json
-        method: PUT
+        method: POST
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
-        body: "{{ lookup('file','security_user_dashboard.json') }}"
+        body: "{{ lookup('template','security_user_dashboard.json') }}"
         status_code:
           - 201
           - 200

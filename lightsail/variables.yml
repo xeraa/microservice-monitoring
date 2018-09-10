@@ -20,6 +20,6 @@ frontend_server: https://frontend.{{ domain }}
 apm_server: http://monitor.{{ domain }}:8200
 
 
-# Public credentials for /health, /metrics, and Kibana dashboard-only mode
-attendee_user: admin
+# Credentials for Kibana dashboard-only mode
+attendee_user: dashbaord
 attendee_password: secret

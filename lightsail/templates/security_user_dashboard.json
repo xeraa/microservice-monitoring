@@ -1,0 +1,12 @@
+{
+  "username": "{{ attendee_user }}",
+  "password": "{{ attendee_password }}",
+  "roles": [
+    "read_dashboard",
+    "kibana_dashboard_only_user"
+  ],
+  "full_name": "Dashboard User",
+  "email": "dashboard@{{ domain }}",
+  "metadata": {},
+  "enabled": true
+}

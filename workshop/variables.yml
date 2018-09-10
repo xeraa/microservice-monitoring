@@ -21,6 +21,6 @@ backend_server: localhost:8081
 apm_server: localhost:8200
 
 
-# Public credentials for /health, /metrics, and Kibana dashboard-only mode
+# Credentials for Kibana dashboard-only mode
 attendee_user: admin
 attendee_password: secret
