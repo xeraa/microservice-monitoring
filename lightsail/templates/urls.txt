@@ -1,0 +1,8 @@
+https://{{ domain }}/
+https://{{ domain }}/good
+https://{{ domain }}/good
+https://{{ domain }}/good?name=xxx
+https://{{ domain }}/good?name=qqq
+https://{{ domain }}/good?name=xxx
+https://{{ domain }}/bad
+https://{{ domain }}/null

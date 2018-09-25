@@ -33,7 +33,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ![](img/heap-usage-annotated.png)
 
-* **APM**: Show the traces so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like.
+* **APM**: Show the traces so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like. If there is not enough activity on the instances, call `./ab.sh` on the monitor instance.
 * **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 
