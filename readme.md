@@ -91,9 +91,12 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
+* Upgrade the base image and osquery
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
-* MySQL on the backend with TCP Heartbeat monitoring
+* Custom actuator endpoint
+* MySQL or MongoDB on the backend with TCP Heartbeat monitoring
 * Docker
 * Improve traced methods and add async
 * https://www.elastic.co/guide/en/logstash/current/plugins-outputs-cloudwatch.html (https://aws.amazon.com/about-aws/whats-new/2017/09/amazon-route-53-announces-support-for-dns-query-logging/ etc)
+* https://github.com/elastic/examples/blob/master/Alerting/Sample%20Watches/errors_in_logs/watch.json
