@@ -1,5 +1,7 @@
 package net.xeraa.frontend;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,13 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Controller
 public class FrontendController {
 
-	private static final Logger log = Logger.getLogger(FrontendController.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(FrontendController.class);
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -35,19 +35,19 @@ public class FrontendController {
 		if(!"World".equals(name)) {
 			MDC.put("name", name);
 		}
-		log.log(Level.INFO, "Calling something good");
+		log.info("Calling something good");
 		MDC.clear();
 	}
 
 	@RequestMapping("/bad")
 	public void bad() {
-		log.log(Level.INFO, "Calling something bad");
+		log.info("Calling something bad");
 		throw new RuntimeException("My bad, something went wrong...");
 	}
 
 	@RequestMapping("/null")
 	public void nullpointer() {
-		log.log(Level.INFO, "Calling something null");
+		log.info("Calling something null");
 		throw new NullPointerException("This is indeed null...");
 	}
 
@@ -58,7 +58,7 @@ public class FrontendController {
 		Thread.sleep(millis);
 		//this.tracer.addTag("random-sleep-millis", String.valueOf(millis));
 		model.addAttribute("returnValue", restTemplate.getForObject(callUrl, String.class));
-		log.log(Level.INFO, () -> String.format("Calling %s with a delay of %s ms", callUrl, millis));
+		log.info("Calling {} with a delay of {} ms", callUrl, millis);
 	}
 
 	@RequestMapping("/call-bad")
@@ -68,7 +68,7 @@ public class FrontendController {
 		Thread.sleep(millis);
 		//this.tracer.addTag("random-sleep-millis", String.valueOf(millis));
 		restTemplate.getForObject(callUrl, String.class);
-		log.log(Level.INFO, () -> String.format("Calling %s with a delay of %s ms", callUrl, millis));
+		log.info("Calling {} with a delay of {} ms", callUrl, millis);
 	}
 
 }
