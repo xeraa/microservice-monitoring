@@ -5,6 +5,7 @@ build/
 out/
 
 *.backup
+*.iml
 *.log
 *.retry
 *.tfstate
