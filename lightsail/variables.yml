@@ -17,7 +17,8 @@ env: production
 domain: xeraa.wtf
 backend_server: https://backend.{{ domain }}
 frontend_server: https://frontend.{{ domain }}
-apm_server: http://monitor.{{ domain }}:8200
+apm_server: https://monitor.{{ domain }}:8200
+apm_secret: secret
 
 
 # Credentials for Kibana dashboard-only mode

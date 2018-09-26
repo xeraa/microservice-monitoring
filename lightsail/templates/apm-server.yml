@@ -1,13 +1,11 @@
 apm-server:
   host: "0.0.0.0:8200"
-  frontend:
-    enabled: false
 
-  secret_token: secret
+  secret_token: "{{ apm_secret }}"
 
-  #ssl.enabled: true
-  #ssl.certificate : "/etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem"
-  #ssl.key : "/etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem"
+  ssl.enabled: true
+  ssl.certificate : "/etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem"
+  ssl.key : "/etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem"
 
 
 setup.template.settings:
@@ -27,6 +25,3 @@ setup:
     username: "{{ elasticsearch_user }}"
     password: "{{ elasticsearch_password }}"
   dashboards.enabled: true
-
-
-#logging.level: debug
