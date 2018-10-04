@@ -61,13 +61,13 @@
 				<pattern>
 					<pattern>
 						{
-						"severity": "%level",
-						"service": "${springAppName:-}",
-						"pid": "${PID:-}",
+						"log.level": "%level",
+						"service.name": "${springAppName:-}",
+						"process.pid": "${PID:-}",
 						"thread": "%thread",
 						"class": "%logger",
 						"mdc": "%mdc",
-						"rest": "%message"
+						"message": "%message"
 						}
 					</pattern>
 				</pattern>
