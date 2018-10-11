@@ -415,3 +415,25 @@
 
     - name: Restart nginx and make sure it autostarts
       service: name=nginx state=restarted enabled=yes
+
+
+    # Gradle
+    - name: Extract Gradle
+      unarchive:
+        src: https://services.gradle.org/distributions/gradle-4.10.2-all.zip
+        dest: /usr/local/
+        remote_src: yes
+
+    - name: Set Gradle home
+      lineinfile:
+        path: /etc/profile
+        regexp: 'GRADLE_HOME'
+        line: 'export GRADLE_HOME=/usr/local/gradle-4.10.2/'
+        state: present
+
+    - name: Set Gradle path
+      lineinfile:
+        path: /etc/profile
+        regexp: 'PATH'
+        line: 'export PATH=${GRADLE_HOME}bin:${PATH}'
+        state: present

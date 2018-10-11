@@ -4,7 +4,7 @@
     dest: /opt/microservice-monitoring
 
 - name: Package the JAR
-  shell: cd /opt/microservice-monitoring/java/{{ application }}/; gradle build
+  shell: cd /opt/microservice-monitoring/java/{{ application }}/; /usr/local/gradle-4.10.2/bin/gradle build
   changed_when: true
 
 - name: Get the current timestamp
