@@ -68,7 +68,7 @@ Very similar to the Lightsail setup above. The main difference is that everythin
 
 Credentials:
 
-* SSH: `ssh workshop@workshop-<number>.xeraa.wtf` workshop / secret
+* SSH: `ssh elastic-admin@workshop-<number>.xeraa.wtf` elastic-admin / secret
 * Elasticsearch: `http://localhost:9200` admin / secret
 * Kibana: `http://workshop-<number>.xeraa.wtf:5601` admin / secret
 
