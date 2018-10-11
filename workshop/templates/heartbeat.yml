@@ -1,13 +1,13 @@
 heartbeat.monitors:
 
 - type: http
-  urls: ["{{ frontend_server }}/health"]
+  urls: ["http://{{ frontend_server }}/health"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
-  urls: ["{{ backend_server }}/health"]
+  urls: ["http://{{ backend_server }}/health"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
