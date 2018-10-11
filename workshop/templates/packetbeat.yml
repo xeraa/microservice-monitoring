@@ -48,10 +48,8 @@ processors:
 - drop_event:
     when:
       or:
-        # Exclude Jolokia calls
-        - contains.path: "/jolokia/?"
         # Exclude pinging metrics
-        - equals.path: "/metrics"
+        - equals.path: "/metrics/*"
         # Exclude pinging health
         - equals.path: "/health"
 
