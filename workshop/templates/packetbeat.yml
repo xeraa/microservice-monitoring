@@ -18,6 +18,23 @@ packetbeat.protocols:
   ports: [80, 5601, 8080, 8081]
   real_ip_header: "X-Forwarded-For"
 
+- type: tls
+  ports: [443, 8200]
+
+
+packetbeat.procs:
+  enabled: true
+  monitored:
+
+    - process: nginx
+      cmdline_grep: nginx
+
+    - process: java
+      cmdline_grep: java
+
+    - process: apm-server
+      cmdline_grep: apm-server
+
 
 name: "{{ inventory_hostname }}"
 tags: ["{{ env }}", "lightsail"]
