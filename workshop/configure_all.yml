@@ -417,6 +417,25 @@
       service: name=nginx state=restarted enabled=yes
 
 
+    # ApacheBench
+    - name: Install ApacheBench
+      apt: name={{ item }}
+      with_items:
+        - apache2-utils
+        - parallel
+
+    - name: Add a list of URLs to benchmark
+      template: src=templates/urls.txt dest=/home/ubuntu/urls.txt owner=ubuntu group=ubuntu mode=0644
+
+    - name: Add a quick ApacheBench script
+      copy:
+        src: files/ab.sh
+        dest: /home/ubuntu/ab.sh
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+
+
     # Gradle
     - name: Extract Gradle
       unarchive:
