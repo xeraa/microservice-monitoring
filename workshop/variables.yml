@@ -14,11 +14,13 @@ kibana_host: http://localhost:5601
 # Setup of the infrastructure
 env: workshop
 domain: xeraa.wtf
-ssh_user: workshop
 ssh_password: $6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3lpdELN07/Kpo7EjjWnm9zusFg/LLFv6oc.ynu/ # "secret", generate with mkpasswd --method=sha-512
 frontend_server: localhost:8080
 backend_server: localhost:8081
 apm_server: localhost:8200
+apm_secret: secret
+
+
 # SilverStripe setup
 silverstripe_version: 4.2.1
 silverstripe_user: silverstripe

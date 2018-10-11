@@ -35,7 +35,8 @@
         - libssl-dev
         - libffi-dev
         - git
-        - gradle
+        - whois
+        - unzip
 
     - name: Install the JDK
       apt: name=openjdk-8-jdk install_recommends=no
@@ -44,10 +45,26 @@
       pip: name=pyopenssl
 
 
-    # Allow SSH login
-    - name: Add the user for the workshop attendees
+    # Allow SSH logins
+    - name: Add a group for developers
+      group:
+        name: developers
+        state: present
+
+    - name: Add a regular user
       user:
-        name: "{{ ssh_user }}"
+        name: elastic-user
+        password: "{{ssh_password }}"
+        groups: developers
+        shell: /bin/bash
+        state: present
+
+    - name: Create a file for that specific user only readable by them
+      template: src=templates/secret.txt dest=/home/elastic-user/secret.txt owner=elastic-user mode=0600
+
+    - name: Add a root user
+      user:
+        name: elastic-admin
         password: "{{ssh_password }}"
         groups: sudo
         shell: /bin/bash
@@ -60,16 +77,15 @@
         line: 'PasswordAuthentication yes'
         state: present
 
-    - name: Allow our workshop user to log in via SSH
+    - name: Allow our users to log in via SSH
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers'
-        line: 'AllowUsers ubuntu {{ ssh_user }}'
+        line: 'AllowUsers ubuntu elastic-user elastic-admin'
         state: present
 
     - name: Restart SSH
       service: name=ssh state=restarted
-
 
 
     # osquery
@@ -279,6 +295,13 @@
     - name: Restart Auditbeat and make sure it autostarts
       service: name=auditbeat state=restarted enabled=yes
 
+    - name: Wait if Auditbeat is actually running
+      pause: minutes=2
+
+    - name: Get the state of all services and check the status of Auditbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.auditbeat.state != "running"
+
 
     # Filebeat
     - name: Install Filebeat
@@ -289,6 +312,13 @@
 
     - name: Restart Filebeat and make sure it autostarts
       service: name=filebeat state=restarted enabled=yes
+
+    - name: Wait if Filebeat is actually running
+      pause: minutes=2
+
+    - name: Get the state of all services and check the status of Filebeat
+      service_facts: ~
+      failed_when: ansible_facts.services.filebeat.state != "running"
 
 
     # Heartbeat
@@ -301,6 +331,13 @@
     - name: Restart Heartbeat and make sure it autostarts
       service: name=heartbeat-elastic state=restarted enabled=yes
 
+    - name: Wait if Heartbeat is actually running
+      pause: minutes=2
+
+    - name: Get the state of all services and check the status of Heartbeat
+      service_facts: ~
+      failed_when: ansible_facts.services["heartbeat-elastic"].state != "running"
+
 
     # Metricbeat
     - name: Install Metricbeat
@@ -312,21 +349,12 @@
     - name: Restart Metricbeat and make sure it autostarts
       service: name=metricbeat state=restarted enabled=yes
 
-    #- name: Set metricbeat-* as the default index pattern
-    #  uri:
-    #    url: "{{kibana_host}}api/kibana/settings/defaultIndex"
-    #    body_format: json
-    #    method: POST
-    #    user: "{{ elasticsearch_user }}"
-    #    password: "{{ elasticsearch_password }}"
-    #    headers:
-    #      kbn-xsrf: kibana
-    #    body:
-    #      value: metricbeat-*
-    #    status_code:
-    #      - 201
-    #      - 200
-    #  run_once: true
+    - name: Wait if Metricbeat is actually running
+      pause: minutes=2
+
+    - name: Get the state of all services and check the status of Metricbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.metricbeat.state != "running"
 
 
     # Packetbeat
@@ -338,6 +366,13 @@
 
     - name: Restart Packetbeat and make sure it autostarts
       service: name=packetbeat state=restarted enabled=yes
+
+    - name: Wait if Packetbeat is actually running
+      pause: minutes=2
+
+    - name: Get the state of all services and check the status of Packetbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.packetbeat.state != "running"
 
 
     # Watcher
@@ -369,7 +404,6 @@
         url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java }}/elastic-apm-agent-{{ apm_java }}.jar"
         dest: "/opt/elastic-apm-agent-{{ apm_java }}.jar"
         mode: 0444
-
 
 
     # nginx
