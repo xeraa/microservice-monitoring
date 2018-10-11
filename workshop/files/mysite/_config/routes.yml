@@ -1,0 +1,7 @@
+---
+Name: mysiteroutes
+After: framework/_config/routes#coreroutes
+---
+SilverStripe\Control\Director:
+  rules:
+    'error//$Action/$ID/$Name': 'ErrorController'

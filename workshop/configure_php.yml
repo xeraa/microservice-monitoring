@@ -1,0 +1,164 @@
+- hosts: all
+  become: true
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
+
+
+  post_tasks:
+    - include_tasks: include_event.yml
+      vars:
+        application: configure_php
+
+
+  tasks:
+
+
+    # MySQL
+    - name: Install the DEB packages required for Ansible's MySQL modules
+      apt: name={{ item }}
+      with_items:
+        - python3-dev
+        - libmysqlclient-dev
+
+    - name: Install the Python package required for Ansible's MySQL modules
+      pip: name=mysqlclient
+
+    - name: Install MySQL
+      apt: name=mysql-server
+
+    - name: Removes all anonymous user accounts
+      mysql_user:
+        name: ""
+        host_all: yes
+        state: absent
+
+    - name: Create database user and password for SilverStripe with all database privileges
+      mysql_user:
+        name: "{{ silverstripe_mysql_user }}"
+        password: "{{ silverstripe_mysql_password }}"
+        priv: "*.*:ALL"
+        host: "%"
+        state: present
+
+    - name: Create a new database for SilverStripe
+      mysql_db:
+        name: "{{ silverstripe_database }}"
+        state: present
+
+    - name: Bind MySQL to all interfaces
+      ini_file: dest=/etc/mysql/mysql.conf.d/mysqld.cnf
+            section=mysqld
+            option=bind-address
+            value="0.0.0.0"
+
+    - name: Restart MySQL and make sure it autostarts
+      service: name=mysql state=restarted enabled=yes
+
+
+    # PHP
+    - name: Install PHP
+      apt: name={{ item }}
+      with_items:
+        - php-cli
+        - php-curl
+        - php-fpm
+        - php-gd
+        - php-intl
+        - php-mbstring
+        - php-mysql
+        - php-tidy
+        - php-xdebug
+        - php-xml
+
+    - name: Configure PHP
+      lineinfile:
+        dest: /etc/php/7.0/fpm/php.ini
+        line: "{{ item.key }} = {{ item.value }}"
+        regexp: "^\\s*(;\\s*)?{{ item.key }}"
+      with_items:
+        - { key: 'display_errors', value: 'On' }
+        - { key: 'date.timezone', value: 'Europe/Vienna' }
+
+    - name: Enable the PHP status page
+      lineinfile:
+        dest: /etc/php/7.0/fpm/pool.d/www.conf
+        regexp: '^;pm.status_path'
+        line: pm.status_path = /status
+
+    - name: Restart PHP and make sure it autostarts
+      service: name=php7.0-fpm state=restarted enabled=yes
+
+    - name: Check if Composer is installed
+      stat: path=/usr/local/bin/composer
+      register: composer_bin
+
+    - name: Download Composer installer
+      get_url:
+        url: https://getcomposer.org/installer
+        dest: /tmp/composer-installer.php
+        mode: 0755
+      when: not composer_bin.stat.exists
+
+    - name: Run Composer installer
+      command: >
+        php composer-installer.php --install-dir=/usr/local/bin --filename=composer
+        chdir=/tmp
+      when: not composer_bin.stat.exists
+
+
+    # SilverStripe
+    - name: Check if SilverStripe is installed
+      stat: path="{{ silverstripe_directory }}"
+      register: silverstripe_dir
+
+    - name: Create SilverStripe and install it with all dependencies if it doesn't yet exist
+      composer:
+        command: create-project
+        arguments: "silverstripe/installer ./silverstripe {{ silverstripe_version }}"
+        working_dir: /var/www/html
+        prefer_dist: yes
+      when: not silverstripe_dir.stat.exists
+
+    - name: Make sure the logs folder exists
+      file:
+        path: "{{ silverstripe_directory }}/logs"
+        state: directory
+
+    - name: Fix the permissions for SilverStripe
+      file:
+        path: "{{ silverstripe_directory }}"
+        owner: www-data
+        group: www-data
+        mode: 0755
+        state: directory
+        recurse: yes
+
+    - name: Set up SilverStripe
+      template:
+        src: templates/env
+        dest: "{{ silverstripe_directory }}.env"
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Deploy some custom code
+      copy:
+        src: files/mysite/
+        dest: "{{ silverstripe_directory }}mysite/"
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Configure my site through a template
+      template:
+        src: templates/mysite.yml
+        dest: "{{ silverstripe_directory }}mysite/_config/mysite.yml"
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Call flush on the page to finish the installation and apply any changes
+      uri: url=http://{{ inventory_hostname }}:88?flush=all

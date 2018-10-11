@@ -19,6 +19,14 @@ ssh_password: $6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3l
 frontend_server: localhost:8080
 backend_server: localhost:8081
 apm_server: localhost:8200
+# SilverStripe setup
+silverstripe_version: 4.2.1
+silverstripe_user: silverstripe
+silverstripe_password: silverstripe4TW
+silverstripe_database: silverstripe
+silverstripe_mysql_user: silverstripe
+silverstripe_mysql_password: silverstripe4TW
+silverstripe_directory: /var/www/html/silverstripe/
 
 
 # Credentials for Kibana dashboard-only mode

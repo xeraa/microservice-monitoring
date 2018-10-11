@@ -64,7 +64,7 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 ### Workshop
 
-Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the port 5601 for Kibana (Elasticsearch, APM,... are only accessible on localhost).
+Very similar to the Lightsail setup above. The main difference is that everything is running on one instance and you need to open the port 5601 for Kibana (Elasticsearch, APM,... are only accessible on localhost) and 88 if you want to include the PHP examples.
 
 Credentials:
 

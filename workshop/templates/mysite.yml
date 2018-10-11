@@ -1,0 +1,5 @@
+---
+Name: {{ inventory_hostname }}
+---
+SilverStripe\Core\Manifest\ModuleManifest:
+  project: {{ inventory_hostname }}

@@ -1,0 +1,19 @@
+SilverStripe\Core\Injector\Injector:
+  Psr\Log\LoggerInterface:
+    calls:
+      LogFileHandler: [ pushHandler, [ %$LogFileHandler ] ]
+      JsonFileHandler: [ pushHandler, [ %$JsonFileHandler ] ]
+
+  LogFileHandler:
+    class: Monolog\Handler\StreamHandler
+    constructor:
+      - "../logs/silverstripe.log"
+      - "notice"
+
+  JsonFileHandler:
+    class: Monolog\Handler\StreamHandler
+    constructor:
+      - "../logs/silverstripe.json"
+      - "notice"
+    properties:
+      Formatter: %$Monolog\Formatter\JsonFormatter
