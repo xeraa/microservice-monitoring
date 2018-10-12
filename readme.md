@@ -55,8 +55,8 @@ Make sure you have run this before the demo, because some steps take time and re
 1. If you haven't installed the AWS plugin for Terraform, get it with `terraform init` first. Then create the keypair, DNS settings, and instances with `terraform apply`.
 1. Open HTTPS on the network configuration on all instances and TCP 8200 on the monitoring instance (waiting for this [Terraform issue](https://github.com/terraform-providers/terraform-provider-aws/issues/700)).
 1. Apply the base configuration to all instances with `ansible-playbook configure_all.yml`.
-1. Apply the instance specific configuration with `ansible-playbook configure_monitor.yml` — frontend and backend don't have specific configurations.
-1. Deploy the JARs with `ansible-playbook deploy_bad.yml`, `ansible-playbook deploy_backend.yml`, `ansible-playbook deploy_frontend.yml`, and `ansible-playbook deploy_zipkin.yml` (Ansible is also building them).
+1. Apply the instance specific configurations with `ansible-playbook configure_backend.yml` and `ansible-playbook configure_monitor.yml`.
+1. Deploy the JARs with `ansible-playbook deploy_bad.yml`, `ansible-playbook deploy_backend.yml`, and `ansible-playbook deploy_frontend.yml` (Ansible is also building them).
 
 When you are done, remove the instances, DNS settings, and key with `terraform destroy`.
 
