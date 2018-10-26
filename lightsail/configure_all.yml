@@ -30,14 +30,8 @@
       apt: upgrade=dist
 
     - name: Install NTP to avoid time drift and PIP to manage Python dependencies plus its build tools
-      apt: name={{ item }}
-      with_items:
-        - ntp
-        - ntpdate
-        - python3-pip
-        - build-essential
-        - libssl-dev
-        - libffi-dev
+      apt:
+        name: [ 'ntp', 'ntpdate', 'python3-pip', 'build-essential', 'libssl-dev', 'libffi-dev' ]
 
     - name: Install the JRE
       apt: name=openjdk-8-jre-headless install_recommends=no

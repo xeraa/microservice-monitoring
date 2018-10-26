@@ -80,10 +80,8 @@
 
     # ApacheBench
     - name: Install ApacheBench
-      apt: name={{ item }}
-      with_items:
-        - apache2-utils
-        - parallel
+      apt:
+        name: [ 'apache2-utils', 'parallel' ]
 
     - name: Add a list of URLs to benchmark
       template: src=templates/urls.txt dest=/home/ubuntu/urls.txt owner=ubuntu group=ubuntu mode=0644
