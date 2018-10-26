@@ -111,48 +111,49 @@
       run_once: true
 
 
-    # Auditbeat
-    - name: Install Auditbeat
-      apt: deb={{ elastic_download }}/downloads/beats/auditbeat/auditbeat-{{ elastic_version }}-amd64.deb
+    # Beats
+    - name: Get the Beats
+      apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb
+      loop:
+      - auditbeat
+      - filebeat
+      - metricbeat
+      - packetbeat
 
-    - name: Change the Auditbeat configuration
-      template: src=templates/auditbeat.yml dest=/etc/auditbeat/auditbeat.yml
+    - name: Change the configuration
+      template: "src=templates/{{ item }}.yml dest=/etc/{{ item }}/{{ item }}.yml"
+      loop:
+      - auditbeat
+      - filebeat
+      - metricbeat
+      - packetbeat
 
-    - name: Restart Auditbeat and make sure it autostarts
-      service: name=auditbeat state=restarted enabled=yes
+    - name: Restart and make sure the Beats autostart
+      service: name={{ item }} state=restarted enabled=yes
+      loop:
+      - auditbeat
+      - filebeat
+      - metricbeat
+      - packetbeat
 
+    - name: Wait if the Beats are actually running
+      pause: minutes=2
 
-    # Filebeat
-    - name: Install Filebeat
-      apt: deb={{ elastic_download }}/downloads/beats/filebeat/filebeat-{{ elastic_version }}-amd64.deb
+    - name: Get the state of all services and check the status of Auditbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.auditbeat.state != "running"
 
-    - name: Change the Filebeat configuration
-      template: src=templates/filebeat.yml dest=/etc/filebeat/filebeat.yml
+    - name: Get the state of all services and check the status of Filebeat
+      service_facts: ~
+      failed_when: ansible_facts.services.filebeat.state != "running"
 
-    - name: Restart Filebeat and make sure it autostarts
-      service: name=filebeat state=restarted enabled=yes
+    - name: Get the state of all services and check the status of Metricbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.metricbeat.state != "running"
 
-
-    # Metricbeat
-    - name: Install Metricbeat
-      apt: deb={{ elastic_download }}/downloads/beats/metricbeat/metricbeat-{{ elastic_version }}-amd64.deb
-
-    - name: Change the Metricbeat configuration
-      template: src=templates/metricbeat.yml dest=/etc/metricbeat/metricbeat.yml
-
-    - name: Restart Metricbeat and make sure it autostarts
-      service: name=metricbeat state=restarted enabled=yes
-
-
-    # Packetbeat
-    - name: Install Packetbeat
-      apt: deb={{ elastic_download }}/downloads/beats/packetbeat/packetbeat-{{ elastic_version }}-amd64.deb
-
-    - name: Change the Packetbeat configuration
-      template: src=templates/packetbeat.yml dest=/etc/packetbeat/packetbeat.yml
-
-    - name: Restart Packetbeat and make sure it autostarts
-      service: name=packetbeat state=restarted enabled=yes
+    - name: Get the state of all services and check the status of Packetbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.packetbeat.state != "running"
 
 
     # TLS

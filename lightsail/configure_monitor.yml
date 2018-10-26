@@ -26,6 +26,13 @@
     - name: Restart Heartbeat and make sure it autostarts
       service: name=heartbeat-elastic state=restarted enabled=yes
 
+    - name: Wait if Heartbeat is actually running
+      pause: minutes=2
+
+    - name: Get the state of all services and check the status of Heartbeat
+      service_facts: ~
+      failed_when: ansible_facts.services["heartbeat-elastic"].state != "running"
+
 
     # APM
     - name: Install APM
