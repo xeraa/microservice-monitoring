@@ -22,5 +22,5 @@ apm_secret: secret
 
 
 # Credentials for Kibana dashboard-only mode
-attendee_user: dashbaord
+attendee_user: dashboard
 attendee_password: secret
