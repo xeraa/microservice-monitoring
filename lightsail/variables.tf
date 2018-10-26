@@ -26,3 +26,11 @@ variable "domain" {
 # Options: You should provide the Zone ID of the domain in the environment variable TF_VAR_zone_id
 # Override: -var 'zone_id=XXXXXXXXXXXXX'
 variable "zone_id" {}
+
+
+# Operating system on AWS Lightsail
+# Options: Only change this at your own risk; it will probably break things.
+# Override: -var 'operating_system=ubuntu_16_04'
+variable "operating_system" {
+  default = "ubuntu_18_04"
+}
