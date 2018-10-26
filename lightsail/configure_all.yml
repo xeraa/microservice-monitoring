@@ -35,6 +35,7 @@
 
     - name: Install the JRE
       apt: name=openjdk-8-jre-headless install_recommends=no
+      when: inventory_hostname_short != "monitor"
 
     - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
       pip: name=pyopenssl
