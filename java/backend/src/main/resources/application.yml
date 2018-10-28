@@ -10,3 +10,8 @@ management.endpoints:
     base-path: /
     exposure.include: "*"
   jmx.exposure.include: "*"
+
+spring.jpa.hibernate.ddl-auto: create
+spring.datasource.url: jdbc:mysql://${DATABASE_SERVER:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:person}
+spring.datasource.username: ${DATABASE_USERNAME:root}
+spring.datasource.password: ${DATABASE_PASSWORD:}

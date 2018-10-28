@@ -9,11 +9,19 @@ jar {
 
 
 dependencies {
+
+	// JPA Data (We are going to use Repositories, Entities, Hibernate, etc...)
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Use MySQL Connector-J
+	compile 'mysql:mysql-connector-java'
+
 	compile(
 			'org.springframework.boot:spring-boot-starter-web',
 			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
 			'org.springframework.boot:spring-boot-starter-actuator',
-			'org.jolokia:jolokia-core'
+			'org.jolokia:jolokia-core',
+			'commons-lang:commons-lang:2.6'
 	)
 }
 

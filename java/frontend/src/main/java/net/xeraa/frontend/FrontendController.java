@@ -5,12 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Random;
 
 @Controller
@@ -28,6 +31,57 @@ public class FrontendController {
 
 	@Value("${APP_FRONTEND:#{'http://localhost:8080'}}")
 	private String frontendUrl;
+
+	@RequestMapping("/generate")
+	public void generate(@RequestParam(value="size", required=false, defaultValue="10") Integer size, Model model) {
+		String callUrl = backendUrl + "/add";
+		log.info("Calling {}", callUrl);
+
+		for (int i = 0; i < size; i++) {
+			restTemplate.getForObject(callUrl, String.class);
+		}
+
+		model.addAttribute("size", size);
+	}
+
+	@RequestMapping("/add")
+	public void add(@RequestParam String name, Model model) {
+		String callUrl = backendUrl + "/add?name={name}";
+		log.info("Calling {}", callUrl);
+
+        restTemplate.exchange(callUrl,
+                HttpMethod.GET,
+                null,
+                String.class,
+                name
+        ).getBody();
+
+		model.addAttribute("size", 1);
+		model.addAttribute("name", name);
+	}
+
+	@RequestMapping("/search")
+	public void search(@RequestParam(value="q", required=false, defaultValue="") String q, Model model) {
+
+		String callUrl;
+        List persons;
+	    if (q.isEmpty()) {
+		    callUrl = backendUrl + "/all";
+		    log.info("Calling {}", callUrl);
+            persons = restTemplate.getForObject(callUrl, List.class);
+        } else {
+		    callUrl = backendUrl + "/search?q={q}";
+		    log.info("Calling {}", callUrl);
+            persons = restTemplate.exchange(callUrl,
+                    HttpMethod.GET,
+                    null,
+                    List.class,
+                    q
+            ).getBody();
+        }
+
+		model.addAttribute("size", persons.size());
+	}
 
 	@RequestMapping("/good")
 	public void good(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
