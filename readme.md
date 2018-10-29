@@ -91,7 +91,6 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
-* Upgrade the base image and osquery
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
 * Custom actuator endpoint
