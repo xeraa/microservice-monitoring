@@ -15,6 +15,15 @@
 
   tasks:
 
+    # Check that we can reach APM and MySQL
+    - name: Check APM is accessible before deploying the application
+      wait_for:
+        host: "monitor.{{ domain }}"
+        port: 8200
+        state: started
+        delay: 0
+        timeout: 3
+
     - name: Check MySQL is accessible before deploying the application
       wait_for:
         host: "{{ mysql_server }}"
