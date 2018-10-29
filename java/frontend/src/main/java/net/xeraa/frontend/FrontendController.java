@@ -42,6 +42,7 @@ public class FrontendController {
 		}
 
 		model.addAttribute("size", size);
+		log.info("Added {} people", size);
 	}
 
 	@RequestMapping("/add")
@@ -58,6 +59,8 @@ public class FrontendController {
 
 		model.addAttribute("size", 1);
 		model.addAttribute("name", name);
+		MDC.put("name", name);
+		log.info("Added 1 person with name {}", name);
 	}
 
 	@RequestMapping("/search")
@@ -78,6 +81,8 @@ public class FrontendController {
                     List.class,
                     q
             ).getBody();
+			MDC.put("name", q);
+			log.info("Searched for {}", q);
         }
 
 		model.addAttribute("size", persons.size());

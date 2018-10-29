@@ -1,14 +1,16 @@
 package net.xeraa.backend;
 
-
 import java.io.IOException;
-import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
-import org.apache.commons.lang.time.DateUtils;
 
 public class PersonGenerator {
+
+    private static Random random = new Random();
 
     public static ArrayList<String> names;
 
@@ -79,14 +81,9 @@ public class PersonGenerator {
     }
 
     private static Date buildBirthDate() {
-        String birthDate = "" + numberGenerator(1940, 70) + "-" + numberGenerator(1, 12) + "-" + numberGenerator(1, 28);
-        Date date = null;
-        try {
-            date = DateUtils.parseDate(birthDate, new String[]{"yyyy-MM-dd"});
-        } catch (ParseException e) {
-            System.err.println("buildBirthDate ->" + birthDate);
-        }
-        return date;
+        return Date.from(
+                LocalDate.now().minus(Period.ofDays(random.nextInt(365*100))) // Up to 100 years ago
+                        .atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private static void buildGender(Person person) throws IOException {
