@@ -21,6 +21,13 @@ apm_server: https://monitor.{{ domain }}:8200
 apm_secret: secret
 
 
+# MySQL config
+mysql_server: backend.{{ domain }}
+mysql_user: "{{ lookup('env','ELASTICSEARCH_USER') }}"
+mysql_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
+mysql_database: person
+
+
 # Credentials for Kibana dashboard-only mode
 attendee_user: dashboard
 attendee_password: secret

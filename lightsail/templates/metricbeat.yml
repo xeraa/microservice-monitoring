@@ -28,6 +28,14 @@ metricbeat.modules:
   period: 10s
   hosts: ["https://{{ inventory_hostname }}"]
 
+{% if inventory_hostname_short == 'backend' %}
+- module: mysql
+  metricsets: ["status"]
+  hosts: ["tcp({{ mysql_server }}:3306)/"]
+  username: "{{ mysql_user }}"
+  password: "{{ mysql_password }}"
+{% endif %}
+
 {% if inventory_hostname_short != 'monitor' %}
 - module: http
   metricsets: ["json"]

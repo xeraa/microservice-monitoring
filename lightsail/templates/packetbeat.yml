@@ -18,6 +18,11 @@ packetbeat.protocols:
   ports: [80, 8080]
   real_ip_header: "X-Forwarded-For"
 
+{% if inventory_hostname_short == 'backend' %}
+- type: mysql
+  ports: [3306]
+{% endif %}
+
 - type: tls
   ports: [443{% if inventory_hostname_short == 'monitor' %}, 8200{% endif %}]
 
@@ -37,6 +42,11 @@ packetbeat.procs:
 {% if inventory_hostname_short == 'monitor' %}
     - process: apm-server
       cmdline_grep: apm-server
+{% endif %}
+
+{% if inventory_hostname_short == 'backend' %}
+    - process: mysql
+      cmdline_grep: mysql
 {% endif %}
 
 

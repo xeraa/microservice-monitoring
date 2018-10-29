@@ -27,7 +27,7 @@ heartbeat.monitors:
   check.response.status: 200
 
 - type: tcp
-  hosts: ["{{ apm_server }}"]
+  hosts: ["{{ mysql_server }}:3306"]
   schedule: "@every 10s"
   timeout: 3s
 

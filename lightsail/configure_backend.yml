@@ -1,0 +1,56 @@
+- hosts: backend
+  become: true
+  gather_facts: yes
+
+
+  vars_files:
+    - variables.yml
+
+
+  post_tasks:
+    - include_tasks: include_event.yml
+      vars:
+        application: configure_backend
+
+
+  tasks:
+
+
+    # MySQL
+    - name: Install the DEB packages required for Ansible's MySQL modules
+      apt:
+        name: [ 'python3-dev', 'libmysqlclient-dev' ]
+
+    - name: Install the Python package required for Ansible's MySQL modules
+      pip: name=mysqlclient
+
+    - name: Install MySQL
+      apt: name=mysql-server
+
+    - name: Removes all anonymous user accounts
+      mysql_user:
+        name: ""
+        host_all: yes
+        state: absent
+
+    - name: Create database user and password with all database privileges
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_password }}"
+        priv: "*.*:ALL"
+        host: "%"
+        state: present
+
+    - name: Create a new database for the application
+      mysql_db:
+        name: "{{ mysql_database }}"
+        state: present
+
+    - name: Bind MySQL to all interfaces
+      ini_file: dest=/etc/mysql/mysql.conf.d/mysqld.cnf
+            section=mysqld
+            option=bind-address
+            value="0.0.0.0"
+
+    - name: Restart MySQL and make sure it autostarts
+      service: name=mysql state=restarted enabled=yes

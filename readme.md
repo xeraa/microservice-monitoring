@@ -14,15 +14,15 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ![](img/rogue-process.png)
 
-* **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, and *[Packetbeat] HTTP* dashboard, let attendees hit */*, */good*, */bad*, and */foobar* a few times, and see the corresponding graphs. In *Discover* you can point out the process enrichment for nginx, Java, and the APM server. Optionally show the *[Packetbeat] TLS Sessions* and *[Packetbeat] DNS Tunneling* dashboards as well.
-* **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat System] Syslog dashboard*, *[Filebeat System] SSH login attempts*, and *[Osquery Result] Compliance pack* dashboards.
+* **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, *[Packetbeat] MySQL performance*, and *[Packetbeat] HTTP* dashboard, let attendees access the various URLs and see the corresponding graphs. In *Discover* you can point out the `proc` enrichment for nginx, Java, MySQL, and the APM server. Optionally show the *[Packetbeat] TLS Sessions* and *[Packetbeat] DNS Tunneling* dashboards as well.
+* **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat MySQL] Overview*, *[Filebeat System] Syslog dashboard*, *[Filebeat System] SSH login attempts*, and *[Osquery Result] Compliance pack* dashboards.
 * **Filebeat**: Let attendees hit */good* with a parameter and point out the MDC logging under `json.name` and the context view for one log message. Let attendees hit */bad* and */null* to show the stacktrace both in the JSON log file and in Kibana by filtering down on `application:java` and `json.severity: ERROR`. Also point out the cloud `meta.*` and `host.*` information. And show the `json.stack_hash`, which you can use for visualizations too.
 
 ![](img/stacktraces.png)
 
 * **Auditbeat**: Show changes to the */opt/* folder with the *[Auditbeat File Integrity] Overview* dashboard.
 * **Heartbeat**: Run Heartbeat and show the *Heartbeat HTTP monitoring* dashboard in Kibana, then stop and start the frontend application with `ansible-playbook restart_frontend.yml` or do it manually and see the change.
-* **Metricbeat nginx**: Show the *[Metricbeat Nginx] Overview* dashboard.
+* **Metricbeat**: Show the *[Metricbeat Nginx] Overview* and *[Metricbeat MySQL] Overview* dashboards.
 * **Metricbeat HTTP**: Show */health* and */metrics* with cURL (credentials are `admin` and `secret`). Then collect the same information with Metricbeat's HTTP module and show it in Kibana's Discover tab.
 * **Metricbeat JMX**: Display the same */health* and */metrics* data and its collection through JMX.
 * **Visual Builder**: Build a more advanced visualization with the Time Series Visual Builder, for example to show the heap usage in percent by calculating the average of `jolokia.metrics.memory.heap_usage.used` divided by the max of `jolokia.metrics.memory.heap_usage.max`.
@@ -33,7 +33,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ![](img/heap-usage-annotated.png)
 
-* **APM**: Show the traces so far. Then let the attendees hit */call* and */call-bad* to see where the slowness is coming from and how errors look like. If there is not enough activity on the instances, call `./ab.sh` on the monitor instance.
+* **APM**: Show the traces so far, point out the MySQL queries (currently on the backend instance only), and where things are slow or throwing errors. If there is not enough activity on the instances, call `./ab.sh` on the monitor instance.
 * **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 
@@ -95,7 +95,6 @@ When you are done, stop the Java applications and remove the Docker setup with `
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
 * Custom actuator endpoint
-* MySQL or MongoDB on the backend with TCP Heartbeat monitoring
 * Docker
 * Improve traced methods and add async
 * https://www.elastic.co/guide/en/logstash/current/plugins-outputs-cloudwatch.html (https://aws.amazon.com/about-aws/whats-new/2017/09/amazon-route-53-announces-support-for-dns-query-logging/ etc)

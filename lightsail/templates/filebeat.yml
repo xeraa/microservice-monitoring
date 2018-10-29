@@ -17,6 +17,9 @@ filebeat.modules:
 - module: nginx
 - module: osquery
 - module: system
+{% if inventory_hostname_short == 'backend' %}
+- module: mysql
+{% endif %}
 
 
 name: "{{ inventory_hostname }}"
