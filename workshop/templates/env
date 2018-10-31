@@ -2,11 +2,11 @@
 SS_ENVIRONMENT_TYPE="dev"
 SS_DEFAULT_ADMIN_USERNAME="{{ silverstripe_user }}"
 SS_DEFAULT_ADMIN_PASSWORD="{{ silverstripe_password }}"
-SS_BASE_URL="https://{{ inventory_hostname }}/"
+SS_BASE_URL="http://{{ inventory_hostname }}/"
 
 ## Database
 SS_DATABASE_CLASS="MySQLDatabase"
-SS_DATABASE_USERNAME="{{ silverstripe_mysql_user }}"
-SS_DATABASE_PASSWORD="{{ silverstripe_mysql_password }}"
-SS_DATABASE_SERVER="{{ inventory_hostname }}"
+SS_DATABASE_USERNAME="{{ mysql_user }}"
+SS_DATABASE_PASSWORD="{{ mysql_password }}"
+SS_DATABASE_SERVER="127.0.0.1"
 SS_DATABASE_NAME="{{ silverstripe_database }}"
