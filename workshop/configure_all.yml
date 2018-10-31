@@ -368,10 +368,8 @@
 
     # MySQL
     - name: Install the DEB packages required for Ansible's MySQL modules
-      apt: name={{ item }}
-      with_items:
-        - python3-dev
-        - libmysqlclient-dev
+      apt:
+        name: [ 'python3-dev', 'libmysqlclient-dev' ]
 
     - name: Install the Python package required for Ansible's MySQL modules
       pip: name=mysqlclient
@@ -415,10 +413,8 @@
 
     # ApacheBench
     - name: Install ApacheBench
-      apt: name={{ item }}
-      with_items:
-        - apache2-utils
-        - parallel
+      apt:
+        name: [ 'apache2-utils', 'parallel' ]
 
     - name: Add a list of URLs to benchmark
       template: src=templates/urls.txt dest=/home/ubuntu/urls.txt owner=ubuntu group=ubuntu mode=0644
