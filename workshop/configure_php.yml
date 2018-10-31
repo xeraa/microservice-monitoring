@@ -32,7 +32,7 @@
 
     - name: Configure PHP
       lineinfile:
-        dest: /etc/php/7.0/fpm/php.ini
+        dest: "/etc/php/{{ php_version }}/fpm/php.ini"
         line: "{{ item.key }} = {{ item.value }}"
         regexp: "^\\s*(;\\s*)?{{ item.key }}"
       with_items:
@@ -41,12 +41,12 @@
 
     - name: Enable the PHP status page
       lineinfile:
-        dest: /etc/php/7.0/fpm/pool.d/www.conf
+        dest: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
         regexp: '^;pm.status_path'
         line: pm.status_path = /status
 
     - name: Restart PHP and make sure it autostarts
-      service: name=php7.0-fpm state=restarted enabled=yes
+      service: "name=php{{ php_version }}-fpm state=restarted enabled=yes"
 
     - name: Check if Composer is installed
       stat: path=/usr/local/bin/composer
