@@ -12,6 +12,7 @@ filebeat.prospectors:
 
 filebeat.modules:
 - module: auditd
+- module: mysql
 - module: nginx
 - module: osquery
 - module: system

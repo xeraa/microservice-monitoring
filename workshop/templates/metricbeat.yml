@@ -28,6 +28,12 @@ metricbeat.modules:
   period: 10s
   hosts: ["{{ inventory_hostname }}"]
 
+- module: mysql
+  metricsets: ["status"]
+  hosts: ["tcp(localhost:3306)/"]
+  username: "{{ mysql_user }}"
+  password: "{{ mysql_password }}"
+
 - module: http
   metricsets: ["json"]
   period: 10s

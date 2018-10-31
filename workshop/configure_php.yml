@@ -15,49 +15,6 @@
 
   tasks:
 
-
-    # MySQL
-    - name: Install the DEB packages required for Ansible's MySQL modules
-      apt: name={{ item }}
-      with_items:
-        - python3-dev
-        - libmysqlclient-dev
-
-    - name: Install the Python package required for Ansible's MySQL modules
-      pip: name=mysqlclient
-
-    - name: Install MySQL
-      apt: name=mysql-server
-
-    - name: Removes all anonymous user accounts
-      mysql_user:
-        name: ""
-        host_all: yes
-        state: absent
-
-    - name: Create database user and password for SilverStripe with all database privileges
-      mysql_user:
-        name: "{{ silverstripe_mysql_user }}"
-        password: "{{ silverstripe_mysql_password }}"
-        priv: "*.*:ALL"
-        host: "%"
-        state: present
-
-    - name: Create a new database for SilverStripe
-      mysql_db:
-        name: "{{ silverstripe_database }}"
-        state: present
-
-    - name: Bind MySQL to all interfaces
-      ini_file: dest=/etc/mysql/mysql.conf.d/mysqld.cnf
-            section=mysqld
-            option=bind-address
-            value="0.0.0.0"
-
-    - name: Restart MySQL and make sure it autostarts
-      service: name=mysql state=restarted enabled=yes
-
-
     # PHP
     - name: Install PHP
       apt: name={{ item }}
