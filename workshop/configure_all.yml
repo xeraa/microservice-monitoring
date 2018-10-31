@@ -25,24 +25,12 @@
     - name: Update and upgrade apt packages
       apt: upgrade=dist
 
-    - name: Install NTP to avoid time drift and PIP to manage Python dependencies plus its build tools
-      apt: name={{ item }}
-      with_items:
-        - ntp
-        - ntpdate
-        - python3-pip
-        - build-essential
-        - libssl-dev
-        - libffi-dev
-        - git
-        - whois
-        - unzip
+    - name: Install NTP to avoid time drift and PIP to manage Python dependencies plus its build tools and dev tools
+      apt:
+        name: [ 'ntp', 'ntpdate', 'python3-pip', 'build-essential', 'libssl-dev', 'libffi-dev', 'git', 'whois', 'unzip' ]
 
     - name: Install the JDK
       apt: name=openjdk-8-jdk install_recommends=no
-
-    - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
-      pip: name=pyopenssl
 
 
     # Allow SSH logins
