@@ -313,7 +313,7 @@
 
     - name: Get the state of all services and check the status of Heartbeat
       service_facts: ~
-      failed_when: ansible_facts.services.heartbeat-elastic.state != "running"
+      failed_when: ansible_facts.services["heartbeat-elastic"].state != "running"
 
     - name: Get the state of all services and check the status of Metricbeat
       service_facts: ~
