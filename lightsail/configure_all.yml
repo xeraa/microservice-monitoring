@@ -202,8 +202,8 @@
     # APM
     - name: Fetch the APM agent for the frondend and backend instances
       get_url:
-        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java }}/elastic-apm-agent-{{ apm_java }}.jar"
-        dest: "/opt/elastic-apm-agent-{{ apm_java }}.jar"
+        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java_version }}/elastic-apm-agent-{{ apm_java_version }}.jar"
+        dest: "/opt/elastic-apm-agent-{{ apm_java_version }}.jar"
         mode: 0444
       when: inventory_hostname_short != "monitor"
 
