@@ -17,18 +17,8 @@
 
     # PHP
     - name: Install PHP
-      apt: name={{ item }}
-      with_items:
-        - php-cli
-        - php-curl
-        - php-fpm
-        - php-gd
-        - php-intl
-        - php-mbstring
-        - php-mysql
-        - php-tidy
-        - php-xdebug
-        - php-xml
+      apt:
+        name: [ 'php-cli', 'php-curl', 'php-fpm', 'php-gd', 'php-intl', 'php-mbstring', 'php-mysql', 'php-tidy', 'php-xdebug', 'php-xml' ]
 
     - name: Configure PHP
       lineinfile:
