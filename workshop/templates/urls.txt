@@ -1,8 +1,9 @@
 http://127.0.0.1/
 http://127.0.0.1/good
-http://127.0.0.1/good
-http://127.0.0.1/good?name=xxx
-http://127.0.0.1/good?name=qqq
-http://127.0.0.1/good?name=xxx
+http://127.0.0.1/generate
+http://127.0.0.1/good?name=Philipp
+http://127.0.0.1/add?name=Philipp
+http://127.0.0.1/search?q=Philipp
 http://127.0.0.1/bad
 http://127.0.0.1/null
+http://127.0.0.1/search

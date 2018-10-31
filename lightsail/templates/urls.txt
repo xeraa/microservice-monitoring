@@ -1,8 +1,9 @@
 https://{{ domain }}/
 https://{{ domain }}/good
-https://{{ domain }}/good
-https://{{ domain }}/good?name=xxx
-https://{{ domain }}/good?name=qqq
-https://{{ domain }}/good?name=xxx
+https://{{ domain }}/generate
+https://{{ domain }}/good?name=Philipp
+https://{{ domain }}/add?name=Philipp
+https://{{ domain }}/search?q=Philipp
 https://{{ domain }}/bad
 https://{{ domain }}/null
+https://{{ domain }}/search
