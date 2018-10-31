@@ -486,7 +486,7 @@
     # Gradle
     - name: Extract Gradle
       unarchive:
-        src: https://services.gradle.org/distributions/gradle-4.10.2-all.zip
+        src: "https://services.gradle.org/distributions/gradle-{{ gradle_version }}-all.zip"
         dest: /usr/local/
         remote_src: yes
 
@@ -494,7 +494,7 @@
       lineinfile:
         path: /etc/profile
         regexp: 'GRADLE_HOME'
-        line: 'export GRADLE_HOME=/usr/local/gradle-4.10.2/'
+        line: 'export GRADLE_HOME=/usr/local/gradle-{{ gradle_version }}/'
         state: present
 
     - name: Set Gradle path
