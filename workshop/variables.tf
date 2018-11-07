@@ -33,6 +33,7 @@ variable "zone_id" {}
 # Override: -var 'count=X'
 variable "count" {
   default = 1
+}
 
 
 # Operating system on AWS Lightsail
