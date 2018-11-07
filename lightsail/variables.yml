@@ -1,5 +1,5 @@
 # Version to install
-elastic_version: 6.4.2
+elastic_version: 6.4.3
 elastic_download: https://artifacts.elastic.co
 apm_java_version: 0.7.1
 
