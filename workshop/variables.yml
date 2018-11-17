@@ -1,7 +1,7 @@
 # Version to install
-elastic_version: 6.4.3
+elastic_version: 6.5.0
 elastic_download: https://artifacts.elastic.co
-apm_java_version: 0.7.1
+apm_java_version: 1.0.1
 gradle_version: 4.10.2
 php_version: 7.2
 
@@ -30,7 +30,7 @@ mysql_password: secret
 
 
 # SilverStripe setup
-silverstripe_version: 4.2.1
+silverstripe_version: 4.2.2
 silverstripe_user: admin
 silverstripe_password: secret
 silverstripe_database: silverstripe
