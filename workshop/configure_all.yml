@@ -58,6 +58,14 @@
         shell: /bin/bash
         state: present
 
+    - name: Allow passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
     - name: Allow password based authentication for SSH
       lineinfile:
         path: /etc/ssh/sshd_config
