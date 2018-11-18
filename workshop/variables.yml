@@ -19,14 +19,15 @@ domain: xeraa.wtf
 ssh_password: $6$F4NWXRFtSdCi8$DsB5vvMJYusQhSbvGXrYDXL6Xj37MUuqFCd4dGXdKd6NyxT3lpdELN07/Kpo7EjjWnm9zusFg/LLFv6oc.ynu/ # "secret", generate with mkpasswd --method=sha-512
 frontend_server: localhost:8080
 backend_server: localhost:8081
-backend_database: person
 apm_server: localhost:8200
 apm_secret: secret
 
 
 # MySQL
+mysql_server: localhost:3306
 mysql_user: admin
 mysql_password: secret
+mysql_database: person
 
 
 # SilverStripe setup

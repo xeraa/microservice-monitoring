@@ -401,7 +401,7 @@
 
     - name: Create a new database for Java
       mysql_db:
-        name: "{{ backend_database }}"
+        name: "{{ mysql_database }}"
         state: present
 
     - name: Create a new database for SilverStripe
