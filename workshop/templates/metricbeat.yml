@@ -76,7 +76,7 @@ metricbeat.modules:
   path: /health
   method: GET
   fields:
-    service: backend
+    service: frontend
 
 {% for metric in ('http.server.requests', 'process.files.max', 'jvm.gc.memory.promoted', 'tomcat.cache.hit',
                   'jvm.memory.committed', 'system.load.average.1m', 'tomcat.cache.access', 'jvm.memory.used',
