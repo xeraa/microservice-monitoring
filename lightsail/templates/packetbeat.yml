@@ -62,12 +62,13 @@ processors:
 - drop_event:
     when:
       or:
-        # Exclude Jolokia calls
-        - contains.path: "/jolokia/?"
-        # Exclude pinging metrics
-        - contains.path: "/metrics"
+        # Exclude pinging metrics via REST and JMX
+        - contains.path: "/metrics/"
+        - equals.path: "/jolokia"
         # Exclude pinging health
         - equals.path: "/health"
+        # Exclude nginx status
+        - equals.path: "/server-status"
 
 
 xpack.monitoring.enabled: true
