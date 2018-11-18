@@ -41,6 +41,38 @@
       pip: name=pyopenssl
 
 
+    # Add David
+    - name: Add David's user
+      user:
+        name: david
+        groups: sudo
+        shell: /bin/bash
+        state: present
+
+    - name: Placing key for David
+      authorized_key:
+        user: david
+        key: "{{ lookup('file', './files/david.pub') }}"
+
+    - name: Allow David to log in via SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: 'AllowUsers ubuntu david'
+        state: present
+
+    - name: Allow passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Restart SSH
+      service: name=ssh state=restarted
+
+
     # osquery
     - name: Add osquery's repository key
       apt_key:
