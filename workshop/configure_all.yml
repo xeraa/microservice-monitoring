@@ -332,6 +332,21 @@
       failed_when: ansible_facts.services.packetbeat.state != "running"
 
 
+    # Set a default index pattern
+    - name: Set Metricbeat as the default index pattern
+      uri:
+        url: "{{kibana_host}}/api/kibana/settings/defaultIndex"
+        body_format: json
+        method: POST
+        force_basic_auth: true
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        headers:
+          kbn-xsrf: kibana
+        body:
+          value: "metricbeat-*"
+
+
     # Watcher
     - name: Add an example Watch from a local file
       uri:
