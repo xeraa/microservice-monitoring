@@ -209,6 +209,7 @@
         method: POST
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
         status_code:
           - 200
           - 403 #Trial was already activated
