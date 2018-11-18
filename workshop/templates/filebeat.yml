@@ -1,4 +1,4 @@
-filebeat.prospectors:
+filebeat.inputs:
 
 # Collect the JSON log files from the Spring Boot apps
 - type: log

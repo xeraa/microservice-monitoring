@@ -1,4 +1,4 @@
-filebeat.prospectors:
+filebeat.inputs:
 
 {% if inventory_hostname_short != 'monitor' %}
 # Collect the JSON log files from the Spring Boot apps
