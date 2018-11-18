@@ -290,7 +290,7 @@
       - metricbeat
       - packetbeat
 
-    - name: Change the configuration
+    - name: Change the Beats configuration
       template: "src=templates/{{ item }}.yml dest=/etc/{{ item }}/{{ item }}.yml"
       loop:
       - auditbeat
