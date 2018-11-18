@@ -282,6 +282,14 @@
 
 
     # Beats
+    - name: Set the Elasticsearch password for Beats and APM
+      lineinfile:
+        dest: /tmp/cred
+        line: "{{ elasticsearch_password }}"
+        state: present
+        create: yes
+        mode: 0600
+
     - name: Get the Beats
       apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb
       loop:
@@ -293,6 +301,24 @@
 
     - name: Change the Beats configuration
       template: "src=templates/{{ item }}.yml dest=/etc/{{ item }}/{{ item }}.yml"
+      loop:
+      - auditbeat
+      - filebeat
+      - heartbeat
+      - metricbeat
+      - packetbeat
+
+    - name: Create the Beats keystores
+      command: "{{ item }} keystore create --force"
+      loop:
+      - auditbeat
+      - filebeat
+      - heartbeat
+      - metricbeat
+      - packetbeat
+
+    - name: Set the password in the Beats keystore files
+      shell: cat /tmp/cred | {{ item }} keystore add ES_PWD --stdin --force
       loop:
       - auditbeat
       - filebeat
@@ -333,6 +359,50 @@
       failed_when: ansible_facts.services.packetbeat.state != "running"
 
 
+    # APM
+    - name: Install APM
+      apt: deb={{ elastic_download }}/downloads/apm-server/apm-server-{{ elastic_version }}-amd64.deb
+
+    - name: Change the APM configuration
+      template: src=templates/apm-server.yml dest=/etc/apm-server/apm-server.yml
+
+    - name: Create the APM keystore
+      command: apm-server keystore create --force
+
+    - name: Set the secret for APM
+      lineinfile:
+        dest: /tmp/sec
+        line: "{{ apm_secret }}"
+        state: present
+        create: yes
+        mode: 0600
+
+    - name: Set the password in the APM keystore file
+      shell: cat /tmp/cred | apm-server keystore add ES_PWD --stdin --force
+
+    - name: Set the secret in the APM keystore file
+      shell: cat /tmp/sec | apm-server keystore add APM_SEC --stdin --force
+
+    - name: Remove the password file
+      file:
+        path: /tmp/cred
+        state: absent
+
+    - name: Remove the secret file
+      file:
+        path: /tmp/sec
+        state: absent
+
+    - name: Restart APM and make sure it autostarts
+      service: name=apm-server state=restarted enabled=yes
+
+    - name: Fetch the APM agent
+      get_url:
+        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java_version }}/elastic-apm-agent-{{ apm_java_version }}.jar"
+        dest: "/opt/elastic-apm-agent-{{ apm_java_version }}.jar"
+        mode: 0444
+
+
     # Set a default index pattern
     - name: Set Metricbeat as the default index pattern
       uri:
@@ -360,23 +430,6 @@
         status_code:
           - 201
           - 200
-
-
-    # APM
-    - name: Install APM
-      apt: deb={{ elastic_download }}/downloads/apm-server/apm-server-{{ elastic_version }}-amd64.deb
-
-    - name: Change the APM configuration
-      template: src=templates/apm-server.yml dest=/etc/apm-server/apm-server.yml
-
-    - name: Restart APM and make sure it autostarts
-      service: name=apm-server state=restarted enabled=yes
-
-    - name: Fetch the APM agent
-      get_url:
-        url: "https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/{{ apm_java_version }}/elastic-apm-agent-{{ apm_java_version }}.jar"
-        dest: "/opt/elastic-apm-agent-{{ apm_java_version }}.jar"
-        mode: 0444
 
 
     # nginx

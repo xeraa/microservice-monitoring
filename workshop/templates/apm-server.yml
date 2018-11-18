@@ -1,7 +1,7 @@
 apm-server:
   host: "0.0.0.0:8200"
 
-  secret_token: "{{ apm_secret }}"
+  secret_token: "${APM_SEC}"
 
 
 setup.template.settings:
@@ -12,12 +12,12 @@ setup.template.settings:
 output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"
-  password: "{{ elasticsearch_password }}"
+  password: "${ES_PWD}"
 
 
 setup:
   kibana:
     host: "{{ kibana_host }}"
     username: "{{ elasticsearch_user }}"
-    password: "{{ elasticsearch_password }}"
+    password: "${ES_PWD}"
   dashboards.enabled: true

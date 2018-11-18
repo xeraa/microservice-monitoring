@@ -144,6 +144,14 @@
 
 
     # Beats
+    - name: Set the Elasticsearch password for Beats and APM
+      lineinfile:
+        dest: /tmp/cred
+        line: "{{ elasticsearch_password }}"
+        state: present
+        create: yes
+        mode: 0600
+
     - name: Get the Beats
       apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb
       loop:
@@ -152,13 +160,34 @@
       - metricbeat
       - packetbeat
 
-    - name: Change the configuration
+    - name: Change the Beats configuration
       template: "src=templates/{{ item }}.yml dest=/etc/{{ item }}/{{ item }}.yml"
       loop:
       - auditbeat
       - filebeat
       - metricbeat
       - packetbeat
+
+    - name: Create the Beats keystores
+      command: "{{ item }} keystore create --force"
+      loop:
+      - auditbeat
+      - filebeat
+      - metricbeat
+      - packetbeat
+
+    - name: Set the password in the Beats keystore files
+      shell: cat /tmp/cred | {{ item }} keystore add ES_PWD --stdin --force
+      loop:
+      - auditbeat
+      - filebeat
+      - metricbeat
+      - packetbeat
+
+    - name: Remove the password file
+      file:
+        path: /tmp/cred
+        state: absent
 
     - name: Restart and make sure the Beats autostart
       service: name={{ item }} state=restarted enabled=yes

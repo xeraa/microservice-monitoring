@@ -17,11 +17,25 @@
 
 
     # Heartbeat
+    - name: Set the Elasticsearch password for Heartbeat and APM
+      lineinfile:
+        dest: /tmp/cred
+        line: "{{ elasticsearch_password }}"
+        state: present
+        create: yes
+        mode: 0600
+
     - name: Install Heartbeat
       apt: deb={{ elastic_download }}/downloads/beats/heartbeat/heartbeat-{{ elastic_version }}-amd64.deb
 
     - name: Change the Heartbeat configuration
       template: src=templates/heartbeat.yml dest=/etc/heartbeat/heartbeat.yml
+
+    - name: Create the Heartbeat keystore
+      command: heartbeat keystore create --force
+
+    - name: Set the password in the Heartbeat keystore file
+      shell: cat /tmp/cred | heartbeat keystore add ES_PWD --stdin --force
 
     - name: Restart Heartbeat and make sure it autostarts
       service: name=heartbeat-elastic state=restarted enabled=yes
@@ -40,6 +54,33 @@
 
     - name: Change the APM configuration
       template: src=templates/apm-server.yml dest=/etc/apm-server/apm-server.yml
+
+    - name: Create the APM keystore
+      command: apm-server keystore create --force
+
+    - name: Set the secret for APM
+      lineinfile:
+        dest: /tmp/sec
+        line: "{{ apm_secret }}"
+        state: present
+        create: yes
+        mode: 0600
+
+    - name: Set the password in the APM keystore file
+      shell: cat /tmp/cred | apm-server keystore add ES_PWD --stdin --force
+
+    - name: Set the secret in the APM keystore file
+      shell: cat /tmp/sec | apm-server keystore add APM_SEC --stdin --force
+
+    - name: Remove the password file
+      file:
+        path: /tmp/cred
+        state: absent
+
+    - name: Remove the secret file
+      file:
+        path: /tmp/sec
+        state: absent
 
     - name: Restart APM and make sure it autostarts
       service: name=apm-server state=restarted enabled=yes

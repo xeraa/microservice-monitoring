@@ -77,12 +77,12 @@ xpack.monitoring.enabled: true
 output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"
-  password: "{{ elasticsearch_password }}"
+  password: "${ES_PWD}"
 
 
 setup:
   kibana:
     host: "{{ kibana_host }}"
     username: "{{ elasticsearch_user }}"
-    password: "{{ elasticsearch_password }}"
+    password: "${ES_PWD}"
   dashboards.enabled: true
