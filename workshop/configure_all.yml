@@ -280,6 +280,10 @@
         port: 5601
         delay: 5
 
+    - name: Check if Kibana is available locally and the firewall rules are correct
+      local_action: uri url="http://{{ inventory_hostname }}:5601"
+      become: false
+
 
     # Beats
     - name: Set the Elasticsearch password for Beats and APM
