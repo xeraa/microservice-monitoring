@@ -70,7 +70,6 @@
 - name: Check if the service is available
   uri: url="http://localhost:{{ port }}/health"
   register: response
-  ignore_errors: yes
 
 - name: Remove old JARs (keeping the five latest good ones)
   shell: "ls -tr /opt/{{ application }}_*.jar | head -n -5 | xargs rm -f"
