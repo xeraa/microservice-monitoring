@@ -198,7 +198,7 @@
       - packetbeat
 
     - name: Wait if the Beats are actually running
-      pause: minutes=2
+      pause: minutes=1
 
     - name: Get the state of all services and check the status of Auditbeat
       service_facts: ~
