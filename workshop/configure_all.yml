@@ -406,6 +406,13 @@
         dest: "/opt/elastic-apm-agent-{{ apm_java_version }}.jar"
         mode: 0444
 
+    - name: Wait if APM is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of APM
+      service_facts: ~
+      failed_when: ansible_facts.services["apm-server"].state != "running"
+
 
     # Set a default index pattern
     - name: Set Metricbeat as the default index pattern

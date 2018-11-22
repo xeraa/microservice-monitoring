@@ -85,6 +85,13 @@
     - name: Restart APM and make sure it autostarts
       service: name=apm-server state=restarted enabled=yes
 
+    - name: Wait if APM is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of APM
+      service_facts: ~
+      failed_when: ansible_facts.services["apm-server"].state != "running"
+
 
     # Dashboard user
     - name: Create a role for a user to only view the dashboards
