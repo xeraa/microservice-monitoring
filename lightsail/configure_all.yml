@@ -131,6 +131,7 @@
         method: PUT
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
         body:
           template: "*"
           settings:
