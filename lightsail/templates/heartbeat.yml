@@ -26,6 +26,14 @@ heartbeat.monitors:
   timeout: 3s
   check.response.status: 200
 
+- type: http
+  urls: ["{{ apm_server }}/healthcheck"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+  ssl:
+    verification_mode: none #LetsEncrypt certs break in APM
+
 - type: tcp
   hosts: ["{{ mysql_server }}:3306"]
   schedule: "@every 10s"
