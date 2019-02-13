@@ -36,6 +36,7 @@ heartbeat.monitors:
   hosts: ["{{ mysql_server }}:3306"]
   schedule: "@every 10s"
   timeout: 3s
+  name: mysql
 
 
 name: "{{ inventory_hostname }}"
