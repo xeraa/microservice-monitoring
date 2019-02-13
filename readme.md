@@ -7,15 +7,10 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 ## Features
 
 * **X-Pack Monitoring**: Start the overview page to show the systems we are using for monitoring.
-* **Metricbeat System**: Show the *[Metricbeat System] Overview* dashboard in Kibana and then switch to *[Metricbeat System] Host overview*. If you show all hosts, you will see little spikes approximately every 5 minutes — this is a rogue process we are running with a cron job and we want to find it.
-* Build an overview with the Time Series Visual Builder:
-  * A sum over the field `system.memory.actual.used.bytes` and group by the term `beat.name`.
-  * A sum over the field `system.process.memory.rss.bytes` and group by the term `system.process.name`. Optionally move this visualization to the negative axis to make it easier to visualize with a calculation on `params.process*-1` (`process` is your variable name).
-
-![](img/rogue-process.png)
-
-* **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, *[Packetbeat] MySQL performance*, and *[Packetbeat] HTTP* dashboard, let attendees access the various URLs and see the corresponding graphs. In *Discover* you can point out the `proc` enrichment for nginx, Java, MySQL, and the APM server. Optionally show the *[Packetbeat] TLS Sessions* and *[Packetbeat] DNS Tunneling* dashboards as well.
-* **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat MySQL] Overview*, *[Filebeat System] Syslog dashboard*, *[Filebeat System] SSH login attempts*, and *[Osquery Result] Compliance pack* dashboards.
+* **Metricbeat System**: Show the *[Metricbeat System] Overview* dashboard in Kibana and then switch to *[Metricbeat System] Host overview*.
+* **Infrastructure UI**: As an alternative view show the Infrastructure UI and explain how this will scale much better.
+* **Packetbeat**: Show the *[Packetbeat] Overview*, *[Packetbeat] Flows*, *[Packetbeat] MySQL performance*, and *[Packetbeat] HTTP* dashboard, let attendees access the various URLs and see the corresponding graphs. In *Discover* you can point out the `proc` enrichment for nginx, Java, and MySQL. Optionally show the *[Packetbeat] TLS Sessions* and *[Packetbeat] DNS Tunneling* dashboards as well.
+* **Filebeat modules**: Show the *[Filebeat Nginx] Access and error logs*, *[Filebeat MySQL] Overview* (might need a wider time window to see anything useful), *[Filebeat System] Syslog dashboard*, *[Filebeat System] SSH login attempts*.
 * **Filebeat**: Let attendees hit */good* with a parameter and point out the MDC logging under `json.name` and the context view for one log message. Let attendees hit */bad* and */null* to show the stacktrace both in the JSON log file and in Kibana by filtering down on `application:java` and `json.severity: ERROR`. Also point out the cloud `meta.*` and `host.*` information. And show the `json.stack_hash`, which you can use for visualizations too.
 
 ![](img/stacktraces.png)
@@ -33,7 +28,7 @@ Monitor logs, metrics, pings, and traces of your distributed (micro-) services. 
 
 ![](img/heap-usage-annotated.png)
 
-* **APM**: Show the traces so far, point out the MySQL queries (currently on the backend instance only), and where things are slow or throwing errors. If there is not enough activity on the instances, call `./ab.sh` on the monitor instance.
+* **APM**: Show the traces so far, point out the MySQL queries (currently on the backend instance only), and where things are slow or throwing errors. If there is not enough activity on the instances, call `./ab.sh` on the monitor instance. Also show errors and metrics.
 * **Kibana Dashboard Mode**: Point attendees to the Kibana instance to let them play around on their own.
 
 
