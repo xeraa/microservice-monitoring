@@ -17,8 +17,8 @@ env: production
 domain: xeraa.wtf
 backend_server: https://backend.{{ domain }}
 frontend_server: https://frontend.{{ domain }}
-apm_server: https://monitor.{{ domain }}:8200
-apm_secret: secret
+apm_server: "{{ lookup('env','APM_HOST') }}"
+apm_secret: "{{ lookup('env','APM_TOKEN') }}"
 
 
 # MySQL config

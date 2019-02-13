@@ -15,15 +15,6 @@
 
   tasks:
 
-    # Check that we can reach APM
-    - name: Check APM is accessible before deploying the application
-      wait_for:
-        host: "monitor.{{ domain }}"
-        port: 8200
-        state: started
-        delay: 0
-        timeout: 3
-
     - include_tasks: include_deploy_boot.yml
       vars:
         application: frontend

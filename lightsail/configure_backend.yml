@@ -54,3 +54,112 @@
 
     - name: Restart MySQL and make sure it autostarts
       service: name=mysql state=restarted enabled=yes
+
+
+    # Heartbeat
+    - name: Set the Elasticsearch password for Heartbeat and APM
+      lineinfile:
+        dest: /tmp/cred
+        line: "{{ elasticsearch_password }}"
+        state: present
+        create: yes
+        mode: 0600
+
+    - name: Install Heartbeat
+      apt: deb={{ elastic_download }}/downloads/beats/heartbeat/heartbeat-{{ elastic_version }}-amd64.deb
+
+    - name: Change the Heartbeat configuration
+      template: src=templates/heartbeat.yml dest=/etc/heartbeat/heartbeat.yml
+
+    - name: Create the Heartbeat keystore
+      command: heartbeat keystore create --force
+
+    - name: Set the password in the Heartbeat keystore file
+      shell: cat /tmp/cred | heartbeat keystore add ES_PWD --stdin --force
+
+    - name: Remove the password file
+      file:
+        path: /tmp/cred
+        state: absent
+
+    - name: Restart Heartbeat and make sure it autostarts
+      service: name=heartbeat-elastic state=restarted enabled=yes
+
+    - name: Wait if Heartbeat is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of Heartbeat
+      service_facts: ~
+      failed_when: ansible_facts.services["heartbeat-elastic"].state != "running"
+
+
+    # Dashboard user
+    - name: Create a role for a user to only view the dashboards
+      uri:
+        url: "{{elasticsearch_host}}.security-6/doc/role-read_dashboard"
+        body_format: json
+        method: PUT
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
+        body: "{{ lookup('file','security_role_dashboard.json') }}"
+        status_code:
+          - 201
+          - 200
+
+    - name: Create the dashboard user
+      uri:
+        url: "{{elasticsearch_host}}_xpack/security/user/{{ attendee_user }}"
+        body_format: json
+        method: POST
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
+        body: "{{ lookup('template','security_user_dashboard.json') }}"
+        status_code:
+          - 201
+          - 200
+
+
+    # Watcher
+    - name: Add an example Watch from a local file
+      uri:
+        url: "{{elasticsearch_host}}_xpack/watcher/watch/heapsize"
+        body_format: json
+        method: PUT
+        user: "{{ elasticsearch_user }}"
+        password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
+        body: "{{ lookup('file','alerting_heapsize.json') }}"
+        status_code:
+          - 201
+          - 200
+
+
+    # ApacheBench
+    - name: Install ApacheBench
+      apt:
+        name: [ 'apache2-utils', 'parallel' ]
+
+    - name: Add a list of URLs to benchmark
+      template: src=templates/urls.txt dest=/home/ubuntu/urls.txt owner=ubuntu group=ubuntu mode=0644
+
+    - name: Add a quick ApacheBench script
+      copy:
+        src: files/ab.sh
+        dest: /home/ubuntu/ab.sh
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+
+    - name: Generate some load at the full hour, so ML can learn something
+      cron:
+        name: Generate some load every hour
+        minute: "0"
+        hour: "*"
+        job: >
+          (echo "https://{{ domain }}/good"; echo "https://{{ domain }}/good?name=bot") | parallel 'ab -n 10 -c 2 {}' &&
+          sleep 15s &&
+          (echo "https://{{ domain }}/search?q=Philipp"; echo "https://{{ domain }}/null") | parallel 'ab -n 6 -c 2 {}' &&
+          sleep 45s &&
+          (echo "https://{{ domain }}/"; echo "https://{{ domain }}/good?name=bot") | parallel 'ab -n 20 -c 4 {}'

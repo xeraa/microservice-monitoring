@@ -27,6 +27,28 @@ resource "aws_route53_record" "backend" {
   ttl     = "60"
   records = ["${aws_lightsail_instance.backend.public_ip_address}"]
 }
+resource "aws_route53_record" "kibana" {
+  zone_id = "${var.zone_id}"
+  name    = "kibana.${var.domain}"
+  type    = "A"
+  alias {
+    name                   = "backend.${var.domain}"
+    zone_id                = "${var.zone_id}"
+    evaluate_target_health = false
+  }
+  depends_on = ["aws_route53_record.backend"]
+}
+resource "aws_route53_record" "dashboard" {
+  zone_id = "${var.zone_id}"
+  name    = "dashboard.${var.domain}"
+  type    = "A"
+  alias {
+    name                   = "backend.${var.domain}"
+    zone_id                = "${var.zone_id}"
+    evaluate_target_health = false
+  }
+  depends_on = ["aws_route53_record.backend"]
+}
 
 
 # Create the frontend instance and its DNS entries
@@ -66,44 +88,4 @@ resource "aws_route53_record" "www" {
     evaluate_target_health = false
   }
   depends_on = ["aws_route53_record.frontend"]
-}
-
-
-# Create the monitor instance and its DNS entry
-resource "aws_lightsail_instance" "monitor" {
-  name              = "monitor"
-  availability_zone = "${var.region}c"
-  blueprint_id      = "${var.operating_system}"
-  bundle_id         = "${var.size}"
-  key_pair_name     = "microservice_monitoring_key_pair"
-  depends_on        = ["aws_lightsail_key_pair.microservice_monitoring_key_pair"]
-}
-resource "aws_route53_record" "monitor" {
-  zone_id = "${var.zone_id}"
-  name    = "monitor.${var.domain}"
-  type    = "A"
-  ttl     = "60"
-  records = ["${aws_lightsail_instance.monitor.public_ip_address}"]
-}
-resource "aws_route53_record" "kibana" {
-  zone_id = "${var.zone_id}"
-  name    = "kibana.${var.domain}"
-  type    = "A"
-  alias {
-    name                   = "monitor.${var.domain}"
-    zone_id                = "${var.zone_id}"
-    evaluate_target_health = false
-  }
-  depends_on = ["aws_route53_record.monitor"]
-}
-resource "aws_route53_record" "dashboard" {
-  zone_id = "${var.zone_id}"
-  name    = "dashboard.${var.domain}"
-  type    = "A"
-  alias {
-    name                   = "monitor.${var.domain}"
-    zone_id                = "${var.zone_id}"
-    evaluate_target_health = false
-  }
-  depends_on = ["aws_route53_record.monitor"]
 }

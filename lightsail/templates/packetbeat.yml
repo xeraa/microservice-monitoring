@@ -24,7 +24,7 @@ packetbeat.protocols:
 {% endif %}
 
 - type: tls
-  ports: [443{% if inventory_hostname_short == 'monitor' %}, 8200{% endif %}]
+  ports: [443]
 
 
 packetbeat.procs:
@@ -33,16 +33,8 @@ packetbeat.procs:
 
     - process: nginx
       cmdline_grep: nginx
-
-{% if inventory_hostname_short != 'monitor' %}
     - process: java
       cmdline_grep: java
-{% endif %}
-
-{% if inventory_hostname_short == 'monitor' %}
-    - process: apm-server
-      cmdline_grep: apm-server
-{% endif %}
 
 {% if inventory_hostname_short == 'backend' %}
     - process: mysql
