@@ -49,14 +49,14 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 Make sure you have run this before the demo, because some steps take time and require a decent internet connection.
 
 1. Make sure you have your AWS account set up, access key created, and added as environment variables in `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Protip: Use [https://github.com/sorah/envchain](https://github.com/sorah/envchain) to keep your environment variables safe.
-1. Create the Elastic Cloud instance with the same version as specified in *variables.yml*'s `elastic_version`, enable Kibana as well as the GeoIP & user agent plugins, and set the environment variables with the values for `ELASTICSEARCH_HOST`, `ELASTICSEARCH_USER`, `ELASTICSEARCH_PASSWORD`, as well as `KIBANA_HOST`, `KIBANA_ID`.
+1. Create the Elastic Cloud instance with the same version as specified in *variables.yml*'s `elastic_version`, enable Kibana as well as the GeoIP & user agent plugins, and set the environment variables with the values for `ELASTICSEARCH_HOST`, `ELASTICSEARCH_USER`, `ELASTICSEARCH_PASSWORD`, `KIBANA_HOST`, `KIBANA_ID`, `APM_HOST`, and `APM_TOKEN`.
 1. Change into the *lightsail/* directory.
 1. Change the settings to a domain you have registered under Route53 in *inventory*, *variables.tf*, and *variables.yml*. Set the Hosted Zone for that domain and export the Zone ID under the environment variable `TF_VAR_zone_id`. If you haven't created the Hosted Zone yet, you should set it up in the AWS Console first and then set the environment variable.
 1. If you haven't installed the AWS plugin for Terraform, get it with `terraform init` first. Then create the keypair, DNS settings, and instances with `terraform apply`.
-1. Open HTTPS on the network configuration on all instances, MySQL on the backend, and TCP 8200 on the monitoring instance (waiting for this [Terraform issue](https://github.com/terraform-providers/terraform-provider-aws/issues/700)).
+1. Open HTTPS on the network configuration on all instances and MySQL on the backend instance (waiting for this [Terraform issue](https://github.com/terraform-providers/terraform-provider-aws/issues/700) to automate these steps).
 1. Apply the base configuration to all instances with `ansible-playbook configure_all.yml`.
-1. Apply the instance specific configurations with `ansible-playbook configure_backend.yml` and `ansible-playbook configure_monitor.yml`.
-1. Deploy the JARs with `ansible-playbook deploy_bad.yml`, `ansible-playbook deploy_backend.yml`, and `ansible-playbook deploy_frontend.yml` (Ansible is also building them).
+1. Apply the instance specific configuration with `ansible-playbook configure_backend.yml`.
+1. Deploy the JARs with `ansible-playbook deploy_backend.yml` and `ansible-playbook deploy_frontend.yml` (Ansible is also building them).
 
 When you are done, remove the instances, DNS settings, and key with `terraform destroy`.
 
@@ -93,7 +93,7 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
-* Docker
+* Docker / Kubernetes
 * Improve traced methods and add async
 * Functionbeat (though there are no CloudWatch metrics for Lightsail)
 * https://github.com/elastic/examples/blob/master/Alerting/Sample%20Watches/errors_in_logs/watch.json
