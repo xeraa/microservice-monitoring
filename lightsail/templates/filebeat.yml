@@ -7,7 +7,8 @@ filebeat.inputs:
   fields_under_root: true
   fields:
     application: java
-  json.message_key: log
+  json.keys_under_root: true
+  json.add_error_key: true
 
 
 filebeat.modules:
