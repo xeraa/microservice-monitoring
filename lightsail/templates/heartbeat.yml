@@ -21,7 +21,7 @@ heartbeat.monitors:
 - type: http
   urls: ["{{ elasticsearch_host }}"]
   username: {{ elasticsearch_user }}
-  password: {{ elasticsearch_password }}
+  password: "${ES_PWD}"
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
