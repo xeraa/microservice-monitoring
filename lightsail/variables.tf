@@ -14,18 +14,19 @@ variable "region" {
 }
 
 
-# Default domain
-# Options: You need to use your own domain that you've registered in Route53.
+# Domain name
+# Options: You should provide the domain name to use in the environment variable TF_VAR_domain. It needs to exist in Route 53.
 # Override: -var 'domain=your-domain.com'
 variable "domain" {
-  default = "xeraa.wtf"
+	default = "false"
 }
 
-
-# Zone ID of the domain, no default
+# Zone ID of the domain
 # Options: You should provide the Zone ID of the domain in the environment variable TF_VAR_zone_id
 # Override: -var 'zone_id=XXXXXXXXXXXXX'
-variable "zone_id" {}
+variable "zone_id" {
+	default = "false"	
+}
 
 
 # Operating system on AWS Lightsail

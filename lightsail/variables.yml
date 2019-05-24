@@ -1,12 +1,12 @@
 # Version to install
-elastic_version: 6.6.1
+elastic_version: 7.1.0
 elastic_download: https://artifacts.elastic.co
-apm_java_version: 1.4.0
+apm_java_version: 1.6.1
 
 
 # Elastic Cloud credentials
 elasticsearch_host: "{{ lookup('env','ELASTICSEARCH_HOST') }}"
-elasticsearch_user: "{{ lookup('env','ELASTICSEARCH_USER') }}"
+elasticsearch_user: "{{ lookup('env','ELASTICSEARCH_USER', 'elastic') }}"
 elasticsearch_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
 kibana_host: "{{ lookup('env','KIBANA_HOST') }}"
 kibana_id: "{{ lookup('env','KIBANA_ID') }}"
@@ -14,16 +14,14 @@ kibana_id: "{{ lookup('env','KIBANA_ID') }}"
 
 # Setup of the infrastructure
 env: production
-domain: xeraa.wtf
-backend_server: https://backend.{{ domain }}
-frontend_server: https://frontend.{{ domain }}
+backend_server: https://{{ backend_server_ip }}
+frontend_server: https://{{ frontend_server_ip }}
 apm_server: "{{ lookup('env','APM_HOST') }}"
 apm_secret: "{{ lookup('env','APM_TOKEN') }}"
 
-
 # MySQL config
-mysql_server: backend.{{ domain }}
-mysql_user: "{{ lookup('env','ELASTICSEARCH_USER') }}"
+mysql_server: {{ backend_server_ip }}
+mysql_user: "{{ lookup('env','ELASTICSEARCH_USER', 'elastic') }}"
 mysql_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
 mysql_database: person
 
