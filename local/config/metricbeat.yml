@@ -47,3 +47,14 @@ metricbeat.modules:
   hosts: ["unix:///var/run/docker.sock"]
   enabled: true
   period: 10s
+
+processors:
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['${ELASTICSEARCH_HOSTS:elasticsearch:9200}']
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+xpack.monitoring.enabled: true

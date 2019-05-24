@@ -1,0 +1,40 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+- type: log
+  paths:
+    - /mnt/backend-log/backend.json
+  fields_under_root: true
+  fields:
+    application: java
+    layer: backend
+  json.keys_under_root: true
+  json.add_error_key: true
+- type: log
+  paths:
+    - /mnt/frontend-log/frontend.json
+  fields_under_root: true
+  fields:
+    application: java
+    layer: frontend
+  json.keys_under_root: true
+  json.add_error_key: true
+
+
+filebeat.modules:
+- module: system
+
+processors:
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['${ELASTICSEARCH_HOSTS:elasticsearch:9200}']
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+xpack.monitoring.enabled: true
+    
