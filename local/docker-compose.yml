@@ -9,6 +9,10 @@ services:
       - cluster.name=microservice-monitoring
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - xpack.security.enabled=$ELASTIC_SECURITY
     ulimits:
       memlock:
         soft: -1
@@ -22,6 +26,9 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:$ELASTIC_VERSION
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: kibana
     ports: ['127.0.0.1:5601:5601']
     networks: ['stack']
