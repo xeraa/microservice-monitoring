@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: '3'
 services:
 
   elasticsearch:
@@ -18,7 +18,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 1g
     ports:
       - 9200:9200
     networks: ['stack']
@@ -29,7 +28,10 @@ services:
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: kibana
+    volumes:
+      - ./scripts:/mnt/scripts:ro
     ports: ['127.0.0.1:5601:5601']
+#    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && bin/kibana'
     networks: ['stack']
     depends_on: ['elasticsearch']
 
@@ -43,14 +45,16 @@ services:
     # If the host system has logs at "/var/log", mount them at "/mnt/log"
     # inside the container, where Filebeat can find them.
     volumes:
+      - ./scripts:/mnt/scripts:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/log:/mnt/log:ro
       - $PWD/../java/backend:/mnt/backend-log:ro
       - $PWD/../java/frontend:/mnt/frontend-log:ro
       # Provide a custom Filebeat configuration
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'
     networks: ['stack']
-    depends_on: ['elasticsearch']
+    depends_on: ['kibana']
 
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:$ELASTIC_VERSION
@@ -60,11 +64,13 @@ services:
       - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: heartbeat
     volumes:
+      - ./scripts:/mnt/scripts:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Provide a custom Heartbeat configuration
       - ./config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && heartbeat -e'
     networks: ['stack']
-    depends_on: ['elasticsearch']
+    depends_on: ['kibana']
 
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
@@ -78,14 +84,16 @@ services:
     # rather than the Metricbeat container. It's problematic with Docker for
     # Windows, however, since "/proc", "/sys", etc. don't exist on Windows.
     volumes:
+      - ./scripts:/mnt/scripts:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
       - /:/hostfs:ro
       # Provide a custom Metricbeat configuration
       - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && metricbeat -e'
     networks: ['stack']
-    depends_on: ['elasticsearch']
+    depends_on: ['kibana']
 
   packetbeat:
     image: docker.elastic.co/beats/packetbeat:$ELASTIC_VERSION
@@ -100,6 +108,7 @@ services:
       - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: packetbeat
     volumes:
+      - ./scripts:/mnt/scripts:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Provide a custom Packetbeat configuration
       - ./config/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
@@ -109,19 +118,9 @@ services:
     # Use "host mode" networking to allow Packetbeat to capture traffic from
     # real network interface on the host, rather than being isolated to the
     # container's virtual interface.
+    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status && packetbeat -e'
     network_mode: host
-    depends_on: ['elasticsearch']
-
-  # Run a short-lived container to set up Kibana index patterns and dashboards.
-#  configure_kibana:
-#    # Any Beats image will suffice. We'll use Metricbeat.
-#    image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
-#    volumes: ['./scripts/configure-kibana.sh:/usr/local/bin/configure-kibana.sh:ro']
-#    command: /usr/local/bin/configure-kibana.sh
-#    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}']
-#    networks: ['stack']
-#    depends_on: ['kibana']
-
+    depends_on: ['kibana']
 
 #volumes:
 #  esdata:

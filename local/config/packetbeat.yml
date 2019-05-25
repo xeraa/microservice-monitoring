@@ -43,3 +43,11 @@ output.elasticsearch:
   password: '${ELASTICSEARCH_PASSWORD:}'
 
 xpack.monitoring.enabled: true
+
+setup.kibana:
+  host: "${KIBANA_HOSTS:kibana:5601}"
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+setup.dashboards.enabled: true
+setup.dashboards.retry.enabled: true
+setup.dashboards.retry.interval: 5s

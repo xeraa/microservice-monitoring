@@ -2,8 +2,14 @@ heartbeat.monitors:
 - type: http
   schedule: '@every 5s'
   urls:
-    - http://elasticsearch:9200
-    - http://kibana:5601
+    - ${ELASTICSEARCH_HOSTS:elasticsearch:9200}
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+- type: http
+  schedule: '@every 5s'
+  urls:
+    - ${KIBANA_HOSTS:kibana:5601}
 
 - type: icmp
   schedule: '@every 5s'
@@ -21,4 +27,11 @@ output.elasticsearch:
   password: '${ELASTICSEARCH_PASSWORD:}'
 
 xpack.monitoring.enabled: true
-    
+
+#setup.kibana:
+#  host: "${KIBANA_HOSTS:kibana:5601}"
+#  username: '${ELASTICSEARCH_USERNAME:}'
+#  password: '${ELASTICSEARCH_PASSWORD:}'
+#setup.dashboards.enabled: true
+#setup.dashboards.retry.enabled: true
+#setup.dashboards.retry.interval: 5s
