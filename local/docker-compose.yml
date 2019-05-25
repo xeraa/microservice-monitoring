@@ -122,6 +122,19 @@ services:
     network_mode: host
     depends_on: ['kibana']
 
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    container_name: apm-server
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && apm-server -e'
+    ports: ['127.0.0.1:8200:8200']
+    networks: ['stack']
+    depends_on: ['elasticsearch']
+
 #volumes:
 #  esdata:
 #    driver: local
