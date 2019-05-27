@@ -50,6 +50,7 @@ services:
       - /var/log:/mnt/log:ro
       - $PWD/../java/backend:/mnt/backend-log:ro
       - $PWD/../java/frontend:/mnt/frontend-log:ro
+      - $PWD/../java:/mnt/java:ro
       # Provide a custom Filebeat configuration
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'

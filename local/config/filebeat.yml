@@ -6,6 +6,7 @@ filebeat.config:
 filebeat.inputs:
 - type: log
   paths:
+    - /mnt/java/backend.json
     - /mnt/backend-log/backend.json
   fields_under_root: true
   fields:
@@ -15,6 +16,7 @@ filebeat.inputs:
   json.add_error_key: true
 - type: log
   paths:
+    - /mnt/java/frontend.json
     - /mnt/frontend-log/frontend.json
   fields_under_root: true
   fields:
