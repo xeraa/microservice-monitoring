@@ -5,11 +5,15 @@ heartbeat.monitors:
     - elasticsearch
     - kibana
     - mysql
+    - java-backend
+    - java-frontend
 - type: http
   schedule: '@every 5s'
   urls:
     - 'http://${ELASTICSEARCH_USERNAME:elastic}:${ELASTICSEARCH_PASSWORD:}@elasticsearch:9200'
     - 'http://kibana:5601'
+    - 'http://java-backend:8081/jolokia'
+    - 'http://java-frontend:8080'
 - type: tcp
   enabled: true
   schedule: '@every 5s'
