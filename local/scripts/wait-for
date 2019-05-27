@@ -20,9 +20,11 @@ USAGE
 }
 
 wait_for() {
-  while [[ "$(curl -s -o /dev/null -w '%{http_code}' $URL)" != "$CODE" ]]; do
-      # echo "Waiting for $URL to return $CODE... "
-      sleep 1
+  ret=0
+  while [[ "$ret" != "$CODE" ]]; do
+    ret=$(curl -s -o /dev/null -w '%{http_code}' $URL)  
+    echo "Waiting for $URL to return $CODE... Got $ret"
+    sleep 1
   done
   exit 0
 }
