@@ -21,7 +21,7 @@ USAGE
 
 wait_for() {
   ret=0
-  while [[ "$ret" != "$CODE" ]]; do
+  while [ "$ret" != "$CODE" ]; do
     ret=$(curl -s -o /dev/null -w '%{http_code}' $URL)
     if [ "$DEBUG" -ne 0 ]; then echo "Waiting for $URL to return $CODE... Got $ret"; fi
     sleep 1
