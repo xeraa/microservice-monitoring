@@ -4,11 +4,16 @@ heartbeat.monitors:
   hosts:
     - elasticsearch
     - kibana
+    - mysql
 - type: http
   schedule: '@every 5s'
   urls:
     - 'http://${ELASTICSEARCH_USERNAME:elastic}:${ELASTICSEARCH_PASSWORD:}@elasticsearch:9200'
     - 'http://kibana:5601'
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["tcp://mysql:3306"]
 
 processors:
 - add_cloud_metadata: ~

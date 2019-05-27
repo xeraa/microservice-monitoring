@@ -140,9 +140,18 @@ services:
     networks: ['stack']
     depends_on: ['elasticsearch']
 
-#volumes:
-#  esdata:
-#    driver: local
+  mysql:
+    image: mysql:5
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=$ELASTIC_PASSWORD
+      - MYSQL_USER=elastic
+      - MYSQL_PASSWORD=$ELASTIC_PASSWORD
+      - MYSQL_DATABASE=person
+    container_name: mysql
+    networks: ['stack']
+    ports: ['3306:3306']
 
 
 networks:
