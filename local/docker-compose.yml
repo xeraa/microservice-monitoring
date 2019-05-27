@@ -30,8 +30,8 @@ services:
     container_name: kibana
     volumes:
       - ./scripts:/mnt/scripts:ro
+    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/kibana.sh'
     ports: ['127.0.0.1:5601:5601']
-#    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && bin/kibana'
     networks: ['stack']
     depends_on: ['elasticsearch']
 
@@ -60,8 +60,10 @@ services:
     image: docker.elastic.co/beats/heartbeat:$ELASTIC_VERSION
     user: root
     environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+      - KIBANA_HOSTS=http://kibana:5601
     container_name: heartbeat
     volumes:
       - ./scripts:/mnt/scripts:ro
@@ -106,6 +108,7 @@ services:
       - ELASTICSEARCH_HOSTS=localhost:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+      - KIBANA_HOSTS=localhost:5601
     container_name: packetbeat
     volumes:
       - ./scripts:/mnt/scripts:ro
@@ -122,18 +125,18 @@ services:
     network_mode: host
     depends_on: ['kibana']
 
-  apm-server:
-    image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
-    environment:
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
-    container_name: apm-server
-    volumes:
-      - ./scripts:/mnt/scripts:ro
-    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && apm-server -e'
-    ports: ['127.0.0.1:8200:8200']
-    networks: ['stack']
-    depends_on: ['elasticsearch']
+  # apm-server:
+  #   image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
+  #   environment:
+  #     - ELASTICSEARCH_USERNAME=elastic
+  #     - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+  #   container_name: apm-server
+  #   volumes:
+  #     - ./scripts:/mnt/scripts:ro
+  #   command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && apm-server -e'
+  #   ports: ['127.0.0.1:8200:8200']
+  #   networks: ['stack']
+  #   depends_on: ['elasticsearch']
 
 #volumes:
 #  esdata:
