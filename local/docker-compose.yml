@@ -30,7 +30,7 @@ services:
     container_name: kibana
     volumes:
       - ./scripts:/mnt/scripts:ro
-    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/kibana.sh'
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/kibana.sh'
     ports: ['127.0.0.1:5601:5601']
     networks: ['stack']
     depends_on: ['elasticsearch']
@@ -52,7 +52,7 @@ services:
       - $PWD/../java/frontend:/mnt/frontend-log:ro
       # Provide a custom Filebeat configuration
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
-    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'
     networks: ['stack']
     depends_on: ['kibana']
 
@@ -70,7 +70,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Provide a custom Heartbeat configuration
       - ./config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
-    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && heartbeat -e'
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && heartbeat -e'
     networks: ['stack']
     depends_on: ['kibana']
 
@@ -93,7 +93,7 @@ services:
       - /:/hostfs:ro
       # Provide a custom Metricbeat configuration
       - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
-    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && metricbeat -e'
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && metricbeat -e'
     networks: ['stack']
     depends_on: ['kibana']
 
@@ -121,22 +121,23 @@ services:
     # Use "host mode" networking to allow Packetbeat to capture traffic from
     # real network interface on the host, rather than being isolated to the
     # container's virtual interface.
-    command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status && packetbeat -e'
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status && packetbeat -e'
     network_mode: host
     depends_on: ['kibana']
 
-  # apm-server:
-  #   image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
-  #   environment:
-  #     - ELASTICSEARCH_USERNAME=elastic
-  #     - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
-  #   container_name: apm-server
-  #   volumes:
-  #     - ./scripts:/mnt/scripts:ro
-  #   command: sh -c '/mnt/scripts/wait-for http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && apm-server -e'
-  #   ports: ['127.0.0.1:8200:8200']
-  #   networks: ['stack']
-  #   depends_on: ['elasticsearch']
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    container_name: apm-server
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+      - ./config/apm-server.yml:/usr/share/apm-server/apm-server.yml
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/apm.sh'
+    ports: ['127.0.0.1:8200:8200']
+    networks: ['stack']
+    depends_on: ['elasticsearch']
 
 #volumes:
 #  esdata:

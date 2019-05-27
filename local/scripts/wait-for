@@ -1,10 +1,10 @@
 #!/bin/sh
 
 CODE=200
-QUIET=0
+DEBUG=0
 
 echoerr() {
-  if [ "$QUIET" -ne 1 ]; then printf "%s\n" "$*" 1>&2; fi
+  if [ "$DEBUG" -ne 1 ]; then printf "%s\n" "$*" 1>&2; fi
 }
 
 usage() {
@@ -12,7 +12,7 @@ usage() {
   cat << USAGE >&2
 Usage:
   $cmdname url [-t timeout] [-- command args]
-  -q | --quiet                        Do not output any status messages
+  -d | --debug                        Debug mode
   -c CODE | --http_code               Expected http code (200 by default)
   -- COMMAND ARGS                     Execute command with args after the test finishes
 USAGE
@@ -22,8 +22,8 @@ USAGE
 wait_for() {
   ret=0
   while [[ "$ret" != "$CODE" ]]; do
-    ret=$(curl -s -o /dev/null -w '%{http_code}' $URL)  
-    echo "Waiting for $URL to return $CODE... Got $ret"
+    ret=$(curl -s -o /dev/null -w '%{http_code}' $URL)
+    if [ "$DEBUG" -ne 0 ]; then echo "Waiting for $URL to return $CODE... Got $ret"; fi
     sleep 1
   done
   exit 0
@@ -36,8 +36,8 @@ do
     URL=$1
     shift 1
     ;;
-    -q | --quiet)
-    QUIET=1
+    -d | --debug)
+    DEBUG=1
     shift 1
     ;;
     -c)

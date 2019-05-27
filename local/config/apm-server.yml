@@ -2,9 +2,9 @@ apm-server:
   host: "0.0.0.0:8200"
 
 output.elasticsearch:
-  hosts: ['${ELASTICSEARCH_HOSTS:elasticsearch:9200}']
-  username: '${ELASTICSEARCH_USERNAME:}'
-  password: '${ELASTICSEARCH_PASSWORD:}'
+  hosts: ["elasticsearch:9200"]
+  username: "${elasticsearch.username}"
+  password: "${elasticsearch.password}"
 
   indices:
     - index: "apm-%{[observer.version]}-sourcemap"
