@@ -20,6 +20,8 @@ services:
         hard: -1
     ports:
       - 9200:9200
+    healthcheck:
+      test: ["CMD", "curl","-s" ,"-f", "http://elastic:$ELASTIC_PASSWORD@localhost:9200/_cat/health"]
     networks: ['stack']
 
   kibana:
@@ -32,6 +34,10 @@ services:
       - ./scripts:/mnt/scripts:ro
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/kibana.sh'
     ports: ['127.0.0.1:5601:5601']
+    healthcheck:
+      test: ["CMD", "curl", "-s", "-f", "http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status"]
+      retries: 6
+    restart: on-failure
     networks: ['stack']
     depends_on: ['elasticsearch']
 
@@ -56,6 +62,7 @@ services:
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'
     networks: ['stack']
     depends_on: ['kibana']
+    restart: on-failure
 
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:$ELASTIC_VERSION
@@ -74,6 +81,7 @@ services:
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && heartbeat -e'
     networks: ['stack']
     depends_on: ['kibana']
+    restart: on-failure
 
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
@@ -97,6 +105,7 @@ services:
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && metricbeat -e'
     networks: ['stack']
     depends_on: ['kibana']
+    restart: on-failure
 
   packetbeat:
     image: docker.elastic.co/beats/packetbeat:$ELASTIC_VERSION
@@ -125,6 +134,7 @@ services:
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status && packetbeat -e'
     network_mode: host
     depends_on: ['kibana']
+    restart: on-failure
 
   apm-server:
     image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
@@ -139,6 +149,7 @@ services:
     ports: ['127.0.0.1:8200:8200']
     networks: ['stack']
     depends_on: ['elasticsearch']
+    restart: on-failure
 
   mysql:
     image: mysql:5
@@ -152,6 +163,7 @@ services:
     container_name: mysql
     networks: ['stack']
     ports: ['3306:3306']
+    restart: on-failure
 
   java-backend:
     image: openjdk:8-stretch
