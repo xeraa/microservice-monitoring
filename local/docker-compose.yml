@@ -146,7 +146,7 @@ services:
       - ./scripts:/mnt/scripts:ro
       - ./config/apm-server.yml:/usr/share/apm-server/apm-server.yml
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/apm.sh'
-    ports: ['127.0.0.1:8200:8200']
+    ports: ['8200:8200']
     networks: ['stack']
     depends_on: ['elasticsearch']
     restart: on-failure
@@ -167,6 +167,13 @@ services:
     ports: ['3306:3306']
     restart: on-failure
 
+  apm-agent-download:
+    image: alpine:latest
+    container_name: apm-agent-download
+    command: sh -c 'cd /root/apm-agent ; wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/$ELASTIC_APM_AGENT_VERSION/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar'
+    volumes:
+      - apm-agent:/root/apm-agent
+
   java-backend:
     image: openjdk:8-stretch
     restart: always
@@ -178,9 +185,10 @@ services:
       - DATABASE_PORT=3306
     volumes:
       - backend-log:/mnt/project
+      - apm-agent:/mnt/project/apm-agent:ro
       - ../java/backend/build/libs:/mnt/project/app:ro
     container_name: java-backend
-    command: sh -c 'cd /mnt/project ; java -jar /mnt/project/app/backend.jar'
+    command: sh -c 'cd /mnt/project ; java -jar -javaagent:/mnt/project/apm-agent/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar -Delastic.apm.service_name=backend -Delastic.apm.server_urls=http://apm-server:8200 -Delastic.apm.application_packages=net.xeraa.backend /mnt/project/app/backend.jar'
     ports: ['8081:8081']
     networks: ['stack']
 
@@ -191,9 +199,10 @@ services:
       - APP_BACKEND=http://java-backend:8081
     volumes:
       - frontend-log:/mnt/project
+      - apm-agent:/mnt/project/apm-agent:ro
       - ../java/frontend/build/libs:/mnt/project/app:ro
     container_name: java-frontend
-    command: sh -c 'cd /mnt/project ; java -jar /mnt/project/app/frontend.jar'
+    command: sh -c 'cd /mnt/project ; java -jar -javaagent:/mnt/project/apm-agent/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar -Delastic.apm.service_name=frontend -Delastic.apm.server_urls=http://apm-server:8200 -Delastic.apm.application_packages=net.xeraa.frontend /mnt/project/app/frontend.jar'
     ports: ['8080:8080']
     networks: ['stack']
 
@@ -204,4 +213,6 @@ volumes:
   backend-log: {}
   frontend-log: {}
   mysql-log: {}
+  apm-agent: {}
+
 
