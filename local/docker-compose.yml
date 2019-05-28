@@ -54,14 +54,14 @@ services:
       - ./scripts:/mnt/scripts:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/log:/mnt/log:ro
-      - $PWD/../java/backend:/mnt/backend-log:ro
-      - $PWD/../java/frontend:/mnt/frontend-log:ro
-      - $PWD/../java:/mnt/java:ro
-      # Provide a custom Filebeat configuration
+      - backend-log:/mnt/backend-log:ro
+      - frontend-log:/mnt/frontend-log:ro
+      - mysql-log:/mnt/mysql-log:ro
+     # Provide a custom Filebeat configuration
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
     command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'
     networks: ['stack']
-    depends_on: ['kibana']
+    # depends_on: ['kibana']
     restart: on-failure
 
   heartbeat:
@@ -161,6 +161,8 @@ services:
       - MYSQL_PASSWORD=$ELASTIC_PASSWORD
       - MYSQL_DATABASE=person
     container_name: mysql
+    volumes:
+      - mysql-log:/var/log/mysql
     networks: ['stack']
     ports: ['3306:3306']
     restart: on-failure
@@ -175,10 +177,10 @@ services:
       - DATABASE_NAME=person
       - DATABASE_PORT=3306
     volumes:
-      - ./scripts:/mnt/scripts:ro
-      - ../java/backend/build/libs:/mnt/project:ro
+      - backend-log:/mnt/project
+      - ../java/backend/build/libs:/mnt/project/app:ro
     container_name: java-backend
-    command: sh -c 'java -jar /mnt/project/backend.jar'
+    command: sh -c 'cd /mnt/project ; java -jar /mnt/project/app/backend.jar'
     ports: ['8081:8081']
     networks: ['stack']
 
@@ -188,12 +190,18 @@ services:
     environment:
       - APP_BACKEND=http://java-backend:8081
     volumes:
-      - ./scripts:/mnt/scripts:ro
-      - ../java/frontend/build/libs:/mnt/project:ro
+      - frontend-log:/mnt/project
+      - ../java/frontend/build/libs:/mnt/project/app:ro
     container_name: java-frontend
-    command: sh -c 'java -jar /mnt/project/frontend.jar'
+    command: sh -c 'cd /mnt/project ; java -jar /mnt/project/app/frontend.jar'
     ports: ['8080:8080']
     networks: ['stack']
 
 networks:
   stack: {}
+
+volumes:
+  backend-log: {}
+  frontend-log: {}
+  mysql-log: {}
+

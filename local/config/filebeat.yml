@@ -6,7 +6,6 @@ filebeat.config:
 filebeat.inputs:
 - type: log
   paths:
-    - /mnt/java/backend.json
     - /mnt/backend-log/backend.json
   fields_under_root: true
   fields:
@@ -16,7 +15,6 @@ filebeat.inputs:
   json.add_error_key: true
 - type: log
   paths:
-    - /mnt/java/frontend.json
     - /mnt/frontend-log/frontend.json
   fields_under_root: true
   fields:
@@ -25,9 +23,18 @@ filebeat.inputs:
   json.keys_under_root: true
   json.add_error_key: true
 
+# Module: mysql
+# Docs: https://www.elastic.co/guide/en/beats/filebeat/7.1/filebeat-module-mysql.html
 
 filebeat.modules:
 - module: system
+- module: mysql
+  error:
+    enabled: true
+    var.paths: ["/mnt/mysql-log/error.log*"]
+  slowlog:
+    enabled: true
+    var.paths: ["/mnt/mysql-log/mysql-slow.log*"]
 
 processors:
 - add_cloud_metadata: ~
