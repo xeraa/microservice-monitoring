@@ -1,0 +1,34 @@
+apm-server:
+  host: "0.0.0.0:8200"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  username: "${elasticsearch.username}"
+  password: "${elasticsearch.password}"
+
+  indices:
+    - index: "apm-%{[observer.version]}-sourcemap"
+      when.contains:
+        processor.event: "sourcemap"
+
+    - index: "apm-%{[observer.version]}-error-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "error"
+
+    - index: "apm-%{[observer.version]}-transaction-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "transaction"
+
+    - index: "apm-%{[observer.version]}-span-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "span"
+
+    - index: "apm-%{[observer.version]}-metric-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "metric"
+
+    - index: "apm-%{[observer.version]}-onboarding-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "onboarding"
+
+xpack.monitoring.enabled: true

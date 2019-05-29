@@ -1,0 +1,39 @@
+heartbeat.monitors:
+- type: icmp
+  schedule: '@every 5s'
+  hosts:
+    - elasticsearch
+    - kibana
+    - mysql
+    - java-backend
+    - java-frontend
+- type: http
+  schedule: '@every 5s'
+  urls:
+    - 'http://${ELASTICSEARCH_USERNAME:elastic}:${ELASTICSEARCH_PASSWORD:}@elasticsearch:9200'
+    - 'http://kibana:5601'
+    - 'http://java-backend:8081/jolokia'
+    - 'http://java-frontend:8080'
+- type: tcp
+  enabled: true
+  schedule: '@every 5s'
+  hosts: ["tcp://mysql:3306"]
+
+processors:
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['${ELASTICSEARCH_HOSTS:elasticsearch:9200}']
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+xpack.monitoring.enabled: true
+
+#setup.kibana:
+#  host: "${KIBANA_HOSTS:kibana:5601}"
+#  username: '${ELASTICSEARCH_USERNAME:}'
+#  password: '${ELASTICSEARCH_PASSWORD:}'
+#setup.dashboards.enabled: true
+#setup.dashboards.retry.enabled: true
+#setup.dashboards.retry.interval: 5s

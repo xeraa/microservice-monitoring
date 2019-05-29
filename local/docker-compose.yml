@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: '3'
 services:
 
   elasticsearch:
@@ -9,89 +9,210 @@ services:
       - cluster.name=microservice-monitoring
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - xpack.security.enabled=$ELASTIC_SECURITY
+      - xpack.monitoring.collection.enabled=true
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 1g
     ports:
       - 9200:9200
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl","-s" ,"-f", "http://elastic:$ELASTIC_PASSWORD@localhost:9200/_cat/health"]
     networks: ['stack']
 
   kibana:
     image: docker.elastic.co/kibana/kibana:$ELASTIC_VERSION
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: kibana
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/kibana.sh'
     ports: ['127.0.0.1:5601:5601']
+    healthcheck:
+      test: ["CMD", "curl", "-s", "-f", "http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status"]
+      retries: 6
+    restart: on-failure
     networks: ['stack']
     depends_on: ['elasticsearch']
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:$ELASTIC_VERSION
+    user: root
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: filebeat
     # If the host system has logs at "/var/log", mount them at "/mnt/log"
     # inside the container, where Filebeat can find them.
-    volumes: ['/var/log:/mnt/log:ro']
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/log:/mnt/log:ro
+      - backend-log:/mnt/backend-log:ro
+      - frontend-log:/mnt/frontend-log:ro
+      - mysql-log:/mnt/mysql-log:ro
+     # Provide a custom Filebeat configuration
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && filebeat -e'
     networks: ['stack']
-    depends_on: ['elasticsearch']
+    # depends_on: ['kibana']
+    restart: on-failure
 
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:$ELASTIC_VERSION
+    user: root
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+      - KIBANA_HOSTS=http://kibana:5601
     container_name: heartbeat
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Provide a custom Heartbeat configuration
+      - ./config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && heartbeat -e'
     networks: ['stack']
-    depends_on: ['elasticsearch']
+    depends_on: ['kibana']
+    restart: on-failure
 
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
+    user: root
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     container_name: metricbeat
     networks: ['stack']
     # The commented sections below enable Metricbeat to monitor the Docker host,
     # rather than the Metricbeat container. It's problematic with Docker for
     # Windows, however, since "/proc", "/sys", etc. don't exist on Windows.
     volumes:
+      - ./scripts:/mnt/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
       - /:/hostfs:ro
       # Provide a custom Metricbeat configuration
       - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
-    command: metricbeat -e -system.hostfs=/hostfs
-    #network_mode: "host"
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@kibana:5601/api/status && metricbeat -e'
     networks: ['stack']
-    depends_on: ['elasticsearch']
+    depends_on: ['kibana']
+    restart: on-failure
 
   packetbeat:
     image: docker.elastic.co/beats/packetbeat:$ELASTIC_VERSION
+    user: root
+    environment:
+      # Since we did that, Packetbeat is not part of the "stack" Docker network
+      # that the other containers are connected to, and thus can't resolve the
+      # hostname "elasticsearch". Instead, we'll tell it to find Elasticsearch
+      # on "localhost", which is the Docker host machine in this context.
+      - ELASTICSEARCH_HOSTS=localhost:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+      - KIBANA_HOSTS=localhost:5601
     container_name: packetbeat
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Provide a custom Packetbeat configuration
+      - ./config/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
     # Packetbeat needs some elevated privileges capture network traffic.
     # We'll grant them with POSIX capabilities.
     cap_add: ['NET_RAW', 'NET_ADMIN']
     # Use "host mode" networking to allow Packetbeat to capture traffic from
     # real network interface on the host, rather than being isolated to the
     # container's virtual interface.
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@localhost:5601/api/status && packetbeat -e'
     network_mode: host
-    # Since we did that, Packetbeat is not part of the "stack" Docker network
-    # that the other containers are connected to, and thus can't resolve the
-    # hostname "elasticsearch". Instead, we'll tell it to find Elasticsearch
-    # on "localhost", which is the Docker host machine in this context.
-    command: packetbeat -v -e -E output.elasticsearch.hosts='["localhost:9200"]'
+    depends_on: ['kibana']
+    restart: on-failure
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:$ELASTIC_VERSION
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    container_name: apm-server
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+      - ./config/apm-server.yml:/usr/share/apm-server/apm-server.yml
+    command: sh -c '/mnt/scripts/wait-for $DEBUG_WAIT_FOR http://elastic:$ELASTIC_PASSWORD@elasticsearch:9200 && /mnt/scripts/apm.sh'
+    ports: ['8200:8200']
+    networks: ['stack']
     depends_on: ['elasticsearch']
+    restart: on-failure
 
-  # Run a short-lived container to set up Kibana index patterns and dashboards.
-#  configure_kibana:
-#    # Any Beats image will suffice. We'll use Metricbeat.
-#    image: docker.elastic.co/beats/metricbeat:$ELASTIC_VERSION
-#    volumes: ['./scripts/configure-kibana.sh:/usr/local/bin/configure-kibana.sh:ro']
-#    command: /usr/local/bin/configure-kibana.sh
-#    environment: ['ELASTIC_VERSION=${ELASTIC_VERSION}']
-#    networks: ['stack']
-#    depends_on: ['kibana']
+  mysql:
+    image: mysql:5
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=$ELASTIC_PASSWORD
+      - MYSQL_USER=elastic
+      - MYSQL_PASSWORD=$ELASTIC_PASSWORD
+      - MYSQL_DATABASE=person
+    container_name: mysql
+    volumes:
+      - mysql-log:/var/log/mysql
+    networks: ['stack']
+    ports: ['3306:3306']
+    restart: on-failure
 
+  apm-agent-download:
+    image: alpine:latest
+    container_name: apm-agent-download
+    command: sh -c 'cd /root/apm-agent ; wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/$ELASTIC_APM_AGENT_VERSION/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar'
+    volumes:
+      - apm-agent:/root/apm-agent
 
-volumes:
-  esdata:
-    driver: local
+  java-backend:
+    image: openjdk:8-stretch
+    restart: always
+    environment:
+      - DATABASE_SERVER=mysql
+      - DATABASE_USERNAME=elastic
+      - DATABASE_PASSWORD=$ELASTIC_PASSWORD
+      - DATABASE_NAME=person
+      - DATABASE_PORT=3306
+    volumes:
+      - backend-log:/mnt/project
+      - apm-agent:/mnt/project/apm-agent:ro
+      - ../java/backend/build/libs:/mnt/project/app:ro
+    container_name: java-backend
+    command: sh -c 'cd /mnt/project ; java -jar -javaagent:/mnt/project/apm-agent/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar -Delastic.apm.service_name=backend -Delastic.apm.server_urls=http://apm-server:8200 -Delastic.apm.application_packages=net.xeraa.backend /mnt/project/app/backend.jar'
+    ports: ['8081:8081']
+    networks: ['stack']
 
+  java-frontend:
+    image: openjdk:8-stretch
+    restart: always
+    environment:
+      - APP_BACKEND=http://java-backend:8081
+    volumes:
+      - frontend-log:/mnt/project
+      - apm-agent:/mnt/project/apm-agent:ro
+      - ../java/frontend/build/libs:/mnt/project/app:ro
+    container_name: java-frontend
+    command: sh -c 'cd /mnt/project ; java -jar -javaagent:/mnt/project/apm-agent/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar -Delastic.apm.service_name=frontend -Delastic.apm.server_urls=http://apm-server:8200 -Delastic.apm.application_packages=net.xeraa.frontend /mnt/project/app/frontend.jar'
+    ports: ['8080:8080']
+    networks: ['stack']
 
 networks:
   stack: {}
+
+volumes:
+  backend-log: {}
+  frontend-log: {}
+  mysql-log: {}
+  apm-agent: {}
+
+

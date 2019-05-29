@@ -1,0 +1,56 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+- type: log
+  paths:
+    - /mnt/backend-log/backend.json
+  fields_under_root: true
+  fields:
+    application: java
+    layer: backend
+  json.keys_under_root: true
+  json.add_error_key: true
+- type: log
+  paths:
+    - /mnt/frontend-log/frontend.json
+  fields_under_root: true
+  fields:
+    application: java
+    layer: frontend
+  json.keys_under_root: true
+  json.add_error_key: true
+
+# Module: mysql
+# Docs: https://www.elastic.co/guide/en/beats/filebeat/7.1/filebeat-module-mysql.html
+
+filebeat.modules:
+- module: system
+- module: mysql
+  error:
+    enabled: true
+    var.paths: ["/mnt/mysql-log/error.log*"]
+  slowlog:
+    enabled: true
+    var.paths: ["/mnt/mysql-log/mysql-slow.log*"]
+
+processors:
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['${ELASTICSEARCH_HOSTS:elasticsearch:9200}']
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+xpack.monitoring.enabled: true
+
+setup.kibana:
+  host: "${KIBANA_HOSTS:kibana:5601}"
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+setup.dashboards.enabled: true
+setup.dashboards.retry.enabled: true
+setup.dashboards.retry.interval: 5s
