@@ -86,6 +86,7 @@ public class FrontendController {
         }
 
 		model.addAttribute("size", persons.size());
+		model.addAttribute("persons", persons);
 	}
 
 	@RequestMapping("/good")

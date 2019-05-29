@@ -8,7 +8,25 @@
 </head>
 <body>
     <img class="logo" src="./elastic-logo.svg" width="300" />
-    <h1 th:text="'Found ' + ${size} + ' people!'" />
+    <h1 th:text="'Found ' + ${size} + ' person(s)!'" />
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Children</th>
+            <th>Country</th>
+            <th>City</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="person: ${persons}">
+            <td th:text="${person.name}">Joe</td>
+            <td th:text="${person.children}">1</td>
+            <td th:text="${person.address.country}">France</td>
+            <td th:text="${person.address.city}">France</td>
+        </tr>
+        </tbody>
+    </table>
     <a href="/">Back to main</a>
 </body>
 </html>
