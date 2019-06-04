@@ -44,7 +44,7 @@ If the network connection is decent, show it on [Amazon Lightsail](https://amazo
 Make sure you have run this before the demo, because some steps take time and require a decent internet connection.
 
 1. Make sure you have your AWS account set up, access key created, and added as environment variables in `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Protip: Use [https://github.com/sorah/envchain](https://github.com/sorah/envchain) to keep your environment variables safe.
-1. Create the Elastic Cloud instance with the same version as specified in *variables.yml*'s `elastic_version`, enable Kibana as well as the GeoIP & user agent plugins, and set the environment variables with the values for `ELASTICSEARCH_HOST`, `ELASTICSEARCH_USER`, `ELASTICSEARCH_PASSWORD`, `KIBANA_HOST`, `KIBANA_ID`, `APM_HOST`, and `APM_TOKEN`.
+1. Create the Elastic Cloud instance with the same version as specified in *variables.yml*'s `elastic_version`, enable Kibana, enable APM, and set the environment variables with the values for `ELASTICSEARCH_HOST`, `ELASTICSEARCH_USER`, `ELASTICSEARCH_PASSWORD`, `KIBANA_HOST`, `KIBANA_ID`, `APM_HOST`, and `APM_TOKEN`.
 1. Change into the *lightsail/* directory.
 1. Change the settings to a domain you have registered under Route53 in *inventory*, *variables.tf*, and *variables.yml*. Set the Hosted Zone for that domain and export the Zone ID under the environment variable `TF_VAR_zone_id`. If you haven't created the Hosted Zone yet, you should set it up in the AWS Console first and then set the environment variable.
 1. If you haven't installed the AWS plugin for Terraform, get it with `terraform init` first. Then create the keypair, DNS settings, and instances with `terraform apply`.
@@ -77,7 +77,7 @@ Make sure you have run this before the demo, because some steps take time and re
 1. Run `docker-compose up`, which will bring up Elasticsearch, Kibana, and all the Beats.
 1.
 1.
-1. Run the Java applications from their directories with `gradle bootRun`.
+1. Run the Java applications from their directories with `./gradle bootRun`.
 1.
 
 When you are done, stop the Java applications and remove the Docker setup with `docker-compose down -v`.
