@@ -33,9 +33,15 @@ public class FrontendController {
 	private String frontendUrl;
 
 	@RequestMapping("/generate")
-	public void generate(@RequestParam(value="size", required=false, defaultValue="10") Integer size, Model model) {
+	public void generate(@RequestParam(value="size", required=false, defaultValue="5") Integer size, Model model) {
 		String callUrl = backendUrl + "/add";
 		log.info("Calling {}", callUrl);
+
+		if (size > 10){
+			log.warn("Trying to add {} people. This is probably a bit too much and would overload the server", size);
+			size = 10;
+			log.info("Change the number of people to be added to {}", size);
+		}
 
 		for (int i = 0; i < size; i++) {
 			restTemplate.getForObject(callUrl, String.class);
