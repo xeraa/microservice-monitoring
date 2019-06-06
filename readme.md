@@ -86,11 +86,12 @@ When you are done, stop the Java applications and remove the Docker setup with `
 
 ## Todo
 
+* Test and document the Docker-Compose flow
+* Redo the story since the content changed a bit over time
 * https://tech.paulcz.net/blog/spring-into-kubernetes-part-1/
 * https://codecentric.github.io/chaos-monkey-spring-boot/
 * Micrometer / http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html
-* Docker / Kubernetes
-* Improve traced methods and add async
+* Kubernetes
 * Functionbeat (though there are no CloudWatch metrics for Lightsail)
 * https://github.com/elastic/examples/blob/master/Alerting/Sample%20Watches/errors_in_logs/watch.json
 * Better Watch syntax as in https://github.com/elastic/examples/blob/master/Alerting/Sample%20Watches/unexpected_account_activity/watch.json
