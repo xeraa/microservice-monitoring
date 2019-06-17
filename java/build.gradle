@@ -1,7 +1,7 @@
 buildscript {
 	ext {
 		springBootVersion = '2.1.5.RELEASE'
-		logbackEncoderVersion = '6.0'
+		logbackEncoderVersion = '6.1'
 	}
 	repositories {
 		mavenCentral()
