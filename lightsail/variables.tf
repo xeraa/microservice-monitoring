@@ -2,7 +2,7 @@
 # Options: nano_1_0, micro_1_0, small_1_0, medium_1_0, large_1_0
 # Override: -var 'size=your-size'
 variable "size" {
-  default = "micro_1_0"
+  default = "small_1_0"
 }
 
 
