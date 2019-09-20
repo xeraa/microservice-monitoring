@@ -41,37 +41,8 @@
 			<fileNamePattern>${LOG_FILE}.json.%d{yyyy-MM-dd}.gz</fileNamePattern>
 			<maxHistory>7</maxHistory>
 		</rollingPolicy>
-		<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-			<providers>
-				<mdc/>
-				<timestamp>
-					<timeZone>UTC</timeZone>
-				</timestamp>
-				<provider class="net.logstash.logback.composite.loggingevent.StackHashJsonProvider">
-					<exclusions>${STE_EXCLUSIONS}</exclusions>
-				</provider>
-				<stackTrace>
-					<throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-						<inlineHash>true</inlineHash>
-						<exclusions>${STE_EXCLUSIONS}</exclusions>
-						<rootCauseFirst>true</rootCauseFirst>
-						<maxLength>3000</maxLength>
-					</throwableConverter>
-				</stackTrace>
-				<pattern>
-					<pattern>
-						{
-						"log.level": "%level",
-						"service.name": "${springAppName:-}",
-						"process.pid": "${PID:-}",
-						"thread": "%thread",
-						"class": "%logger",
-						"mdc": "%mdc",
-						"message": "%message"
-						}
-					</pattern>
-				</pattern>
-			</providers>
+		<encoder class="co.elastic.logging.logback.EcsEncoder">
+			<serviceName>${springAppName:-}</serviceName>
 		</encoder>
 	</appender>
 	​

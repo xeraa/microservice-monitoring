@@ -11,7 +11,7 @@ jar {
 dependencies {
 	compile(
 			'org.springframework.boot:spring-boot-starter-web',
-			"net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}",
+			"co.elastic.logging:logback-ecs-encoder:${javaEcsLoggingVersion}",
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.jolokia:jolokia-core',
 			'mysql:mysql-connector-java', // MySQL Connector-J
