@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '3.1.1'
+		springBootVersion = '3.1.2'
 		logbackEncoderVersion = '6.2'
 		javaEcsLoggingVersion = '1.5.0'
 	}
